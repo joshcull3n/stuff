@@ -87,7 +87,6 @@ const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, hand
               handleHabitInputChange={handleHabitInputChange}
               handleHabitInputBtnClick={handleHabitInputBtnClick} />
           </div>
-          <Graph />
         </div>
       )
     }
@@ -103,6 +102,7 @@ const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, hand
       <div className="mainPanel" style={{padding:'10px'}}>
         <TopBar currentView={viewMode} />
         <CurrentView />
+        {viewMode === VIEW_MODES.HABITS && <Graph />}
       </div>
     </div>
   );
