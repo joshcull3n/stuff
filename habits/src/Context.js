@@ -29,6 +29,15 @@ export const ContextProvider = ({ children }) => {
   const [askForPassword, setAskForPassword] = useState(false);
   const [loginFailed, setLoginFailed] = useState(false);
 
+  const VIEW_MODES = {
+    TODO: 'todo',
+    HABITS: 'habits',
+    OVERVIEW: 'overview'
+  };
+
+  // current view
+  const [viewMode, setViewMode] = useState(VIEW_MODES.HABITS)
+
   // appearance
   const [lightMode, setLightMode] = useState(Boolean(lightModeStorage));
   const [graphFontColor, setGraphFontColor] = useState('rgb(0,0,0)');
@@ -139,7 +148,8 @@ export const ContextProvider = ({ children }) => {
       passwordInput, setPasswordInput,
       newUser, setNewUser,
       askForPassword, setAskForPassword,
-      loginFailed, setLoginFailed }}>
+      loginFailed, setLoginFailed,
+      viewMode, setViewMode }}>
       { children }
     </Context.Provider>
   );

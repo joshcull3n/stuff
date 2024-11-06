@@ -3,10 +3,40 @@ import Graph from './graph.js';
 import { Context } from '../Context.js';
 import { useContext } from 'react';
 
+const VIEW_MODES = {
+//  TODO: 'todo',
+  HABITS: 'habits',
+// OVERVIEW: 'overview'
+};
+
+function setElementOpacityById(elemId, opacityValue, fade=true) {
+  let id = '#' + elemId
+  const element = document.querySelector(id);
+  if (fade) { element.style.transition = "opacity 0.2s ease-in-out" }
+  element.style.opacity = opacityValue;
+}
+
 const TopBar = () => {
+  const { viewMode, setViewMode } = useContext(Context);
+
+  const ViewTitle = ({title, selected=false}) => {
+    let viewmode = Object.values(VIEW_MODES).find(value => title === value);
+
+    return selected ? (
+      <div className="selectedViewTitle"><h2>{title}</h2></div>
+    ) : (
+      <div id={`${title}Title`} className="unselectedViewTitle viewTitle"
+        onMouseEnter={(e) => setElementOpacityById(e.currentTarget.id, 1)}
+        onMouseLeave={(e) => setElementOpacityById(e.currentTarget.id, 0.5)}
+        onClick={() => setViewMode(viewmode)}>
+        <h2>{title}</h2>
+      </div>
+    )
+  }
+
   return (
-    <div className="centered">
-      <h2>habits</h2>
+    <div className="titleGrid">
+      {Object.keys(VIEW_MODES).map((key) => { return <ViewTitle key={key} title={VIEW_MODES[key]} selected={viewMode === VIEW_MODES[key]} /> })}
     </div>
   );
 };
@@ -29,7 +59,7 @@ const HabitInput = ({mobile, handleHabitInputChange, handleHabitInputEnter, hand
 };
 
 const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, handleHabitInputBtnClick }) => {
-  const { habits, startDate, endDate } = useContext(Context);
+  const { habits, startDate, endDate, viewMode } = useContext(Context);
 
   function generateDateLabels() {
     var tempDate = new Date(startDate);
@@ -46,18 +76,33 @@ const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, hand
     return labels
   }
 
+  const CurrentView = () => {
+    if (viewMode === VIEW_MODES.HABITS) {
+      return (
+        <div>
+          <div id="habitListContainer">
+            <HabitList mobile={mobile} habits={habits} dateLabels={generateDateLabels()} />
+            <HabitInput mobile={mobile}
+              handleHabitInputEnter={handleHabitInputEnter}
+              handleHabitInputChange={handleHabitInputChange}
+              handleHabitInputBtnClick={handleHabitInputBtnClick} />
+          </div>
+          <Graph />
+        </div>
+      )
+    }
+    else if (viewMode === VIEW_MODES.TODO)
+      return <div></div>
+    else {
+      return <div></div>
+    }
+  }
+
   return (
     <div className='mainPanelContainer'>
       <div className="mainPanel" style={{padding:'10px'}}>
-        <TopBar />
-        <div id="habitListContainer">
-          <HabitList mobile={mobile} habits={habits} dateLabels={generateDateLabels()} />
-          <HabitInput mobile={mobile}
-            handleHabitInputEnter={handleHabitInputEnter} 
-            handleHabitInputChange={handleHabitInputChange} 
-            handleHabitInputBtnClick={handleHabitInputBtnClick} />
-        </div>
-        <Graph />
+        <TopBar currentView={viewMode} />
+        <CurrentView />
       </div>
     </div>
   );
