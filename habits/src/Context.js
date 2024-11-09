@@ -30,9 +30,9 @@ export const ContextProvider = ({ children }) => {
   const [loginFailed, setLoginFailed] = useState(false);
 
   const VIEW_MODES = {
+    OVERVIEW: 'overview',
     TODO: 'todo',
     HABITS: 'habits',
-    OVERVIEW: 'overview'
   };
 
   // current view
@@ -149,7 +149,7 @@ export const ContextProvider = ({ children }) => {
       newUser, setNewUser,
       askForPassword, setAskForPassword,
       loginFailed, setLoginFailed,
-      viewMode, setViewMode }}>
+      viewMode, setViewMode, VIEW_MODES }}>
       { children }
     </Context.Provider>
   );

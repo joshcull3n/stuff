@@ -3,12 +3,6 @@ import Graph from './graph.js';
 import { Context } from '../Context.js';
 import { useContext } from 'react';
 
-const VIEW_MODES = {
-//  TODO: 'todo',
-  HABITS: 'habits',
-// OVERVIEW: 'overview'
-};
-
 function setElementOpacityById(elemId, opacityValue, fade=true) {
   let id = '#' + elemId
   const element = document.querySelector(id);
@@ -17,7 +11,7 @@ function setElementOpacityById(elemId, opacityValue, fade=true) {
 }
 
 const TopBar = () => {
-  const { viewMode, setViewMode } = useContext(Context);
+  const { viewMode, setViewMode, VIEW_MODES } = useContext(Context);
 
   const ViewTitle = ({title, selected=false}) => {
     let viewmode = Object.values(VIEW_MODES).find(value => title === value);
@@ -59,7 +53,7 @@ const HabitInput = ({mobile, handleHabitInputChange, handleHabitInputEnter, hand
 };
 
 const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, handleHabitInputBtnClick }) => {
-  const { habits, startDate, endDate, viewMode } = useContext(Context);
+  const { habits, startDate, endDate, viewMode, VIEW_MODES } = useContext(Context);
 
   function generateDateLabels() {
     var tempDate = new Date(startDate);

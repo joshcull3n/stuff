@@ -66,7 +66,7 @@ input[type="checkbox"]:not(:checked) {
   height: 20px;
   cursor:pointer;
   background: var(--input-bg-not-checked);
-  background-size: 18px;
+  background-size: 22px;
   background-position: center;
   opacity: 0.3;
   -webkit-transition: opacity 0.1s ease-in-out;
@@ -90,7 +90,7 @@ input[type="checkbox"]:checked {
   height: 20px;
   cursor:pointer;
   background: var(--input-bg-checked);
-  background-size: 18px;
+  background-size: 22px;
   background-position: center;
   -webkit-transition: opacity 0.1s ease-in-out;
   -moz-transition: opacity 0.1s ease-in-out;
