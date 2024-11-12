@@ -1,7 +1,7 @@
 import HabitList from './habitList.js';
 import Graph from './graph.js';
 import { Context } from '../Context.js';
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 
 function setElementOpacityById(elemId, opacityValue, fade=true) {
   let id = '#' + elemId
@@ -55,7 +55,7 @@ const HabitInput = ({mobile, handleHabitInputChange, handleHabitInputEnter, hand
 const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, handleHabitInputBtnClick }) => {
   const { habits, startDate, endDate, viewMode, VIEW_MODES } = useContext(Context);
 
-  function generateDateLabels() {
+  const dateLabels = useMemo(() => {
     var tempDate = new Date(startDate);
     var labels = [];
 
@@ -68,35 +68,28 @@ const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, hand
     }
 
     return labels
-  }
-
-  const CurrentView = () => {
-    if (viewMode === VIEW_MODES.HABITS) {
-      return (
-        <div>
-          <div id="habitListContainer">
-            <HabitList mobile={mobile} habits={habits} dateLabels={generateDateLabels()} />
-            <HabitInput mobile={mobile}
-              handleHabitInputEnter={handleHabitInputEnter}
-              handleHabitInputChange={handleHabitInputChange}
-              handleHabitInputBtnClick={handleHabitInputBtnClick} />
-          </div>
-        </div>
-      )
-    }
-    else if (viewMode === VIEW_MODES.TODO)
-      return <div></div>
-    else {
-      return <div></div>
-    }
-  }
+  }, [startDate, endDate]);
 
   return (
     <div className='mainPanelContainer'>
       <div className="mainPanel" style={{padding:'10px'}}>
         <TopBar currentView={viewMode} />
-        <CurrentView />
-        {viewMode === VIEW_MODES.HABITS && <Graph />}
+        {viewMode === VIEW_MODES.HABITS && (
+          <div>
+            <div id="habitListContainer">
+              <HabitList mobile={mobile} habits={habits} dateLabels={dateLabels} />
+              <HabitInput
+                mobile={mobile}
+                handleHabitInputEnter={handleHabitInputEnter}
+                handleHabitInputChange={handleHabitInputChange}
+                handleHabitInputBtnClick={handleHabitInputBtnClick}
+              />
+            </div>
+            <Graph />
+          </div>
+        )}
+        {viewMode === VIEW_MODES.TODO && (<></>)}
+        {viewMode === VIEW_MODES.OVERVIEW && (<></>)}
       </div>
     </div>
   );
