@@ -1,7 +1,8 @@
 import { useContext } from 'react'
+import { Context } from '../Context.js'
+
 import Habit from './habit.js'
 import HabitDates from './habitDates.js'
-import { Context } from '../Context.js'
 
 const HabitList = ({ dateLabels, mobile }) => {
   const { habits, setHabits, startDate, setStartDate, 
@@ -103,7 +104,7 @@ const HabitList = ({ dateLabels, mobile }) => {
       return ( 
         <div>
           <img alt='date page left' id="calendarLeft" className="datePaginator" 
-            style={{width:'15px', float:'right', paddingTop: '1.5px'}} 
+            style={{width:'15px', float:'right'}} 
             onClick={() => { datePageLeftDay() }}/>
         </div>
       )
@@ -124,7 +125,7 @@ const HabitList = ({ dateLabels, mobile }) => {
       return (
         <div>
           <img alt='date page right' id="calendarRight" className="datePaginator" 
-            style={{width:'15px', float:'left', paddingLeft: '1px', paddingTop: '1.5px'}} 
+            style={{width:'15px', float:'left', paddingLeft: '1px'}} 
             onClick={() => { datePageRightDay() }}/>
         </div>
       )
