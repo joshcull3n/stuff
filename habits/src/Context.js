@@ -10,14 +10,6 @@ export const ContextProvider = ({ children }) => {
   var yesterday = new Date();
   yesterday.setDate(yesterday.getDate()-2)
 
-  function convertToYYYYMMDD(date) {
-    const tempYear = date.getFullYear();
-    const tempMonth = date.getMonth()+1;
-    const tempDay = date.getDate();
-
-    return tempYear + '/' + tempMonth + '/' + tempDay;
-  }
-
   const localStorage = window.localStorage;
   const lightModeStorage = localStorage.getItem('habits_lightMode');
 

@@ -167,7 +167,7 @@ input {
   opacity: 0.7;
 }
 
-#habitListContainer {
+#mainContainer {
   padding: 10px 15px;
   max-width: min-content;
   min-width: min-content;
@@ -223,7 +223,7 @@ input {
   cursor: pointer;
 }
 
-.lightMode #habitListContainer {
+.lightMode #mainContainer {
   background-color:#f79b9b;
   border-radius:3px;
 }
@@ -399,4 +399,23 @@ input {
   font-display:block;
   src:local("Work Sans"), url('https://s2.wp.com/wp-content/themes/pub/stewart/assets/fonts/WorkSans-VariableFont_wght.ttf') format('truetype');
   font-stretch:normal;
+}
+
+/* TODO STUFF */
+.todoGrid {
+  display: grid;
+  gap: 1em;
+  align-items: center;
+}
+
+.todoRow {
+  display: grid;
+  grid-template-columns: 200px repeat(4, min-content);
+  gap: 1em;
+}
+
+.todoCell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

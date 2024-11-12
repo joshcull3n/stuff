@@ -1,4 +1,5 @@
 import HabitList from './habitList.js';
+import TodoList from './todo/todoList.js'
 import Graph from './graph.js';
 import { Context } from '../Context.js';
 import { useContext, useMemo } from 'react';
@@ -76,7 +77,7 @@ const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, hand
         <TopBar currentView={viewMode} />
         {viewMode === VIEW_MODES.HABITS && (
           <div>
-            <div id="habitListContainer">
+            <div id="mainContainer">
               <HabitList mobile={mobile} habits={habits} dateLabels={dateLabels} />
               <HabitInput
                 mobile={mobile}
@@ -88,7 +89,7 @@ const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, hand
             <Graph />
           </div>
         )}
-        {viewMode === VIEW_MODES.TODO && (<></>)}
+        {viewMode === VIEW_MODES.TODO && (<TodoList />)}
         {viewMode === VIEW_MODES.OVERVIEW && (<></>)}
       </div>
     </div>
