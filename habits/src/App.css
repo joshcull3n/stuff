@@ -130,7 +130,6 @@ input {
 }
 
 .deleteButton {
-  padding-top: 2.5px;
   grid-column: -1;
   display: flex;
   justify-content: center;
@@ -141,7 +140,6 @@ input {
 .deleteButton img {
   opacity: 0.4;
   width: 11px;
-  padding-bottom: 3px; /* should be 2.5px for FF */
   -webkit-transition: opacity 0.1s ease-in-out;
   -moz-transition: opacity 0.1s ease-in-out;
   transition: opacity 0.1s ease-in-out;
@@ -213,14 +211,6 @@ input {
 .habitDates {
   grid-column: 2 / -2;
   display: contents;
-}
-
-.deleteButton {
-  grid-column: -1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
 }
 
 .lightMode #mainContainer {
@@ -404,14 +394,22 @@ input {
 /* TODO STUFF */
 .todoGrid {
   display: grid;
-  gap: 1em;
   align-items: center;
 }
 
 .todoRow {
   display: grid;
-  grid-template-columns: min-content 200px repeat(4, min-content);
+  grid-template-columns: min-content 200px 80px 100px 25px 20px;
+  grid-auto-columns: min-content;
   gap: 1em;
+  align-items: center;
+  padding: 5px 0;
+}
+
+.todoCell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .statsRow {
@@ -424,16 +422,17 @@ input {
   display: flex;
   text-align: center;
   padding: 0px 5px;
-}
-
-.todoCell {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  justify-content: center;
+  align-items: center;
 }
 
 .todoBtn {
   border: 1px black solid;
+}
+
+.todoInput {
+  display: flex;
+  justify-content: center;
 }
 
 .doneContainer {
@@ -443,4 +442,12 @@ input {
 
 .doneContainer:hover {
   opacity: 1;
+}
+
+#snzButton {
+  content: var(--snooze-btn);
+}
+
+input {
+  all: unset;
 }
