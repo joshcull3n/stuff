@@ -11,6 +11,7 @@ import { TodoContext } from './todoContext.js'
    todo.user    : '...',
    todo.created  : 1731386491566,
    todo.updated  : 1731386491566,
+   todo.completed : 1731386491666,
    todo.__v      : 0
  }
  */
@@ -18,25 +19,63 @@ import { TodoContext } from './todoContext.js'
 // TEST DATA
 const testTask = {
   '_id'      : 'fdsfdsfdsfas21348124s',
-  'title'    : 'take out trash',
+  'title'    : 'take out trash fdshjflhdsajklfhdsjkalfhjdkalshfjkldsahjkfdhjkal',
   'notes'    : 'regular trash every week, compost every other week',
   'due'      : new Date('2024-11-13'),
   'category' : 'chores',
   'user'     : 'josh_username',
   'created'  : 1731386491566,
   'updated'  : 1731387119881,
+  'completed' : 1731386491766,
   '__v'      : 1
 }
-const todos = [testTask, testTask, testTask, testTask, testTask, testTask, testTask, testTask, testTask, testTask]
-const doneTodos = [testTask]
+const testTask2 = {
+  '_id'      : 'fdsfdsfdsfas21348124s',
+  'title'    : 'SLO',
+  'notes'    : 'regular trash every week, compost every other week',
+  'due'      : new Date('2039-11-18'),
+  'category' : 'ppppppppppppppppppppppppppppppppppppppppppppppppp',
+  'user'     : 'josh_username',
+  'created'  : 1731389999966,
+  'updated'  : 1731389119881,
+  'completed' : null,
+  '__v'      : 1
+}
+const testTask3 = {
+  '_id'      : 'fdsfdsfdsfas21348124s',
+  'title'    : 'SLO',
+  'notes'    : 'regular trash every week, compost every other week',
+  'due'      : null,
+  'category' : 'work',
+  'user'     : 'josh_username',
+  'created'  : 1731389999966,
+  'updated'  : 1731389119881,
+  'completed' : null,
+  '__v'      : 1
+}
+const todos = [testTask, testTask2, testTask3, testTask, testTask, testTask, testTask, testTask, testTask, testTask]
+const doneTodos = [testTask, testTask2, testTask3]
+const backlogTodos = [testTask3, testTask]
 
 
 // helper functions
-function getDueDateString(dueMillis) {
+function getDueDateString(dueMillis=null) {
+  if (dueMillis === null)
+    return 'someday'
   const now = new Date();
   const duedate = new Date(dueMillis);
-  const difference = Math.ceil((duedate - now) / (1000 * 60 * 60 * 24));
-  return `${difference} days left`
+  const difference = Math.ceil((duedate - now) / (1000 * 60 * 60 * 24))
+  if (difference < 0) {
+    return 'overdue'
+  } else if (difference === 0) {
+    return 'due today'
+  } else if (difference > 365) {
+    let diffYear = Math.ceil(difference / 365)
+    return `${diffYear} years left`
+  }
+  else {
+    return `${difference} days left`
+  }
 }
 
 function getAgeString(createdMillis) {
@@ -47,20 +86,34 @@ function getAgeString(createdMillis) {
 }
 
 // sub-components
-const BaseButtonElement = ({text, image}) => {
+const BaseButtonElement = ({text, type, image}) => {
+  if (type === "fin") {
+    return (
+      <div className="checkboxContainer">
+        <input type="checkbox" />
+      </div>
+    )
+  } else if (type === "del") {
+    return (
+      <div className="deleteButton">
+        <img id="deleteButton" alt="x"/>
+      </div>
+    )
+  }
   return ( <div className="todoBtn">{text}</div>)
 }
 
-const TodoRow = ({todo}) => {
+const TodoRow = ({todo, snooze, backlog=true}) => {
   const Title = () => <div className="todoCell">{todo.title}</div>
   const Notes = () => <div className="todoCell">{todo.notes}</div>    // task description/notes
-  const DueDate = () => <div className="todoCell">{getDueDateString(todo.created)}</div>  // task due date
+  const DueDate = () => <div className="todoCell" style={{"display":"flex", "justifyContent":"center"}}>{getDueDateString(todo.due)}</div>  // task due date
   const Category = () => <div className="todoCell">{todo.category}</div> // task category
   const Age = () => <div className="todoCell">{getAgeString(todo.created)}</div> // task age
 
-  const CompleteBtn = () => <BaseButtonElement text="fin" /> // complete button
-  const SnoozeBtn = () => <BaseButtonElement text="snz" />   // snooze button
-  const DeleteBtn = () => <BaseButtonElement text="del" />  // delete button
+  const CompleteBtn = () => <BaseButtonElement text="fin" type="fin" />
+  const SnoozeBtn = () => <BaseButtonElement text="snz" type="snz" />
+  const DeleteBtn = () => <BaseButtonElement text="del" type="del" />
+  const BacklogBtn = () => <BaseButtonElement text="blog" type="blog" /> 
 
   return(
     <div className='todoRow'>
@@ -68,7 +121,8 @@ const TodoRow = ({todo}) => {
       <Title />
       <DueDate />
       <Category />
-      <SnoozeBtn />
+      { snooze === true && <SnoozeBtn /> || <div></div> }
+      { backlog === true && <BacklogBtn /> || <div></div>}
       <DeleteBtn />
     </div>
   )
@@ -85,6 +139,24 @@ const StatsRow = ({open, done}) => {
   )
 }
 
+const TodoInput = () => {
+  return (
+    <div style={{"border":"black dotted 1px", "margin":"0 0 10px 0", "padding":"2px 2px"}}>
+    <div className="todoInput">
+        <input style={{"width":"100%", "textAlign":"center", "padding":"0 10px", "border":"black dotted 1px"}} placeholder="add a todo..."/>
+      <div style={{"display":"flex","justifyContent":"center"}}>
+        <select>
+          <option value="category">category</option>
+          <option value="bloop">chores</option>
+          <option value="custom">custom</option>
+        </select>
+        <input type="date"/>
+      </div>
+    </div>
+    </div>
+  )
+}
+
 // main components
 const TodoList = () => {
   //const { todos } = useContext(TodoContext);
@@ -94,13 +166,17 @@ const TodoList = () => {
   return (
     <div>
       <div id="mainContainer">
+        <TodoInput />
         <div className="todoGrid">
           {todos.map((todo, index) => (
-            <TodoRow todo={todo} key={index} />
+            <TodoRow todo={todo} snooze={true} key={index} />
           ))}
         </div>
       </div>
       <div id="mainContainer" style={{'padding':'0px'}}>
+        <div style={{'display':'flex', "justifyContent":"space-evenly", "fontSize": "0.8em"}}>
+          weekly stats
+        </div>
         <StatsRow open={openCnt} done={doneCnt} />
       </div>
     </div>
@@ -110,13 +186,27 @@ const TodoList = () => {
 const DoneList = () => {
   return (
     <div id="mainContainer" className="doneContainer">
+      done
       <div className="todoGrid">
         {doneTodos.map((todo, index) => (
-          <TodoRow todo={todo} key={index} />
+          <TodoRow todo={todo} snooze={false} backlog={false} key={index} />
         ))}
       </div>
     </div>
   )
 }
 
-export {TodoList, DoneList};
+const BacklogList = () => {
+  return (
+    <div id="mainContainer" className="backlogContainer">
+      backlog
+      <div className="todoGrid">
+        {backlogTodos.map((todo, index) => (
+          <TodoRow todo={todo} snooze={false} key={index} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export {TodoList, DoneList, BacklogList};
