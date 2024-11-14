@@ -399,9 +399,9 @@ input {
 
 .todoRow {
   display: grid;
-  grid-template-columns: min-content 200px 80px 100px 25px 20px;
+  grid-template-columns: min-content 200px 80px 100px 20px 20px;
   grid-auto-columns: min-content;
-  gap: 1em;
+  gap: 0.5em;
   align-items: center;
   padding: 5px 0;
 }
@@ -435,19 +435,36 @@ input {
   justify-content: center;
 }
 
-.doneContainer {
-  opacity: 0.2;
-  transition: opacity 0.2s ease-in-out;
-}
-
-.doneContainer:hover {
-  opacity: 1;
-}
-
 #snzButton {
-  content: var(--snooze-btn);
+  content: var(--snooze-button);
+  width: 14px;
 }
 
-input {
-  all: unset;
+#archiveButton {
+  content: var(--archive-button);
+  width: 20px;
+}
+
+#unarchiveButton {
+  content: var(--unarchive-button);
+  width: 20px;
+}
+
+.todoButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.todoButton img {
+  opacity: 0.4;
+  width: 12px;
+  -webkit-transition: opacity 0.1s ease-in-out;
+  -moz-transition: opacity 0.1s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.todoButton img:hover {
+  opacity: 1;
 }

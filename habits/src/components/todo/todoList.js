@@ -55,7 +55,7 @@ const testTask3 = {
 }
 const todos = [testTask, testTask2, testTask3, testTask, testTask, testTask, testTask, testTask, testTask, testTask]
 const doneTodos = [testTask, testTask2, testTask3]
-const backlogTodos = [testTask3, testTask]
+const shelfTodos = [testTask3, testTask]
 
 
 // helper functions
@@ -95,15 +95,33 @@ const BaseButtonElement = ({text, type, image}) => {
     )
   } else if (type === "del") {
     return (
-      <div className="deleteButton">
+      <div className="todoButton deleteButton">
         <img id="deleteButton" alt="x"/>
+      </div>
+    )
+  } else if (type === "snz") {
+    return(
+      <div className="todoButton">
+        <img id="snzButton" alt="snz"/>
+      </div>
+    )
+  } else if (type === "arc") {
+    return(
+      <div className="todoButton">
+        <img id="archiveButton" alt="archive"/>
+      </div>
+    )
+  } else if (type === "unarc") {
+    return(
+      <div className="todoButton">
+        <img id="unarchiveButton" alt="archive"/>
       </div>
     )
   }
   return ( <div className="todoBtn">{text}</div>)
 }
 
-const TodoRow = ({todo, snooze, backlog=true}) => {
+const TodoRow = ({todo, snooze, archive}) => {
   const Title = () => <div className="todoCell">{todo.title}</div>
   const Notes = () => <div className="todoCell">{todo.notes}</div>    // task description/notes
   const DueDate = () => <div className="todoCell" style={{"display":"flex", "justifyContent":"center"}}>{getDueDateString(todo.due)}</div>  // task due date
@@ -113,7 +131,8 @@ const TodoRow = ({todo, snooze, backlog=true}) => {
   const CompleteBtn = () => <BaseButtonElement text="fin" type="fin" />
   const SnoozeBtn = () => <BaseButtonElement text="snz" type="snz" />
   const DeleteBtn = () => <BaseButtonElement text="del" type="del" />
-  const BacklogBtn = () => <BaseButtonElement text="blog" type="blog" /> 
+  const ArchiveBtn = () => <BaseButtonElement text="arc" type="arc" /> 
+  const UnarchiveBtn = () => <BaseButtonElement text="unarc" type="unarc" /> 
 
   return(
     <div className='todoRow'>
@@ -122,7 +141,7 @@ const TodoRow = ({todo, snooze, backlog=true}) => {
       <DueDate />
       <Category />
       { snooze === true && <SnoozeBtn /> || <div></div> }
-      { backlog === true && <BacklogBtn /> || <div></div>}
+      { archive === true && <ArchiveBtn /> || archive === false && <UnarchiveBtn /> || <div></div>}
       <DeleteBtn />
     </div>
   )
@@ -169,7 +188,7 @@ const TodoList = () => {
         <TodoInput />
         <div className="todoGrid">
           {todos.map((todo, index) => (
-            <TodoRow todo={todo} snooze={true} key={index} />
+            <TodoRow todo={todo} snooze={true} archive={true} key={index} />
           ))}
         </div>
       </div>
@@ -185,23 +204,10 @@ const TodoList = () => {
 
 const DoneList = () => {
   return (
-    <div id="mainContainer" className="doneContainer">
+    <div id="mainContainer">
       done
       <div className="todoGrid">
         {doneTodos.map((todo, index) => (
-          <TodoRow todo={todo} snooze={false} backlog={false} key={index} />
-        ))}
-      </div>
-    </div>
-  )
-}
-
-const BacklogList = () => {
-  return (
-    <div id="mainContainer" className="backlogContainer">
-      backlog
-      <div className="todoGrid">
-        {backlogTodos.map((todo, index) => (
           <TodoRow todo={todo} snooze={false} key={index} />
         ))}
       </div>
@@ -209,4 +215,17 @@ const BacklogList = () => {
   )
 }
 
-export {TodoList, DoneList, BacklogList};
+const ArchiveList = () => {
+  return (
+    <div id="mainContainer">
+      archive
+      <div className="todoGrid">
+        {shelfTodos.map((todo, index) => (
+          <TodoRow todo={todo} snooze={false} archive={false} key={index} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export {TodoList, DoneList, ArchiveList};
