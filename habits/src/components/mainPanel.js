@@ -1,5 +1,5 @@
 import HabitList from './habitList.js';
-import { TodoList, DoneList, ArchiveList } from './todo/todoList.js'
+import { TodoList, DoneList, ArchiveList, StatsPanel } from './todo/todoList.js'
 import Graph from './graph.js';
 import { Context } from '../Context.js';
 import { useContext, useMemo } from 'react';
@@ -89,7 +89,7 @@ const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, hand
             <Graph />
           </div>
         )}
-        {viewMode === VIEW_MODES.TODO && (<div><TodoList /><ArchiveList /><DoneList /></div>)}
+        {viewMode === VIEW_MODES.TODO && (<div><TodoList /><ArchiveList /><DoneList /><StatsPanel/></div>)}
         {viewMode === VIEW_MODES.OVERVIEW && (<></>)}
       </div>
     </div>

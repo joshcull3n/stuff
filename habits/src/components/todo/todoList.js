@@ -169,9 +169,6 @@ const TodoInput = () => {
 // main components
 const TodoList = () => {
   //const { todos } = useContext(TodoContext);
-  const openCnt = todos.length
-  const doneCnt = doneTodos.length
-
   return (
     <div>
       <div id="mainContainer">
@@ -181,12 +178,6 @@ const TodoList = () => {
             <TodoRow todo={todo} snooze={true} archive={true} key={index} />
           ))}
         </div>
-      </div>
-      <div id="mainContainer" style={{'padding':'0px'}}>
-        <div style={{'display':'flex', "justifyContent":"space-evenly", "fontSize": "0.8em"}}>
-          weekly stats
-        </div>
-        <StatsRow open={openCnt} done={doneCnt} />
       </div>
     </div>
   )
@@ -218,4 +209,17 @@ const ArchiveList = () => {
   )
 }
 
-export {TodoList, DoneList, ArchiveList};
+const StatsPanel = () => {
+  const openCnt = todos.length
+  const doneCnt = doneTodos.length
+  return (
+    <div id="mainContainer" style={{'padding':'0px'}}>
+      <div style={{'display':'flex', "justifyContent":"space-evenly", "fontSize": "0.8em"}}>
+        weekly stats
+      </div>
+      <StatsRow open={openCnt} done={doneCnt} />
+    </div>
+  )
+}
+
+export {TodoList, DoneList, ArchiveList, StatsPanel};
