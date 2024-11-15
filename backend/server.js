@@ -43,19 +43,37 @@ const habitSchema = new mongoose.Schema({
   status : String,
   created_date : { type: Number, required: true },
   updated_date : { type: Number, required: true }
-})
+});
 
 const Habit = mongoose.model('Habit', habitSchema);
 Habit.init().then(() => {
   console.log('Habit indexes created');
 });
 
+const todoSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  status: { type: String, enum: ["incomplete", "complete", "archived", "snoozed"] },
+  description: String,
+  category: String,
+  due_date: Number,
+  completed_date: Number,
+  username: { type: String, required: true },
+  created_date: { type: Number, required: true },
+  updated_date: { type: Number, required: true },
+  order: Number
+});
+
+const Todo = mongoose.model('Todo', todoSchema);
+Todo.init().then(() => {
+  console.log('Todo indexes created');
+})
+
 // ALLOW APP TO PROCESS JSON IN REQUEST BODY
 app.use(express.json());
 
 // ROUTE ENDPOINTS
-// base 'u up?' check
-app.get(`/habits/`, async (req, res) => {
+// base 'u up?' checks
+app.get(`/habits/`, async (res) => {
   try {
     res.status(200).json('I\'m up wyd');
   } catch (error) {
@@ -63,8 +81,45 @@ app.get(`/habits/`, async (req, res) => {
   }
 })
 
+// ACCOUNT URLS
+async function verifyUser(username, password) {
+  const user = await User.findOne({username});
+  try {
+    if (user && await bcrypt.compare(password, user.password_hash))
+      return true
+    else
+      return false
+  } catch (error) {
+    console.error('Error verifying user: ', error);
+    return false;
+  }
+}
+
+// verify password
+app.post('/login', async (req, res) => {
+  try {
+    const username = req.body.username;
+    const password = req.body.password;
+    const user = await User.findOne({ username: username });
+    if (!user)
+      return res.status(404).json({ message : 'User not found' })
+    const verified = await verifyUser(username, password);
+    if (verified) {
+      console.log('user login success:', username);
+      return res.status(200).json({ message: 'login successful'})
+    }
+    else {
+      console.log('user login failed:', username);
+      return res.status(401).json({message: 'incorrect password'})
+    }
+  }
+  catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
 // create new user
-app.post('/habits/users/', async (req, res) => {
+app.post('/users/', async (req, res) => {
   try {
     const username = req.body.username;
     const password = req.body.password;
@@ -86,7 +141,7 @@ app.post('/habits/users/', async (req, res) => {
 });
 
 // get user info
-app.get('/habits/users/', async (req, res) => {
+app.get('/users/', async (req, res) => {
   try {
     const username = req.query.username;
     const user = await User.findOne({ username: username });
@@ -106,30 +161,7 @@ app.get('/habits/users/', async (req, res) => {
   }
 });
 
-// verify password
-app.post('/habits/login', async (req, res) => {
-  try {
-    const username = req.body.username;
-    const password = req.body.password;
-    const user = await User.findOne({ username: username });
-    if (!user)
-      return res.status(404).json({ message : 'User not found' })
-
-    const verified = await verifyUser(username, password)
-    if (verified) {
-      console.log('user login success:', username);
-      return res.status(200).json({ message: 'login successful'})
-    }
-    else {
-      console.log('user login failed:', username);
-      return res.status(401).json({message: 'incorrect password'})
-    }
-  }
-  catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-});
-
+// HABITS URLS
 // get all habits for user
 app.get('/habits/habits/', async (req, res) => {
   try {
@@ -191,7 +223,8 @@ app.patch('/habits/habits/', async (req, res) => {
     };
     
     const updatedHabit = await Habit.findByIdAndUpdate(habitId, { 
-      $set: { doneDates: newDates , updated_date: updated_date }
+      $set: { doneDates: newDates , updated_date: updated_date },
+      $inc: { __v: 1 }
     }, { new: true });
     if (!updatedHabit)
       return res.status(404).json({ message: 'Habit not found' });
@@ -284,15 +317,117 @@ app.delete('/habits/habits/', async (req, res) => {
   }
 });
 
-async function verifyUser(username, password) {
-  const user = await User.findOne({username});
-  try {
-    if (user && await bcrypt.compare(password, user.password_hash))
-      return true
-    else
-      return false
-  } catch (error) {
-    console.error('Error verifying user:', error);
-    return false;
+app.get(`/todos/`, async (res) => {
+  
+})
+
+
+// TODOS URLS
+// get all todos for user
+app.get('/todos/', async (req, res) => {
+  if (req.query.username === undefined) {
+    try {
+      res.status(200).json('I\'m up wyd');
+    } catch (error) {
+      res.status(500);
+    }
   }
-}
+  try {
+    const username = req.query.username;
+    const user = await User.findOne({ username: username });
+    if (!user)
+      return res.status(404).json({ message : 'User not found' })
+    const user_todos = await Todo.find({ username: username });
+    res.json(user_todos);
+  }
+  catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// create new todo for user
+app.post('/todos/', async (req, res) => {
+  try {
+    const date = new Date().getTime();
+    const username = req.body.username;
+    const newTitle = req.body.title;
+    const newDescription = req.body.description || null;
+    const newCategory = req.body.category || null;
+    const newDueDate = req.body.dueDate || null;
+
+    // check user exists
+    const user = await User.findOne({ username: username });
+    if (!user)
+      return res.status(404).json({ message: 'User not found'});
+
+    const newTodo = new Todo({ 
+      username: username, 
+      title: newTitle,
+      status: "incomplete",
+      description: newDescription,
+      category: newCategory,
+      due_date: newDueDate,
+      completed_date: null,
+      created_date: date, 
+      updated_date: date,
+    });
+    await newTodo.save();
+
+    res.status(201).json(newTodo);
+  }
+  catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// update todo
+app.patch('/todos/', async (req, res) => {
+  try {
+    const date = new Date().getTime();
+    const todoId = req.body.id;
+    const newTitle = req.body.title;
+    const newStatus = req.body.status;
+    const newDescription = req.body.description;
+    const newCategory = req.body.category;
+    const newDueDate = req.body.dueDate;
+    const newOrder = req.body.order;
+
+    const updateData = {
+      title: newTitle,
+      status: newStatus,
+      description: newDescription,
+      category: newCategory,
+      due_date: newDueDate,
+      order: newOrder,
+      updated_date: date
+    }
+    const cleanUpdateData = Object.fromEntries(
+      Object.entries(updateData).filter(([_, value]) => value !== undefined)
+    );
+    
+    const updatedTodo = await Todo.findByIdAndUpdate(todoId, { $set: cleanUpdateData, $inc: { __v: 1 } }, { new: true });
+    if (!updatedTodo)
+      return res.status(404).json({ message: 'Todo not found' });
+
+    res.json(updatedTodo);
+  } 
+  catch (error) {
+    res.status(500).json('Error updating todo');
+  }
+});
+
+// delete todo
+app.delete('/todos/', async (req, res) => {
+  try {
+    const todoId = req.query.id;
+    const result = await Todo.findByIdAndDelete(todoId);
+
+    if (result)
+      res.json(`Todo ${todoId} was deleted`);
+    else
+      res.status(404).json(`Todo with ID ${todoId} was not found`);
+  }
+  catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
