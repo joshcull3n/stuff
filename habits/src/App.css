@@ -397,6 +397,15 @@ input {
   align-items: center;
 }
 
+.doneContainer {
+  opacity: 0.4;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.doneContainer:hover {
+  opacity: 1;
+}
+
 .todoRow {
   display: grid;
   grid-template-columns: min-content 200px 80px 100px 20px 20px;

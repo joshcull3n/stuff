@@ -34,7 +34,7 @@ const testTask2 = {
   'title'    : 'SLO',
   'notes'    : 'regular trash every week, compost every other week',
   'due'      : new Date('2039-11-18'),
-  'category' : 'ppppppppppppppppppppppppppppppppppppppppppppppppp',
+  'category' : 'pppp',
   'user'     : 'josh_username',
   'created'  : 1731389999966,
   'updated'  : 1731389119881,
@@ -55,7 +55,7 @@ const testTask3 = {
 }
 const todos = [testTask, testTask2, testTask3, testTask, testTask, testTask, testTask, testTask, testTask, testTask]
 const doneTodos = [testTask, testTask2, testTask3]
-const shelfTodos = [testTask3, testTask]
+const archivedTodos = [testTask3, testTask]
 
 
 // helper functions
@@ -86,39 +86,29 @@ function getAgeString(createdMillis) {
 }
 
 // sub-components
-const BaseButtonElement = ({text, type, image}) => {
-  if (type === "fin") {
+const BaseButtonElement = ({text, type}) => {
+  const buttonTypes = {
+    fin:   { className: "checkboxContainer", content: <input type="checkbox" /> },
+    del:   { className: "todoButton deleteButton", imgId: "deleteButton", alt: "x" },
+    snz:   { className: "todoButton", imgId: "snzButton", alt: "snz" },
+    arc:   { className: "todoButton", imgId: "archiveButton", alt: "archive" },
+    unarc: { className: "todoButton", imgId: "unarchiveButton", alt: "archive" },
+  };
+  const buttonConfig = buttonTypes[type];
+
+  if (buttonConfig) {
     return (
-      <div className="checkboxContainer">
-        <input type="checkbox" />
-      </div>
-    )
-  } else if (type === "del") {
-    return (
-      <div className="todoButton deleteButton">
-        <img id="deleteButton" alt="x"/>
-      </div>
-    )
-  } else if (type === "snz") {
-    return(
-      <div className="todoButton">
-        <img id="snzButton" alt="snz"/>
-      </div>
-    )
-  } else if (type === "arc") {
-    return(
-      <div className="todoButton">
-        <img id="archiveButton" alt="archive"/>
-      </div>
-    )
-  } else if (type === "unarc") {
-    return(
-      <div className="todoButton">
-        <img id="unarchiveButton" alt="archive"/>
+      <div className={buttonConfig.className}>
+        { buttonConfig.content || (<img id={buttonConfig.imgId} alt={buttonConfig.alt} />) }
       </div>
     )
   }
+
   return ( <div className="todoBtn">{text}</div>)
+}
+
+const Todo = (todo) => {
+
 }
 
 const TodoRow = ({todo, snooze, archive}) => {
@@ -161,17 +151,17 @@ const StatsRow = ({open, done}) => {
 const TodoInput = () => {
   return (
     <div style={{"border":"black dotted 1px", "margin":"0 0 10px 0", "padding":"2px 2px"}}>
-    <div className="todoInput">
-        <input style={{"width":"100%", "textAlign":"center", "padding":"0 10px", "border":"black dotted 1px"}} placeholder="add a todo..."/>
-      <div style={{"display":"flex","justifyContent":"center"}}>
-        <select>
-          <option value="category">category</option>
-          <option value="bloop">chores</option>
-          <option value="custom">custom</option>
-        </select>
-        <input type="date"/>
+      <div className="todoInput">
+          <input style={{"width":"100%", "textAlign":"center", "padding":"0 10px", "border":"black dotted 1px"}} placeholder="add a todo..."/>
+        <div style={{"display":"flex","justifyContent":"center"}}>
+          <select>
+            <option value="category">category</option>
+            <option value="chores">chores</option>
+            <option value="other">other</option>
+          </select>
+          <input type="date"/>
+        </div>
       </div>
-    </div>
     </div>
   )
 }
@@ -204,7 +194,7 @@ const TodoList = () => {
 
 const DoneList = () => {
   return (
-    <div id="mainContainer">
+    <div id="mainContainer" className="doneContainer">
       done
       <div className="todoGrid">
         {doneTodos.map((todo, index) => (
@@ -220,7 +210,7 @@ const ArchiveList = () => {
     <div id="mainContainer">
       archive
       <div className="todoGrid">
-        {shelfTodos.map((todo, index) => (
+        {archivedTodos.map((todo, index) => (
           <TodoRow todo={todo} snooze={false} archive={false} key={index} />
         ))}
       </div>
