@@ -43,6 +43,7 @@ input {
   background: var(--textbox-bg);
   caret-color: var(--main-font-color-high-alpha);
   border-width: 0.5px;
+  font-size: 16px;
 }
 
 input::placeholder {
@@ -103,10 +104,6 @@ input[type="checkbox"]:not(:checked):hover {
 
 input[type="checkbox"]:checked:hover {
   opacity: 0.6;
-}
-
-input {
-  font-size: 16px;
 }
 
 .centered {
@@ -170,6 +167,14 @@ input {
   max-width: min-content;
   min-width: min-content;
   margin: 0px auto 20px auto;
+}
+
+#habitListContainer {
+  margin: 0 auto;
+  max-width: min-content;
+  min-width: min-content;
+  background-color: var(--graph-bg-color);
+  border-radius: 3px;
 }
 
 .habitGrid {
