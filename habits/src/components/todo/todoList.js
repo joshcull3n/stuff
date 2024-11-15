@@ -150,16 +150,16 @@ const StatsRow = ({open, done}) => {
 
 const TodoInput = () => {
   return (
-    <div style={{"border":"black dotted 1px", "margin":"0 0 10px 0", "padding":"2px 2px"}}>
+    <div style={{"margin":"0 0 10px 0", "padding":"2px 2px"}}>
       <div className="todoInput">
-          <input style={{"width":"100%", "textAlign":"center", "padding":"0 10px", "border":"black dotted 1px"}} placeholder="add a todo..."/>
+          <input style={{"width":"100%", "padding":"0 10px", "margin": "0px 5px"}} placeholder="add a todo..."/>
         <div style={{"display":"flex","justifyContent":"center"}}>
-          <select>
+          <select style={{"margin": "0px 2px"}}>
             <option value="category">category</option>
             <option value="chores">chores</option>
             <option value="other">other</option>
           </select>
-          <input type="date"/>
+          <input style={{"margin": "0px 2px", "width": "5em"}} type="date"/>
         </div>
       </div>
     </div>
