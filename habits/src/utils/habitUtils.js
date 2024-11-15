@@ -38,7 +38,7 @@ export async function checkUserExists(username) {
 }
 
 export async function fetchUserInfo(username) {
-  return fetch(`${API_URL_BASE}/users?username=${username}`)
+  return fetch(`${API_URL_BASE}/habits/users?username=${username}`)
     .then(resp => {
       if (resp.ok)
         return resp.json();
@@ -62,7 +62,7 @@ export async function createUser(username, password) {
     body: JSON.stringify(bodyJson)
   }
 
-  return fetch(`${API_URL_BASE}/users`, options)
+  return fetch(`${API_URL_BASE}/habits/users`, options)
     .then(resp => {
       if (!resp.ok)
         throw new Error('could not create user');

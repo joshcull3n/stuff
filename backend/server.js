@@ -119,7 +119,7 @@ app.post('/login', async (req, res) => {
 });
 
 // create new user
-app.post('/users/', async (req, res) => {
+app.post('/habits/users/', async (req, res) => {
   try {
     const username = req.body.username;
     const password = req.body.password;
@@ -141,7 +141,7 @@ app.post('/users/', async (req, res) => {
 });
 
 // get user info
-app.get('/users/', async (req, res) => {
+app.get('/habits/users/', async (req, res) => {
   try {
     const username = req.query.username;
     const user = await User.findOne({ username: username });
