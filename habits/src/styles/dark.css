@@ -16,4 +16,7 @@
   --light-mode-switch-pic: url("../images/sun.svg") 2px 3px no-repeat;
   --home-img-pic: url("../images/icon.gif");
   --sidebar-shadow: #ffffff15;
+  --snooze-button: url("");
+  --archive-button: url("");
+  --unarchive-button: url("");
 }
