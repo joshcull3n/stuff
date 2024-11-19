@@ -21,20 +21,6 @@ const HabitList = ({ dateLabels, mobile }) => {
     return dates;
   }
 
-  function renderDateLabels() {
-    const dateLabelsElem = dateLabels.map((label, index) => (
-          <span className="monospaceText dateLabel" id={label} key={index}>
-            {label}
-          </span> 
-        ));
-    
-    return (
-      <div className="dateLabelsContainer">
-        {dateLabelsElem}
-      </div>
-    )
-  }
-
   // paginate dates 1 day into the past
   function datePageLeftDay() {
     var tempStart = new Date(startDate);
@@ -147,13 +133,13 @@ const HabitList = ({ dateLabels, mobile }) => {
       return (
         <div className="habitGrid">
           <div className="dateLabelsRow">
-            <DatePageButtonLeft mobile={false} />
+            <DatePageButtonLeft mobile={true} />
             {dateLabels.map((label, index) => (
-              <span className="dateLabel" id={label} key={index}>
+              <span className="mobileDateLabel" id={label} key={index}>
                 {label}
               </span>
             ))}
-            <DatePageButtonRight mobile={false} />
+            <DatePageButtonRight mobile={true} />
           </div>
           {habits.map((habit, index) => (
             <div className="habitRow" key={index}>
@@ -168,20 +154,6 @@ const HabitList = ({ dateLabels, mobile }) => {
             </div>
           ))}
         </div>
-        // <div>
-        //   <table>
-        //     <thead><tr><DatePageButtonLeft mobile={true} /><td style={{padding: '0px 2px 0px 3px'}}>{ renderDateLabels() }</td><DatePageButtonRight mobile={true} /></tr></thead>
-        //     <tbody>
-        //       {habits.map((habit, index) => <tr>
-        //           <td style={{maxWidth:'155px', minWidth:'120px', paddingLeft:'2px'}}><Habit habit={habit}/></td>
-        //           <td style={{minWidth:'100px', paddingLeft:'1.3px'}}>
-        //             <HabitDates habit={habit} dateRangeDates={genDates(startDate, endDate)}/>
-        //           </td>
-        //           <DeleteButton className='deleteButton' id={habit.id} habit={habit}/>
-        //         </tr>)}
-        //     </tbody>
-        //   </table>
-        // </div>
       )
     }
     else {

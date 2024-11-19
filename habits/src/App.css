@@ -193,7 +193,13 @@ input[type="checkbox"]:checked:hover {
   text-align: center;
   margin: 0 3px;
   font: 12px monospace;
-  font-size: x-small;
+  font-size: small;
+}
+
+.mobileDateLabel {
+  text-align: center;
+  font: monospace;
+  font-size: medium;
 }
 
 .habitItem {
