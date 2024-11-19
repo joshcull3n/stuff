@@ -89,7 +89,7 @@ const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, hand
             <Graph />
           </div>
         )}
-        {viewMode === VIEW_MODES.TODO && (<div><TodoList /><ArchiveList /><DoneList /><StatsPanel/></div>)}
+        {viewMode === VIEW_MODES.TODO && (<div><TodoList /><ArchiveList /><DoneList /></div>)}
         {viewMode === VIEW_MODES.OVERVIEW && (<></>)}
       </div>
     </div>
