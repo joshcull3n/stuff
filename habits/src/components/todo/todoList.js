@@ -2,61 +2,21 @@ import { useContext } from 'react'
 import { TodoContext } from './todoContext.js'
 
 /* DB SCHEMA
- {
-   todo._id      : ObjectId('...'),
-   todo.title    : '...',
-   todo.notes    : '... ... ...',
-   todo.due      : Date,
-   todo.category : '...',
-   todo.user    : '...',
-   todo.created  : 1731386491566,
-   todo.updated  : 1731386491566,
-   todo.completed : 1731386491666,
-   todo.__v      : 0
- }
+const testTask4 = {
+  '_id'            : ObjectId('...'),
+  'title'          : '...', // required
+  'status'         : {'incomplete' || 'complete' || 'archived' || 'snoozed'}, // required
+  'description'    : '...',
+  'category'       : '...',
+  'due'            : 1739399691566, // milliseconds
+  'completed_date' : 1731386491666, // milliseconds
+  'username'       : '...', // required
+  'created_date'   : 1731386491566, // milliseconds, required
+  'updated_date'   : 1731386491566, // milliseconds, required
+  'order'          : 12,
+  '__v'            : 1 // version
+}
  */
-
-// TEST DATA
-const testTask = {
-  '_id'      : 'fdsfdsfdsfas21348124s',
-  'title'    : 'take out trash fdshjflhdsajklfhdsjkalfhjdkalshfjkldsahjkfdhjkal',
-  'notes'    : 'regular trash every week, compost every other week',
-  'due'      : new Date('2024-11-13'),
-  'category' : 'chores',
-  'user'     : 'josh_username',
-  'created'  : 1731386491566,
-  'updated'  : 1731387119881,
-  'completed' : 1731386491766,
-  '__v'      : 1
-}
-const testTask2 = {
-  '_id'      : 'fdsfdsfdsfas21348124s',
-  'title'    : 'SLO',
-  'notes'    : 'regular trash every week, compost every other week',
-  'due'      : new Date('2039-11-18'),
-  'category' : 'pppp',
-  'user'     : 'josh_username',
-  'created'  : 1731389999966,
-  'updated'  : 1731389119881,
-  'completed' : null,
-  '__v'      : 1
-}
-const testTask3 = {
-  '_id'      : 'fdsfdsfdsfas21348124s',
-  'title'    : 'SLO',
-  'notes'    : 'regular trash every week, compost every other week',
-  'due'      : null,
-  'category' : 'work',
-  'user'     : 'josh_username',
-  'created'  : 1731389999966,
-  'updated'  : 1731389119881,
-  'completed' : null,
-  '__v'      : 1
-}
-const todos = [testTask, testTask2, testTask3, testTask, testTask, testTask, testTask, testTask, testTask, testTask]
-const doneTodos = [testTask, testTask2, testTask3]
-const archivedTodos = [testTask3, testTask]
-
 
 // helper functions
 function getDueDateString(dueMillis=null) {
@@ -107,10 +67,6 @@ const BaseButtonElement = ({text, type}) => {
   return ( <div className="todoBtn">{text}</div>)
 }
 
-const Todo = (todo) => {
-
-}
-
 const TodoRow = ({todo, snooze, archive}) => {
   const Title = () => <div className="todoCell">{todo.title}</div>
   const Notes = () => <div className="todoCell">{todo.notes}</div>    // task description/notes
@@ -137,22 +93,67 @@ const TodoRow = ({todo, snooze, archive}) => {
   )
 }
 
-const StatsRow = ({open, done}) => {
-  const total = open + done;
+const StatsRow = ({open, snoozed, done, archived}) => {
+  const total = open + snoozed + done + archived;
   return (
-    <div className="statsRow">
-      <div className="statsCell">{open} open</div>
-      <div className="statsCell">{done} complete</div>
-      <div className="statsCell">{total} total</div>
+    <div>
+      <div className="statsRow">
+        <div className="statsCell">{open} opened</div>
+        <div className="statsCell">{snoozed} snoozed</div>
+        <div className="statsCell">{archived} archived</div>
+      </div>
+      <div className="statsRow">
+        <div className="statsCell">{done} completed</div>
+        <div className="statsCell">{total} total</div>
+      </div>
     </div>
   )
 }
 
 const TodoInput = () => {
+  const { todos, setTodos,
+    newTodoText, setNewTodoText, 
+    newCategory, setNewCategory,
+    newDueDate, setNewDueDate 
+  } = useContext(TodoContext);
+
+  const { loggedInUser } = useContext(TodoContext);
+
+  const handleTodoInputChange = (e) => {
+    console.log(e.key);
+    setNewTodoText(e.target.value);
+  }
+
+  const handleTodoInputEnter = (e) => {
+    if (e.key === 'Enter' && e.target.value.trim()) {
+      const newTodo = {
+        id: todos.length + 1,
+        title: e.target.value.trim(),
+        status: 'incomplete',
+        description: null,
+        due: newDueDate || null,
+        category: newCategory || null,
+        completed_date: null,
+        username: loggedInUser,
+        created_date: Date.now(),
+        updated_date: Date.now(),
+        order: todos.length + 1,
+      };
+      const tempArray = [...todos];
+      tempArray.push(newTodo);
+      setTodos(tempArray);
+      setNewTodoText('');
+    }
+  }
+
   return (
     <div style={{"margin":"0 0 10px 0", "padding":"2px 2px"}}>
       <div className="todoInput">
-          <input style={{"width":"100%", "padding":"0 10px", "margin": "0px 5px"}} placeholder="add a todo..."/>
+          <input style={{"width":"100%", "padding":"0 10px", "margin": "0px 5px"}} 
+            placeholder="add a todo..."
+            value={newTodoText}
+            onKeyDown={handleTodoInputEnter}
+            onChange={handleTodoInputChange} />
         <div style={{"display":"flex","justifyContent":"center"}}>
           <select style={{"margin": "0px 2px"}}>
             <option value="category">category</option>
@@ -168,14 +169,25 @@ const TodoInput = () => {
 
 // main components
 const TodoList = () => {
-  //const { todos } = useContext(TodoContext);
+  const { todos } = useContext(TodoContext);
+  const openTodos = todos.filter((todo) => todo.status === 'incomplete');
+  const snoozedTodos = todos.filter((todo) => todo.status === 'snoozed');
+  // TODO: check if items should be un-snoozed
+
   return (
     <div>
       <div id="mainContainer">
         <TodoInput />
         <div className="todoGrid">
-          {todos.map((todo, index) => (
+          {openTodos.map((todo, index) => (
             <TodoRow todo={todo} snooze={true} archive={true} key={index} />
+          ))}
+        </div>
+        <div className="todoGrid" style={{'paddingTop':'20px'}}>
+          {snoozedTodos.map((todo, index) => (
+            <div className="fadedContainer">
+              <TodoRow todo={todo} snooze={true} archive={true} key={index} />
+            </div>
           ))}
         </div>
       </div>
@@ -184,8 +196,11 @@ const TodoList = () => {
 }
 
 const DoneList = () => {
+  const { todos } = useContext(TodoContext);
+  const doneTodos = todos.filter((todo) => todo.status === 'complete');
+
   return (
-    <div id="mainContainer" className="doneContainer">
+    <div id="mainContainer" className="fadedContainer">
       done
       <div className="todoGrid">
         {doneTodos.map((todo, index) => (
@@ -197,8 +212,10 @@ const DoneList = () => {
 }
 
 const ArchiveList = () => {
+  const { todos } = useContext(TodoContext);
+  const archivedTodos = todos.filter((todo) => todo.status === 'archived');
   return (
-    <div id="mainContainer">
+    <div id="mainContainer" className="fadedContainer">
       archive
       <div className="todoGrid">
         {archivedTodos.map((todo, index) => (
@@ -209,15 +226,23 @@ const ArchiveList = () => {
   )
 }
 
-const StatsPanel = () => {
-  const openCnt = todos.length
-  const doneCnt = doneTodos.length
+const StatsPanel = (dateRange) => {
+  const { todos } = useContext(TodoContext);
+  const statCounts = todos.reduce((acc, todos) => {
+    // TODO: filter by given date range
+    acc[todos.status] = (acc[todos.status] || 0) + 1;
+    return acc;
+  }, {});
+  
   return (
     <div id="mainContainer" style={{'padding':'0px'}}>
       <div style={{'display':'flex', "justifyContent":"space-evenly", "fontSize": "0.8em"}}>
-        weekly stats
+        this weeks stats
       </div>
-      <StatsRow open={openCnt} done={doneCnt} />
+      <StatsRow open={statCounts.incomplete}
+        snoozed={statCounts.snoozed}
+        done={statCounts.complete} 
+        archived={statCounts.archived} />
     </div>
   )
 }

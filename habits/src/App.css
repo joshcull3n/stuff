@@ -402,12 +402,12 @@ input[type="checkbox"]:checked:hover {
   align-items: center;
 }
 
-.doneContainer {
+.fadedContainer {
   opacity: 0.4;
   transition: opacity 0.2s ease-in-out;
 }
 
-.doneContainer:hover {
+.fadedContainer:hover {
   opacity: 1;
 }
 
