@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { detectDevice } from '../../App.js';
 import { Context } from '../../Context.js'
+import { fetchRemoteTodosForUser } from './todoRequests.js';
 
 export const TodoContext = React.createContext();
 
@@ -177,22 +178,38 @@ const testData = [
 ];
 
 export const TodoProvider = ({ children }) => {  
-  // todo
-  const [todos, setTodos] = useState(testData);
+  const { loggedInUser } = useContext(Context); // Get loggedInUser from Context
+
+  const [todos, setTodos] = useState([]);
   const [newTodoText, setNewTodoText] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [newDueDate, setNewDueDate] = useState(Date.now())
 
-  // XXX: delete me
-  useEffect(() => {
-    console.log('State change detected');
-    console.log({ todos, newTodoText, newCategory, newDueDate });
-  }, [todos, newTodoText, newCategory, newDueDate]);
+  // XXX: debug purposes delete me
+  // useEffect(() => {
+  //   console.log('State change detected');
+  //   console.log({ todos, newTodoText, newCategory, newDueDate });
+  // }, [todos, newTodoText, newCategory, newDueDate]);
 
+  function fetchAndSetTodosForCurrentUser() {
+    if (loggedInUser) {
+      fetchRemoteTodosForUser(loggedInUser).then(resp => {
+        if (resp)
+          setTodos(resp);
+      });
+    }
+  }
+
+  useEffect(() => {
+    fetchAndSetTodosForCurrentUser();
+  }, [loggedInUser]);
   return (
     <TodoContext.Provider value={{
       todos, setTodos,
-      newTodoText, setNewTodoText
+      newTodoText, setNewTodoText,
+      newCategory, setNewCategory,
+      newDueDate, setNewDueDate,
+      loggedInUser
     }}>
       { children }
     </TodoContext.Provider>

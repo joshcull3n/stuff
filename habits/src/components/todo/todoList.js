@@ -1,5 +1,6 @@
 import { useContext } from 'react'
 import { TodoContext } from './todoContext.js'
+import { postNewTodo } from './todoRequests.js';
 
 /* DB SCHEMA
 const testTask4 = {
@@ -114,13 +115,11 @@ const TodoInput = () => {
   const { todos, setTodos,
     newTodoText, setNewTodoText, 
     newCategory, setNewCategory,
-    newDueDate, setNewDueDate 
+    newDueDate, setNewDueDate,
+    loggedInUser // Get loggedInUser from TodoContext
   } = useContext(TodoContext);
 
-  const { loggedInUser } = useContext(TodoContext);
-
   const handleTodoInputChange = (e) => {
-    console.log(e.key);
     setNewTodoText(e.target.value);
   }
 
@@ -140,6 +139,7 @@ const TodoInput = () => {
         order: todos.length + 1,
       };
       const tempArray = [...todos];
+      postNewTodo(loggedInUser, newTodo);
       tempArray.push(newTodo);
       setTodos(tempArray);
       setNewTodoText('');
