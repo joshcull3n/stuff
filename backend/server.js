@@ -317,11 +317,6 @@ app.delete('/habits/habits/', async (req, res) => {
   }
 });
 
-app.get(`/todos/`, async (res) => {
-  
-})
-
-
 // TODOS URLS
 // get all todos for user
 app.get('/todos/', async (req, res) => {
@@ -348,32 +343,29 @@ app.get('/todos/', async (req, res) => {
 // create new todo for user
 app.post('/todos/', async (req, res) => {
   try {
-    const date = new Date().getTime();
     const username = req.body.username;
-    const newTitle = req.body.title;
-    const newDescription = req.body.description || null;
-    const newCategory = req.body.category || null;
-    const newDueDate = req.body.dueDate || null;
+    const todoBody = req.body.todo;
 
     // check user exists
     const user = await User.findOne({ username: username });
     if (!user)
       return res.status(404).json({ message: 'User not found'});
 
-    const newTodo = new Todo({ 
+    const todo = new Todo({ 
       username: username, 
-      title: newTitle,
-      status: "incomplete",
-      description: newDescription,
-      category: newCategory,
-      due_date: newDueDate,
-      completed_date: null,
-      created_date: date, 
-      updated_date: date,
+      title: todoBody.title,
+      status: todoBody.status,
+      description: todoBody.description,
+      category: todoBody.category,
+      due_date: todoBody.due,
+      completed_date: todoBody.completed_date,
+      created_date: todoBody.created_date, 
+      updated_date: todoBody.updated_date,
+      order: todoBody.order,
     });
-    await newTodo.save();
+    await todo.save();
 
-    res.status(201).json(newTodo);
+    res.status(201).json(todo);
   }
   catch (error) {
     res.status(500).json({ message: error.message });
