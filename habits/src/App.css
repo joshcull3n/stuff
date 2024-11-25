@@ -127,7 +127,7 @@ input[type="checkbox"]:checked:hover {
 }
 
 .deleteButton {
-  grid-column: -1;
+  grid-column: 7;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -419,11 +419,16 @@ input[type="checkbox"]:checked:hover {
 
 .todoRow {
   display: grid;
-  grid-template-columns: min-content 200px 80px 100px 20px 20px;
+  grid-template-columns: 20px 200px 80px 100px 20px 30px;
   grid-auto-columns: min-content;
   gap: 0.5em;
   align-items: center;
   padding: 5px 0;
+}
+
+.todoRow > div {
+  width: 100%;
+  height: 20px;
 }
 
 .todoCell {

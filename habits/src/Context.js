@@ -24,7 +24,7 @@ export const ContextProvider = ({ children }) => {
   const VIEW_MODES = {
     OVERVIEW: 'overview',
     TODO: 'todo',
-    HABITS: 'habits',
+    HABITS: 'tracker',
   };
 
   // current view

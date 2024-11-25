@@ -376,7 +376,7 @@ app.post('/todos/', async (req, res) => {
 app.patch('/todos/', async (req, res) => {
   try {
     const date = new Date().getTime();
-    const todoId = req.body.id;
+    const todoId = req.body._id;
     const newTitle = req.body.title;
     const newStatus = req.body.status;
     const newDescription = req.body.description;
@@ -411,7 +411,7 @@ app.patch('/todos/', async (req, res) => {
 // delete todo
 app.delete('/todos/', async (req, res) => {
   try {
-    const todoId = req.query.id;
+    const todoId = req.body.id;
     const result = await Todo.findByIdAndDelete(todoId);
 
     if (result)
