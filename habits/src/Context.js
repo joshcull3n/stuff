@@ -28,7 +28,7 @@ export const ContextProvider = ({ children }) => {
   };
 
   // current view
-  const [viewMode, setViewMode] = useState(VIEW_MODES.HABITS)
+  const [viewMode, setViewMode] = useState(VIEW_MODES.TODO)
 
   // appearance
   const [lightMode, setLightMode] = useState(Boolean(lightModeStorage));

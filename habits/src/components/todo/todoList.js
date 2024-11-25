@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { TodoContext } from './todoContext.js'
 import { postNewTodo, deleteTodoReq, updateTodo } from './todoRequests.js';
 
@@ -49,11 +49,34 @@ function getAgeString(createdMillis) {
 // sub-components
 const BaseButtonElement = ({text, type, onclick}) => {
   const buttonTypes = {
-    fin:   { className: "checkboxContainer", content: <input type="checkbox" /> },
-    del:   { className: "todoButton deleteButton", imgId: "deleteButton", alt: "x" },
-    snz:   { className: "todoButton", imgId: "snzButton", alt: "snz" },
-    arc:   { className: "todoButton", imgId: "archiveButton", alt: "archive" },
-    unarc: { className: "todoButton", imgId: "unarchiveButton", alt: "archive" },
+    fin: { 
+      className: "checkboxContainer", 
+      content: <input type="checkbox" /> 
+    }, 
+    finDone: { 
+      className: "checkboxContainer", 
+      content: <input type="checkbox" checked="true"/>
+    },
+    del: { 
+      className: "todoButton deleteButton", 
+      imgId: "deleteButton", 
+      alt: "x" 
+    },
+    snz: { 
+      className: "todoButton", 
+      imgId: "snzButton", 
+      alt: "snz" 
+    },
+    arc: { 
+      className: "todoButton", 
+      imgId: "archiveButton", 
+      alt: "archive" 
+    },
+    unarc: { 
+      className: "todoButton", 
+      imgId: "unarchiveButton", 
+      alt: "archive" 
+    }
   };
   const buttonConfig = buttonTypes[type];
 
@@ -68,16 +91,15 @@ const BaseButtonElement = ({text, type, onclick}) => {
   return ( <div className="todoBtn">{text}</div>)
 }
 
-const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn}) => {
-  const Title = () => <div className="todoCell">{todo.title}</div>
-  const Notes = () => <div className="todoCell">{todo.notes}</div>    // task description/notes
-  const DueDate = () => <div className="todoCell" style={{"display":"flex", "justifyContent":"center"}}>{getDueDateString(todo.due)}</div>  // task due date
-  const Category = () => <div className="todoCell">{todo.category}</div> // task category
-  const Age = () => <div className="todoCell">{getAgeString(todo.created)}</div> // task age
+const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
+  const Title = () => <div className={done && "todoCell doneTitle" || "todoCell"}>{todo.title}</div>
+  const DueDate = () => <div className="todoCell todoLabel">{getDueDateString(todo.due)}</div>
+  const Category = () => <div className="todoCell todoLabel">{todo.category}</div>
+  //const Notes = () => <div className="todoCell">{todo.notes}</div>
+  //const Age = () => <div className="todoCell">{getAgeString(todo.created)}</div>
 
-  const CompleteBtn = () => <BaseButtonElement text="fin" type="fin" />
-  const SnoozeBtn = () => <BaseButtonElement text="snz" type="snz" onclick={() => changeStatus(todo, 'snoozed')}/>
-  const UnsnoozeBtn = () => <BaseButtonElement text="snz" type="snz" onclick={() => changeStatus(todo, 'incomplete')}/>
+  const CompleteBtn = () => <BaseButtonElement text="fin" type={done && "finDone" || "fin"} onclick={() => changeStatus(todo, 'complete', 'incomplete')}/>
+  const SnoozeBtn = () => <BaseButtonElement text="snz" type="snz" onclick={() => changeStatus(todo, 'snoozed', 'incomplete')}/>
   const ArchiveBtn = () => <BaseButtonElement text="arc" type="arc" onclick={() => changeStatus(todo, 'archived')}/> 
   const UnarchiveBtn = () => <BaseButtonElement text="unarc" type="unarc" onclick={() => changeStatus(todo, 'incomplete')}/> 
   const DeleteBtn = () => <BaseButtonElement text="del" type="del" onclick={() => deleteTodo(todo)}/>
@@ -89,8 +111,12 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn}) => {
     deleteTodoReq(todoToDelete._id);
   }
 
-  function changeStatus(todoToUpdate, status) {
-    setTodos(todos.map(todo => {if (todo._id == todoToUpdate._id) {todo.status = status}; return todo}));
+  // if task status is already status, use altStatus
+  function changeStatus(todoToUpdate, status, altStatus) {
+    let changeStatus = status;
+    if (todoToUpdate.status === status)
+      changeStatus = altStatus;
+    setTodos(todos.map(todo => {if (todo._id === todoToUpdate._id) {todo.status = changeStatus}; return todo}));
     updateTodo(todoToUpdate);
   }
 
@@ -100,7 +126,7 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn}) => {
       <Title />
       <DueDate />
       <Category />
-      { showSnoozeBtn === true && <SnoozeBtn /> || showSnoozeBtn === false && <UnsnoozeBtn /> || <div></div> }
+      { showSnoozeBtn === true && <SnoozeBtn /> || <div></div> }
       { showArchiveBtn === true && <ArchiveBtn /> || showArchiveBtn === false && <UnarchiveBtn /> || <div></div>}
       <DeleteBtn />
     </div>
@@ -160,49 +186,64 @@ const TodoInput = () => {
   }
 
   return (
-    <div style={{"margin":"0 0 10px 0", "padding":"2px 2px"}}>
-      <div className="todoInput">
-          <input style={{"width":"100%", "padding":"0 10px", "margin": "0px 5px"}} 
-            placeholder="add a todo..."
-            value={newTodoText}
-            onKeyDown={handleTodoInputEnter}
-            onChange={handleTodoInputChange} />
-        <div style={{"display":"flex","justifyContent":"center"}}>
-          <select style={{"margin": "0px 2px"}}>
-            <option value="category">category</option>
-            <option value="chores">chores</option>
-            <option value="other">other</option>
-          </select>
-          <input style={{"margin": "0px 2px", "width": "5em"}} type="date"/>
-        </div>
+    <div id="todoInput">
+        <input style={{"width":"100%", "padding":"0 10px"}} 
+          placeholder="add a todo..."
+          value={newTodoText}
+          onKeyDown={handleTodoInputEnter}
+          onChange={handleTodoInputChange} />
+      <div style={{"display":"flex","justifyContent":"center"}}>
+        <select style={{"margin": "0px 2px"}}>
+          <option value="category">category</option>
+          <option value="chores">chores</option>
+          <option value="other">other</option>
+        </select>
+        <input style={{"margin": "0px 2px", "width": "5em"}} type="date"/>
       </div>
     </div>
   )
 }
+
+const PanelTitle = ({title, count}) => {
+  if (count || count === 0)
+    return ( <div className='panelTitle'>{title}<span style={{fontSize: 'x-small', marginLeft: '5px'}}>{count}</span></div> )
+  else
+  return ( <div className='panelTitle'>{title}</div> )
+} 
 
 // main components
 const TodoList = () => {
   const { todos } = useContext(TodoContext);
   const openTodos = todos.filter((todo) => todo.status === 'incomplete');
   const snoozedTodos = todos.filter((todo) => todo.status === 'snoozed');
-  // TODO: check if items should be un-snoozed
+  const archivedTodos = todos.filter((todo) => todo.status === 'archived');
+  const completedTodos = todos.filter((todo) => todo.status === 'completed');
+  
+  // TODO: check if items should be un-snoozed at render time
+  // function checkSnoozeTime(todo) {
+
+  // }
 
   return (
     <div>
-      <div id="mainContainer">
+      <div className="todoListContainer">
         <TodoInput />
+      </div>
+      <div className="todoListContainer">
+      <PanelTitle title='todo' count={openTodos.length + snoozedTodos.length} />
         <div className="todoGrid">
           { 
             openTodos.length > 0 ? openTodos.map((todo, index) => (
               <TodoRow todo={todo} showSnoozeBtn={true} showArchiveBtn={true} key={index} />
-            )) : <div className='todoRow'><div></div><div></div><div></div><div></div><div></div><div></div></div>
+            )) : <div className='todoRow noTasks'></div>
           }
         </div>
         { snoozedTodos.length > 0 && (
-          <div className="todoGrid" style={{ paddingTop: '20px' }}>
-            <div className="fadedContainer">
-              {snoozedTodos.length > 0 ? snoozedTodos.map((todo, index) => (
-                <TodoRow todo={todo} showSnoozeBtn={false} showArchiveBtn={true} key={index} />
+          <div className="todoGrid" style={{ paddingTop: '5px' }}>
+            <div className="fadedContainer"> 
+            <PanelTitle title='snoozed until tmr...' />
+              { snoozedTodos.length > 0 ? snoozedTodos.map((todo, index) => (
+                <TodoRow todo={todo} showSnoozeBtn={true} showArchiveBtn={true} key={index} />
               )) : <></> }
             </div>
           </div>
@@ -217,12 +258,12 @@ const DoneList = () => {
   const doneTodos = todos.filter((todo) => todo.status === 'complete');
 
   return (
-    <div id="mainContainer" className="fadedContainer">
-      done
+    <div className="todoListContainer">
+      <PanelTitle title='done' count={doneTodos.length} />
       <div className="todoGrid">
-        {doneTodos.map((todo, index) => (
-          <TodoRow todo={todo} showSnoozeBtn={false} key={index} />
-        ))}
+        { doneTodos.length > 0 ? doneTodos.map((todo, index) => (
+            <TodoRow todo={todo} showSnoozeBtn={false} done={true} key={index} />
+          )) : <div className='todoRow' style={{'padding': '0px'}}></div> }
       </div>
     </div>
   )
@@ -232,12 +273,14 @@ const ArchiveList = () => {
   const { todos } = useContext(TodoContext);
   const archivedTodos = todos.filter((todo) => todo.status === 'archived');
   return (
-    <div id="mainContainer" className="fadedContainer">
-      archive
+    <div className="todoListContainer">
+      <PanelTitle title='archived' count={archivedTodos.length} />
       <div className="todoGrid">
-        {archivedTodos.map((todo, index) => (
-          <TodoRow todo={todo} showSnoozeBtn={false} showArchiveBtn={false} key={index} />
-        ))}
+        {
+          archivedTodos.length > 0 ? archivedTodos.map((todo, index) => (
+            <TodoRow todo={todo} showSnoozeBtn={false} showArchiveBtn={false} key={index} />
+          )) : <div className='todoRow' style={{'padding': '0px'}}></div>
+        }
       </div>
     </div>
   )
@@ -252,7 +295,7 @@ const StatsPanel = (dateRange) => {
   }, {});
   
   return (
-    <div id="mainContainer" style={{'padding':'0px'}}>
+    <div className="todoListContainer" style={{'padding':'0px'}}>
       <div style={{'display':'flex', "justifyContent":"space-evenly", "fontSize": "0.8em"}}>
         this weeks stats
       </div>

@@ -24,7 +24,7 @@ body {
   --home-img-width: 65px;
   --sidebar-padding-left: 25px;
   --graph-step-size: 0.2;
-  --grid-width-template-columns: 20em repeat(21, 1fr) auto;
+  --grid-width-template-columns: min-content repeat(21, 1fr) auto;
   background-color: var(--bg-color);
   font-size: 0.85em;
   line-height: 1.5;
@@ -60,9 +60,9 @@ input:focus::placeholder {
 }
 
 input[type="checkbox"]:not(:checked) {
-  appearance:none;
-  -webkit-appearance:none;
-  -moz-appearance:none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   width: 20px;
   height: 20px;
   cursor:pointer;
@@ -84,9 +84,9 @@ input[type="checkbox"]:not(:checked).today {
 }
 
 input[type="checkbox"]:checked {
-  appearance:none;
-  -webkit-appearance:none;
-  -moz-appearance:none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   width: 20px;
   height: 20px;
   cursor:pointer;
@@ -127,7 +127,7 @@ input[type="checkbox"]:checked:hover {
 }
 
 .deleteButton {
-  grid-column: 7;
+  grid-column: -1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -208,6 +208,7 @@ input[type="checkbox"]:checked:hover {
   text-overflow:ellipsis; 
   white-space:nowrap;
   padding-right: 14px;
+  max-width: 20em;
 }
 
 .habitLabel {
@@ -406,6 +407,7 @@ input[type="checkbox"]:checked:hover {
 .todoGrid {
   display: grid;
   align-items: center;
+  /* padding: 0 0 5px 0; */
 }
 
 .fadedContainer {
@@ -417,13 +419,24 @@ input[type="checkbox"]:checked:hover {
   opacity: 1;
 }
 
+.todoListContainer {
+  max-width: 600px;
+  min-width: min-content;
+  margin: 0px auto 10px auto;
+}
+
+.lightMode .todoListContainer {
+  background-color:#f79b9b;
+  border-radius:3px;
+}
+
 .todoRow {
   display: grid;
-  grid-template-columns: 20px 200px 80px 100px 20px 30px;
+  grid-template-columns: 20px minmax(100px, 300px) 80px 80px 20px 30px;
   grid-auto-columns: min-content;
   gap: 0.5em;
   align-items: center;
-  padding: 5px 0;
+  padding: 5px 10px;
 }
 
 .todoRow > div {
@@ -435,6 +448,15 @@ input[type="checkbox"]:checked:hover {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.todoLabel {
+  display: flex;
+  justify-content: center;
+}
+
+.noTasks {
+  padding: 0px;
 }
 
 .statsRow {
@@ -455,7 +477,9 @@ input[type="checkbox"]:checked:hover {
   border: 1px black solid;
 }
 
-.todoInput {
+#todoInput {
+  margin: 0 0 0px 0;
+  padding: 5px;
   display: flex;
   justify-content: center;
 }
@@ -492,4 +516,15 @@ input[type="checkbox"]:checked:hover {
 
 .todoButton img:hover {
   opacity: 1;
+}
+
+.panelTitle {
+  padding: 3px 10px 3px;
+  display: flex;
+  align-items: center;
+}
+
+.doneTitle {
+  /* text-decoration: line-through; */
+  text-decoration-color: rgba(0,0,0,1)
 }
