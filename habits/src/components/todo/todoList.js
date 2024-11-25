@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { TodoContext } from './todoContext.js'
-import { postNewTodo } from './todoRequests.js';
+import { postNewTodo, deleteTodoReq, updateTodo } from './todoRequests.js';
 
 /* DB SCHEMA
 const testTask4 = {
@@ -47,7 +47,7 @@ function getAgeString(createdMillis) {
 }
 
 // sub-components
-const BaseButtonElement = ({text, type}) => {
+const BaseButtonElement = ({text, type, onclick}) => {
   const buttonTypes = {
     fin:   { className: "checkboxContainer", content: <input type="checkbox" /> },
     del:   { className: "todoButton deleteButton", imgId: "deleteButton", alt: "x" },
@@ -59,7 +59,7 @@ const BaseButtonElement = ({text, type}) => {
 
   if (buttonConfig) {
     return (
-      <div className={buttonConfig.className}>
+      <div className={buttonConfig.className} onClick={onclick}>
         { buttonConfig.content || (<img id={buttonConfig.imgId} alt={buttonConfig.alt} />) }
       </div>
     )
@@ -68,7 +68,7 @@ const BaseButtonElement = ({text, type}) => {
   return ( <div className="todoBtn">{text}</div>)
 }
 
-const TodoRow = ({todo, snooze, archive}) => {
+const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn}) => {
   const Title = () => <div className="todoCell">{todo.title}</div>
   const Notes = () => <div className="todoCell">{todo.notes}</div>    // task description/notes
   const DueDate = () => <div className="todoCell" style={{"display":"flex", "justifyContent":"center"}}>{getDueDateString(todo.due)}</div>  // task due date
@@ -76,10 +76,23 @@ const TodoRow = ({todo, snooze, archive}) => {
   const Age = () => <div className="todoCell">{getAgeString(todo.created)}</div> // task age
 
   const CompleteBtn = () => <BaseButtonElement text="fin" type="fin" />
-  const SnoozeBtn = () => <BaseButtonElement text="snz" type="snz" />
-  const DeleteBtn = () => <BaseButtonElement text="del" type="del" />
-  const ArchiveBtn = () => <BaseButtonElement text="arc" type="arc" /> 
-  const UnarchiveBtn = () => <BaseButtonElement text="unarc" type="unarc" /> 
+  const SnoozeBtn = () => <BaseButtonElement text="snz" type="snz" onclick={() => changeStatus(todo, 'snoozed')}/>
+  const UnsnoozeBtn = () => <BaseButtonElement text="snz" type="snz" onclick={() => changeStatus(todo, 'incomplete')}/>
+  const ArchiveBtn = () => <BaseButtonElement text="arc" type="arc" onclick={() => changeStatus(todo, 'archived')}/> 
+  const UnarchiveBtn = () => <BaseButtonElement text="unarc" type="unarc" onclick={() => changeStatus(todo, 'incomplete')}/> 
+  const DeleteBtn = () => <BaseButtonElement text="del" type="del" onclick={() => deleteTodo(todo)}/>
+
+  const {todos, setTodos} = useContext(TodoContext);
+
+  function deleteTodo(todoToDelete) {
+    setTodos(todos.filter(todo => todo._id !== todoToDelete._id));
+    deleteTodoReq(todoToDelete._id);
+  }
+
+  function changeStatus(todoToUpdate, status) {
+    setTodos(todos.map(todo => {if (todo._id == todoToUpdate._id) {todo.status = status}; return todo}));
+    updateTodo(todoToUpdate);
+  }
 
   return(
     <div className='todoRow'>
@@ -87,8 +100,8 @@ const TodoRow = ({todo, snooze, archive}) => {
       <Title />
       <DueDate />
       <Category />
-      { snooze === true && <SnoozeBtn /> || <div></div> }
-      { archive === true && <ArchiveBtn /> || archive === false && <UnarchiveBtn /> || <div></div>}
+      { showSnoozeBtn === true && <SnoozeBtn /> || showSnoozeBtn === false && <UnsnoozeBtn /> || <div></div> }
+      { showArchiveBtn === true && <ArchiveBtn /> || showArchiveBtn === false && <UnarchiveBtn /> || <div></div>}
       <DeleteBtn />
     </div>
   )
@@ -113,7 +126,7 @@ const StatsRow = ({open, snoozed, done, archived}) => {
 
 const TodoInput = () => {
   const { todos, setTodos,
-    newTodoText, setNewTodoText, 
+    newTodoText, setNewTodoText,
     newCategory, setNewCategory,
     newDueDate, setNewDueDate,
     loggedInUser // Get loggedInUser from TodoContext
@@ -123,7 +136,7 @@ const TodoInput = () => {
     setNewTodoText(e.target.value);
   }
 
-  const handleTodoInputEnter = (e) => {
+  const handleTodoInputEnter = async (e) => {
     if (e.key === 'Enter' && e.target.value.trim()) {
       const newTodo = {
         id: todos.length + 1,
@@ -139,8 +152,8 @@ const TodoInput = () => {
         order: todos.length + 1,
       };
       const tempArray = [...todos];
-      postNewTodo(loggedInUser, newTodo);
-      tempArray.push(newTodo);
+      const newTodoResp = await postNewTodo(loggedInUser, newTodo);
+      tempArray.push(newTodoResp);
       setTodos(tempArray);
       setNewTodoText('');
     }
@@ -179,17 +192,21 @@ const TodoList = () => {
       <div id="mainContainer">
         <TodoInput />
         <div className="todoGrid">
-          {openTodos.map((todo, index) => (
-            <TodoRow todo={todo} snooze={true} archive={true} key={index} />
-          ))}
+          { 
+            openTodos.length > 0 ? openTodos.map((todo, index) => (
+              <TodoRow todo={todo} showSnoozeBtn={true} showArchiveBtn={true} key={index} />
+            )) : <div className='todoRow'><div></div><div></div><div></div><div></div><div></div><div></div></div>
+          }
         </div>
-        <div className="todoGrid" style={{'paddingTop':'20px'}}>
-          {snoozedTodos.map((todo, index) => (
+        { snoozedTodos.length > 0 && (
+          <div className="todoGrid" style={{ paddingTop: '20px' }}>
             <div className="fadedContainer">
-              <TodoRow todo={todo} snooze={true} archive={true} key={index} />
+              {snoozedTodos.length > 0 ? snoozedTodos.map((todo, index) => (
+                <TodoRow todo={todo} showSnoozeBtn={false} showArchiveBtn={true} key={index} />
+              )) : <></> }
             </div>
-          ))}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   )
@@ -204,7 +221,7 @@ const DoneList = () => {
       done
       <div className="todoGrid">
         {doneTodos.map((todo, index) => (
-          <TodoRow todo={todo} snooze={false} key={index} />
+          <TodoRow todo={todo} showSnoozeBtn={false} key={index} />
         ))}
       </div>
     </div>
@@ -219,7 +236,7 @@ const ArchiveList = () => {
       archive
       <div className="todoGrid">
         {archivedTodos.map((todo, index) => (
-          <TodoRow todo={todo} snooze={false} archive={false} key={index} />
+          <TodoRow todo={todo} showSnoozeBtn={false} showArchiveBtn={false} key={index} />
         ))}
       </div>
     </div>
