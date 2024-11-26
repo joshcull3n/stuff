@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { detectDevice } from '../../App.js';
 import { Context } from '../../Context.js'
-import { fetchRemoteTodosForUser } from './todoRequests.js';
+import { fetchRemoteTodosForUser, updateTodo } from './todoRequests.js';
 
 export const TodoContext = React.createContext();
 
@@ -196,20 +196,16 @@ export const TodoProvider = ({ children }) => {
     const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     
     const updTodos = todos.map((todo) => {
-      console.log(todo)
-      console.log(todo.snooze_date);
       if (todo.snooze_date) {
-        console.log('has snooze date');
-        let snoozeDate = new Date(todo.snooze_date);
-        if (snoozeDate < startOfToday) {
-          console.log('moving from snoozed to incomplete');
-          return {
+        if (new Date(todo.snooze_date) < startOfToday) {
+          const updatedTodo = {
             ...todo,
             snooze_date: null,
-            status: "incomplete",
+            status: 'incomplete'
           }
-        } else
-          console.log('snooze date not old enough');
+          updateTodo(updatedTodo)
+          return updatedTodo;
+        }
       }
       return todo;
     })

@@ -362,6 +362,7 @@ app.post('/todos/', async (req, res) => {
       completed_date: todoBody.completed_date,
       created_date: todoBody.created_date, 
       updated_date: todoBody.updated_date,
+      snooze_date: todoBody.snooze_date,
       order: todoBody.order,
     });
     await todo.save();
@@ -384,6 +385,7 @@ app.patch('/todos/', async (req, res) => {
     const newCategory = req.body.category;
     const newDueDate = req.body.dueDate;
     const newOrder = req.body.order;
+    const newSnoozeDate = req.body.snooze_date;
 
     const updateData = {
       title: newTitle,
@@ -392,7 +394,8 @@ app.patch('/todos/', async (req, res) => {
       category: newCategory,
       due_date: newDueDate,
       order: newOrder,
-      updated_date: date
+      updated_date: date,
+      snooze_date: newSnoozeDate
     }
     const cleanUpdateData = Object.fromEntries(
       Object.entries(updateData).filter(([_, value]) => value !== undefined)
