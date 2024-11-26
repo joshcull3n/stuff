@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/habits/static/css/main.90902003.css",
-    "main.js": "/habits/static/js/main.ac502c3d.js",
-    "static/media/sun.svg": "/habits/static/media/sun.7d732d5dc280e579b5e9.svg",
-    "static/media/sun_black.svg": "/habits/static/media/sun_black.6273fa8e047c79f9bf00.svg",
-    "index.html": "/habits/index.html",
-    "main.90902003.css.map": "/habits/static/css/main.90902003.css.map",
-    "main.ac502c3d.js.map": "/habits/static/js/main.ac502c3d.js.map"
+    "main.css": "/stuff/static/css/main.c1325d76.css",
+    "main.js": "/stuff/static/js/main.ac502c3d.js",
+    "static/media/sun.svg": "/stuff/static/media/sun.7d732d5dc280e579b5e9.svg",
+    "static/media/sun_black.svg": "/stuff/static/media/sun_black.6273fa8e047c79f9bf00.svg",
+    "index.html": "/stuff/index.html",
+    "main.c1325d76.css.map": "/stuff/static/css/main.c1325d76.css.map",
+    "main.ac502c3d.js.map": "/stuff/static/js/main.ac502c3d.js.map"
   },
   "entrypoints": [
-    "static/css/main.90902003.css",
+    "static/css/main.c1325d76.css",
     "static/js/main.ac502c3d.js"
   ]
 }
