@@ -122,7 +122,7 @@ const HabitList = ({ dateLabels, mobile }) => {
     return (
     <div className='centered'>
       <div style={{opacity:0.7, textAlign: 'center', fontFamily:'monospace'}}>
-        add a habit below.<br/>(quit smoking, floss everyday, etc.)
+        add something you want to track. (floss daily, exercise, etc.)
       </div>
     </div>
     )
