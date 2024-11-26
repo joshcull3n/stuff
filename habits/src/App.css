@@ -525,6 +525,7 @@ input[type="checkbox"]:checked:hover {
   padding: 3px 10px 3px;
   display: flex;
   align-items: center;
+  font-size: 0.8em;
 }
 
 .doneTitle {
@@ -534,13 +535,14 @@ input[type="checkbox"]:checked:hover {
 
 .categoryDropdown {
   margin: 0px 5px;
+  font-size: small;
   appearance: none; 
   background-color: var(--main-bg-color);
   border-color: var(--main-font-color-high-alpha);
   border-radius: 3px;
   width: 100px;
   text-align: center;
-  color: var(--main-font-color-med-alpha);
+  /* color: var(--main-font-color-med-alpha); */
   border-width: 0.5px;
 }
 
