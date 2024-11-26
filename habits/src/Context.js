@@ -22,7 +22,7 @@ export const ContextProvider = ({ children }) => {
   const [loginFailed, setLoginFailed] = useState(false);
 
   const VIEW_MODES = {
-    OVERVIEW: 'overview',
+    // OVERVIEW: 'overview',
     TODO: 'todo',
     HABITS: 'tracker',
   };

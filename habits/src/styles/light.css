@@ -1,5 +1,6 @@
 .lightMode {
   --main-font-color: #000000;
+  --main-bg-color: #f79b9b;
   --main-font-color-med-alpha: #505050aa;
   --main-font-color-high-alpha: #5050503b;
   --graph-grid-color: #00000041;

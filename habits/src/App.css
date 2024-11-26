@@ -432,11 +432,11 @@ input[type="checkbox"]:checked:hover {
 
 .todoRow {
   display: grid;
-  grid-template-columns: 20px minmax(100px, 300px) 80px 80px 20px 30px;
+  grid-template-columns: 20px minmax(100px, 310px) 80px 80px 20px 20px;
   grid-auto-columns: min-content;
   gap: 0.5em;
   align-items: center;
-  padding: 5px 10px;
+  padding: 5px 5px 5px 10px;
 }
 
 .todoRow > div {
@@ -527,4 +527,19 @@ input[type="checkbox"]:checked:hover {
 .doneTitle {
   /* text-decoration: line-through; */
   text-decoration-color: rgba(0,0,0,1)
+}
+
+.categoryDropdown {
+  margin: 0px 5px;
+  appearance: none; 
+  background-color: var(--main-bg-color);
+  border-color: var(--main-font-color-high-alpha);
+  border-radius: 3px;
+  width: 100px;
+  text-align: center;
+  color: var(--main-font-color-med-alpha);
+}
+
+.categoryDropdown.valid {
+  color: var(--main-font-color);
 }

@@ -60,6 +60,7 @@ const todoSchema = new mongoose.Schema({
   username: { type: String, required: true },
   created_date: { type: Number, required: true },
   updated_date: { type: Number, required: true },
+  snooze_date: Number,
   order: Number
 });
 

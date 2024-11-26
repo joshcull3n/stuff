@@ -46,8 +46,6 @@ export async function deleteTodoReq(todoId) {
 }
 
 export async function updateTodo(todo) {
-  console.log('before update: ');
-  console.log(todo);
   const options = {
     method: 'PATCH',
     headers: { 'Content-Type' : 'application/json' },
