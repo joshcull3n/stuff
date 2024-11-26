@@ -191,11 +191,36 @@ export const TodoProvider = ({ children }) => {
   //   console.log({ todos, newTodoText, newCategory, newDueDate });
   // }, [todos, newTodoText, newCategory, newDueDate]);
 
+  function checkSnoozeTimes(todos) {
+    const today = new Date();
+    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    
+    const updTodos = todos.map((todo) => {
+      console.log(todo)
+      console.log(todo.snooze_date);
+      if (todo.snooze_date) {
+        console.log('has snooze date');
+        let snoozeDate = new Date(todo.snooze_date);
+        if (snoozeDate < startOfToday) {
+          console.log('moving from snoozed to incomplete');
+          return {
+            ...todo,
+            snooze_date: null,
+            status: "incomplete",
+          }
+        } else
+          console.log('snooze date not old enough');
+      }
+      return todo;
+    })
+    return updTodos;
+  }
+
   function fetchAndSetTodosForCurrentUser() {
     if (loggedInUser) {
       fetchRemoteTodosForUser(loggedInUser).then(resp => {
         if (resp)
-          setTodos(resp);
+          setTodos(checkSnoozeTimes(resp));
       });
     }
   }
@@ -203,6 +228,12 @@ export const TodoProvider = ({ children }) => {
   useEffect(() => {
     fetchAndSetTodosForCurrentUser();
   }, [loggedInUser]);
+
+  // useEffect(() => {
+  //   console.log('updated todos');
+  //   console.log(todos);
+  // }, [todos]);
+
   return (
     <TodoContext.Provider value={{
       todos, setTodos,

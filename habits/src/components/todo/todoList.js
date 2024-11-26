@@ -14,6 +14,7 @@ const testTask4 = {
   'username'       : '...', // required
   'created_date'   : 1731386491566, // milliseconds, required
   'updated_date'   : 1731386491566, // milliseconds, required
+  'snooze_date'    : null,
   'order'          : 12,
   '__v'            : 1 // version
 }
@@ -60,7 +61,7 @@ const BaseButtonElement = ({text, type, onclick}) => {
     del: { 
       className: "todoButton deleteButton", 
       imgId: "deleteButton", 
-      alt: "x" 
+      alt: "x"
     },
     snz: { 
       className: "todoButton", 
@@ -116,7 +117,20 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
     let changeStatus = status;
     if (todoToUpdate.status === status)
       changeStatus = altStatus;
-    setTodos(todos.map(todo => {if (todo._id === todoToUpdate._id) {todo.status = changeStatus}; return todo}));
+    setTodos(todos.map(todo => {
+      if (todo._id === todoToUpdate._id) {
+        todo.status = changeStatus
+        if (changeStatus === 'incomplete') {
+          console.log('setting null');
+          todo.snooze_date = null;
+        }
+        else if (changeStatus === 'snoozed')
+          console.log('setting snooze time');
+          todo.snooze_date = Date.now();
+      };
+      console.log(todo);
+      return todo
+    }));
     updateTodo(todoToUpdate);
   }
 
@@ -158,8 +172,14 @@ const TodoInput = () => {
     loggedInUser // Get loggedInUser from TodoContext
   } = useContext(TodoContext);
 
+  const [validSelection, setValidSelection] = useState(false); // used for styling
+
   const handleTodoInputChange = (e) => {
     setNewTodoText(e.target.value);
+  }
+
+  const handleTodoCategoryChange = (e) => {
+    setValidSelection(e.target.value !== "");
   }
 
   const handleTodoInputEnter = async (e) => {
@@ -176,6 +196,7 @@ const TodoInput = () => {
         created_date: Date.now(),
         updated_date: Date.now(),
         order: todos.length + 1,
+        snooze_date: null
       };
       const tempArray = [...todos];
       const newTodoResp = await postNewTodo(loggedInUser, newTodo);
@@ -193,36 +214,39 @@ const TodoInput = () => {
           onKeyDown={handleTodoInputEnter}
           onChange={handleTodoInputChange} />
       <div style={{"display":"flex","justifyContent":"center"}}>
-        <select style={{"margin": "0px 2px"}}>
-          <option value="category">category</option>
+        <select className={`categoryDropdown ${validSelection ? "valid" : ""}`}
+          onChange={handleTodoCategoryChange}>
+          <option value="" selected>none</option>
           <option value="chores">chores</option>
           <option value="other">other</option>
         </select>
-        <input style={{"margin": "0px 2px", "width": "5em"}} type="date"/>
+        <input style={{"width": "5em"}} type="date"/>
       </div>
     </div>
   )
 }
 
-const PanelTitle = ({title, count}) => {
+const PanelTitle = ({title, count, count2}) => {
+  if (count2)
+    return ( <div className='panelTitle'>{title}<span style={{fontSize: 'x-small', marginLeft: '5px'}}>{count} ({count2})</span></div> )
   if (count || count === 0)
     return ( <div className='panelTitle'>{title}<span style={{fontSize: 'x-small', marginLeft: '5px'}}>{count}</span></div> )
   else
-  return ( <div className='panelTitle'>{title}</div> )
+    return ( <div className='panelTitle'>{title}</div> )
 } 
 
 // main components
 const TodoList = () => {
-  const { todos } = useContext(TodoContext);
+  const { todos, setTodos } = useContext(TodoContext);
   const openTodos = todos.filter((todo) => todo.status === 'incomplete');
   const snoozedTodos = todos.filter((todo) => todo.status === 'snoozed');
   const archivedTodos = todos.filter((todo) => todo.status === 'archived');
   const completedTodos = todos.filter((todo) => todo.status === 'completed');
-  
-  // TODO: check if items should be un-snoozed at render time
-  // function checkSnoozeTime(todo) {
 
-  // }
+  //checkSnoozeTimes();
+
+  const openCount = openTodos.length;
+  const totalCount = openTodos.length + snoozedTodos.length;
 
   return (
     <div>
@@ -230,7 +254,7 @@ const TodoList = () => {
         <TodoInput />
       </div>
       <div className="todoListContainer">
-      <PanelTitle title='todo' count={openTodos.length + snoozedTodos.length} />
+      <PanelTitle title='todo' count={openCount} /*count2={openCount != totalCount && totalCount}*//>
         <div className="todoGrid">
           { 
             openTodos.length > 0 ? openTodos.map((todo, index) => (
@@ -239,9 +263,9 @@ const TodoList = () => {
           }
         </div>
         { snoozedTodos.length > 0 && (
-          <div className="todoGrid" style={{ paddingTop: '5px' }}>
+          <div className="todoGrid" style={{ padding: '5px 0' }}>
             <div className="fadedContainer"> 
-            <PanelTitle title='snoozed until tmr...' />
+            <div style={{fontSize:'x-small'}}><PanelTitle title='snoozed until tmr...' count={snoozedTodos.length}/></div>
               { snoozedTodos.length > 0 ? snoozedTodos.map((todo, index) => (
                 <TodoRow todo={todo} showSnoozeBtn={true} showArchiveBtn={true} key={index} />
               )) : <></> }
