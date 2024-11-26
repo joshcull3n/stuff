@@ -221,7 +221,7 @@ const TodoInput = () => {
           <option value="chores">chores</option>
           <option value="other">other</option>
         </select>
-        <input style={{"width": "5em"}} type="date"/>
+        <input type="date" className='dateSelector'/>
       </div>
     </div>
   )
