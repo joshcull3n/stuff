@@ -432,7 +432,7 @@ input[type="checkbox"]:checked:hover {
 
 .todoRow {
   display: grid;
-  grid-template-columns: 20px minmax(100px, 310px) 80px 80px 20px 20px;
+  grid-template-columns: 20px minmax(100px, 310px) 85px 85px 15px 15px;
   grid-auto-columns: min-content;
   gap: 0.5em;
   align-items: center;
@@ -486,7 +486,6 @@ input[type="checkbox"]:checked:hover {
 
 #snzButton {
   content: var(--snooze-button);
-  width: 14px;
 }
 
 #archiveButton {
