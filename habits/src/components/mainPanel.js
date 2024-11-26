@@ -18,13 +18,13 @@ const TopBar = () => {
     let viewmode = Object.values(VIEW_MODES).find(value => title === value);
 
     return selected ? (
-      <div className="selectedViewTitle"><h2>{title}</h2></div>
+      <div className="selectedViewTitle"><h4>{title}</h4></div>
     ) : (
       <div id={`${title}Title`} className="unselectedViewTitle viewTitle"
         onMouseEnter={(e) => setElementOpacityById(e.currentTarget.id, 1)}
         onMouseLeave={(e) => setElementOpacityById(e.currentTarget.id, 0.5)}
         onClick={() => setViewMode(viewmode)}>
-        <h2>{title}</h2>
+        <h4>{title}</h4>
       </div>
     )
   }

@@ -324,7 +324,7 @@ input[type="checkbox"]:checked:hover {
 }
 
 .selectedViewTitle {
-  transform: scale(1.2);
+  transform: scale(1.5);
   transition: transform 5s ease-in-out;
 }
 
