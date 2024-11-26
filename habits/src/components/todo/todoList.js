@@ -185,11 +185,11 @@ const TodoInput = () => {
   }
 
   const handleTodoInputEnter = async (e) => {
-    if (e.key === 'Enter' && e.target.value.trim()) {
+    if (e.key === 'Enter' && newTodoText.trim()) {
       const dueDate = new Date(newDueDate).getTime();
       const newTodo = {
         id: todos.length + 1,
-        title: e.target.value.trim(),
+        title: newTodoText,
         status: 'incomplete',
         description: null,
         due: dueDate || null,
@@ -208,6 +208,7 @@ const TodoInput = () => {
       setNewTodoText('');
       setNewCategory('');
       setNewDueDate('');
+      setValidSelection(false)
     }
   }
 
@@ -220,12 +221,13 @@ const TodoInput = () => {
           onChange={handleTodoInputChange} />
       <div style={{"display":"flex","justifyContent":"center"}}>
         <select className={`categoryDropdown ${validSelection ? "valid" : ""}`}
-          onChange={handleTodoCategoryChange}>
+          onChange={handleTodoCategoryChange} onKeyDown={handleTodoInputEnter} value={newCategory}>
           <option value="" selected>none</option>
           <option value="chores">chores</option>
           <option value="other">other</option>
         </select>
-        <input type="date" onChange={handleTodoDueDateSelectionChange} className='dateSelector'/>
+        <input type="date" className='dateSelector' value={newDueDate}
+          onChange={handleTodoDueDateSelectionChange} onKeyDown={handleTodoInputEnter} />
       </div>
     </div>
   )
