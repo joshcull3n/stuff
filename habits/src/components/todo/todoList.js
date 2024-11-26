@@ -117,21 +117,22 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
     let changeStatus = status;
     if (todoToUpdate.status === status)
       changeStatus = altStatus;
-    setTodos(todos.map(todo => {
+    const newTodos = todos.map(todo => {
       if (todo._id === todoToUpdate._id) {
         todo.status = changeStatus
         if (changeStatus === 'incomplete') {
-          console.log('setting null');
           todo.snooze_date = null;
+          todoToUpdate.snooze_date = null;
         }
-        else if (changeStatus === 'snoozed')
-          console.log('setting snooze time');
+        else if (changeStatus === 'snoozed') {
           todo.snooze_date = Date.now();
+          todoToUpdate.snooze_date = todo.snooze_date;
+        }
       };
-      console.log(todo);
-      return todo
-    }));
+      return todo;
+    });
     updateTodo(todoToUpdate);
+    setTodos(newTodos);
   }
 
   return(
@@ -243,10 +244,7 @@ const TodoList = () => {
   const archivedTodos = todos.filter((todo) => todo.status === 'archived');
   const completedTodos = todos.filter((todo) => todo.status === 'completed');
 
-  //checkSnoozeTimes();
-
   const openCount = openTodos.length;
-  const totalCount = openTodos.length + snoozedTodos.length;
 
   return (
     <div>
