@@ -36,7 +36,7 @@ function getDueDateString(dueMillis=null) {
     return `${diffYear} years left`
   }
   else if (difference === 1) {
-    return '1 day left';
+    return 'tomorrow';
   }
   else {
     return `${difference} days left`
@@ -91,7 +91,7 @@ const BaseButtonElement = ({text, type, onclick}) => {
 const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
   const Title = () => <div className={done && "todoCell doneTitle" || "todoCell"}>{todo.title}</div>
   const DueDate = () => <div className="todoCell todoLabel">{getDueDateString(todo.due_date)}</div>
-  const Category = () => <div className="todoCell todoLabel">{todo.category}</div>
+  const Category = () => <div className="todoCell todoLabel" style={{display:'unset'}}>{todo.category}</div>
   //const Notes = () => <div className="todoCell">{todo.notes}</div>
   //const Age = () => <div className="todoCell">{getAgeString(todo.created)}</div>
 
@@ -220,13 +220,15 @@ const TodoInput = () => {
           onKeyDown={handleTodoInputEnter}
           onChange={handleTodoInputChange} />
       <div style={{"display":"flex","justifyContent":"center"}}>
-        <select className={`categoryDropdown ${validSelection ? "valid" : ""}`}
+        <input type='text' placeholder='category' className='categoryDropdown' 
+          onChange={handleTodoCategoryChange} onKeyDown={handleTodoInputEnter} value={newCategory}/>
+        {/* <select className={`categoryDropdown ${validSelection ? "valid" : ""}`}
           onChange={handleTodoCategoryChange} onKeyDown={handleTodoInputEnter} value={newCategory}>
           <option value="" selected>none</option>
           <option value="chores">chores</option>
           <option value="other">other</option>
-        </select>
-        <input type="date" className='dateSelector' value={newDueDate}
+        </select> */}
+        <input type='date' className='dateSelector' value={newDueDate}
           onChange={handleTodoDueDateSelectionChange} onKeyDown={handleTodoInputEnter} />
       </div>
     </div>
