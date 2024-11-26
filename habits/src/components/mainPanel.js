@@ -37,7 +37,7 @@ const TopBar = () => {
 };
 
 const HabitInput = ({mobile, handleHabitInputChange, handleHabitInputEnter, handleHabitInputBtnClick}) => {
-  const { newHabitText } = useContext(Context);
+  const { habits, newHabitText } = useContext(Context);
     
   return (
     <div className="centered" style={{ paddingTop:'1rem'}}>
@@ -76,7 +76,6 @@ const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, hand
       <div className="mainPanel" style={{padding:'10px'}}>
         <TopBar currentView={viewMode} />
         {viewMode === VIEW_MODES.HABITS && (
-          <div>
             <div id="mainContainer">
               <HabitList mobile={mobile} habits={habits} dateLabels={dateLabels} />
               <HabitInput
@@ -85,7 +84,10 @@ const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, hand
                 handleHabitInputChange={handleHabitInputChange}
                 handleHabitInputBtnClick={handleHabitInputBtnClick}
               />
-            </div>
+            </div>            
+        )}
+        {viewMode === VIEW_MODES.HABITS && habits.length > 0 && (
+          <div>
             <Graph />
           </div>
         )}
