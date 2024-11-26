@@ -35,16 +35,12 @@ function getDueDateString(dueMillis=null) {
     let diffYear = Math.ceil(difference / 365)
     return `${diffYear} years left`
   }
+  else if (difference === 1) {
+    return '1 day left';
+  }
   else {
     return `${difference} days left`
   }
-}
-
-function getAgeString(createdMillis) {
-  const now = new Date();
-  const ageDate = new Date(createdMillis);
-  const difference = Math.floor((now - ageDate) / (1000 * 60 * 60 * 24));
-  return `${difference} days old`
 }
 
 // sub-components
@@ -94,7 +90,7 @@ const BaseButtonElement = ({text, type, onclick}) => {
 
 const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
   const Title = () => <div className={done && "todoCell doneTitle" || "todoCell"}>{todo.title}</div>
-  const DueDate = () => <div className="todoCell todoLabel">{getDueDateString(todo.due)}</div>
+  const DueDate = () => <div className="todoCell todoLabel">{getDueDateString(todo.due_date)}</div>
   const Category = () => <div className="todoCell todoLabel">{todo.category}</div>
   //const Notes = () => <div className="todoCell">{todo.notes}</div>
   //const Age = () => <div className="todoCell">{getAgeString(todo.created)}</div>
@@ -167,13 +163,13 @@ const StatsRow = ({open, snoozed, done, archived}) => {
 
 const TodoInput = () => {
   const { todos, setTodos,
-    newTodoText, setNewTodoText,
-    newCategory, setNewCategory,
-    newDueDate, setNewDueDate,
     loggedInUser // Get loggedInUser from TodoContext
   } = useContext(TodoContext);
 
   const [validSelection, setValidSelection] = useState(false); // used for styling
+  const [newTodoText, setNewTodoText] = useState('');
+  const [newCategory, setNewCategory] = useState('');
+  const [newDueDate, setNewDueDate] = useState('');
 
   const handleTodoInputChange = (e) => {
     setNewTodoText(e.target.value);
@@ -181,16 +177,22 @@ const TodoInput = () => {
 
   const handleTodoCategoryChange = (e) => {
     setValidSelection(e.target.value !== "");
+    setNewCategory(e.target.value);
+  }
+
+  const handleTodoDueDateSelectionChange = (e) => {
+    setNewDueDate(e.target.value);
   }
 
   const handleTodoInputEnter = async (e) => {
     if (e.key === 'Enter' && e.target.value.trim()) {
+      const dueDate = new Date(newDueDate).getTime();
       const newTodo = {
         id: todos.length + 1,
         title: e.target.value.trim(),
         status: 'incomplete',
         description: null,
-        due: newDueDate || null,
+        due: dueDate || null,
         category: newCategory || null,
         completed_date: null,
         username: loggedInUser,
@@ -204,6 +206,8 @@ const TodoInput = () => {
       tempArray.push(newTodoResp);
       setTodos(tempArray);
       setNewTodoText('');
+      setNewCategory('');
+      setNewDueDate('');
     }
   }
 
@@ -221,7 +225,7 @@ const TodoInput = () => {
           <option value="chores">chores</option>
           <option value="other">other</option>
         </select>
-        <input type="date" className='dateSelector'/>
+        <input type="date" onChange={handleTodoDueDateSelectionChange} className='dateSelector'/>
       </div>
     </div>
   )
