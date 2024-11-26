@@ -557,6 +557,6 @@ input[type="checkbox"]:checked:hover {
   text-align: center;
   color: var(--main-font-color-med-alpha);
   font-size: small;
-  width: 8em;
+  width: 9em;
   justify-items: baseline;
 }
