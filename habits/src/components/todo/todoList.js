@@ -23,7 +23,7 @@ const testTask4 = {
 // helper functions
 function getDueDateString(dueMillis=null) {
   if (dueMillis === null)
-    return '-'
+    return ''
     // return 'someday'
   const now = new Date();
   const duedate = new Date(dueMillis);
