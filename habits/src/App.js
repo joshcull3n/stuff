@@ -127,10 +127,16 @@ const App = () => {
   const TopBar = () => {
     return (
       <div className="centered">
-        <h2>habits</h2>
+        <h2>stuff</h2>
       </div>
     );
   };
+
+  const AppIntro = () => (
+    <div id='mainContainer' style={{maxWidth: '300px', textAlign:'center', fontFamily:'monospace', marginBottom:'0px'}}>
+      stuff is for managing your stuff.<br/><br/>it is a simple, noise-free way to organize your life.
+    </div>
+  )
   
   if (loggedInUser) {
     return (
@@ -150,6 +156,7 @@ const App = () => {
       <div className="App">
         <Sidebar />
         <TopBar />
+        <AppIntro />
         <UsernamePrompt />
       </div>
     )
