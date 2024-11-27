@@ -23,7 +23,8 @@ export function detectDevice() {
 const App = () => {
   
   /* - DEBUG OPTIONS - */
-  console.error = () => {}; // disable if you want to see console errors
+  //console.error = () => {}; // disable if you want to see console errors
+  //console.log('rendering');
   /* -- -- -- -- -- -- */
 
   const localStorage = window.localStorage;
@@ -126,10 +127,16 @@ const App = () => {
   const TopBar = () => {
     return (
       <div className="centered">
-        <h2>habits</h2>
+        <h2>stuff</h2>
       </div>
     );
   };
+
+  const AppIntro = () => (
+    <div className='appIntro'>
+      stuff is for managing your stuff.<br/><br/>it is a simple, noise-free way to organize your life.
+    </div>
+  )
   
   if (loggedInUser) {
     return (
@@ -149,6 +156,7 @@ const App = () => {
       <div className="App">
         <Sidebar />
         <TopBar />
+        <AppIntro />
         <UsernamePrompt />
       </div>
     )
