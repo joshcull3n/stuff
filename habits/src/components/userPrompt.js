@@ -4,14 +4,14 @@ import { checkUserExists, fetchUserInfo, verifyPassword } from '../utils/habitUt
 
 const InitialEnterUsername = ({usernameInput, inputRef, handleUsernameInputEnter, handleUsernameInputChange}) => {
   return (
-    <div id="habitListContainer" className='slowFadeIn' style={{padding:'15px 10px 0px'}}>
+    <div id="habitListContainer" className='slowFadeIn' style={{padding:'0.5rem 0', maxWidth:'200px'}}>
       <div style={{textAlign: 'center', fontFamily:'monospace'}}>
         please enter a username to login or create an account.
       </div>
-      <div style={{ padding:'1rem 0'}}>
-        <div style={{display: 'inline-flex'}}>
+      <div style={{ paddingTop:'0.5rem'}} className='centered'>
+        <div>
           <input ref={inputRef} id="usernameInput" placeholder="username" 
-          style={{textAlign:'center', padding: '0 0px'}}  
+          style={{textAlign:'center', padding: '0'}}  
           value={usernameInput} autofocus
           onKeyDown={handleUsernameInputEnter} 
           onChange={handleUsernameInputChange}/>
