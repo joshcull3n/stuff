@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { detectDevice } from '../../App.js';
 import { Context } from '../../Context.js'
 import { fetchRemoteTodosForUser, updateTodo } from './todoRequests.js';
 
@@ -39,17 +38,20 @@ export const TodoProvider = ({ children }) => {
     return updTodos;
   }
 
-  function fetchAndSetTodosForCurrentUser() {
-    if (loggedInUser) {
-      fetchRemoteTodosForUser(loggedInUser).then(resp => {
-        if (resp)
-          setTodos(checkSnoozeTimes(resp));
-      });
-    }
-  }
+  // function fetchAndSetTodosForCurrentUser() {
+  //   if (loggedInUser) {
+  //     fetchRemoteTodosForUser(loggedInUser).then(resp => {
+  //       if (resp)
+  //         setTodos(checkSnoozeTimes(resp));
+  //     });
+  //   }
+  // }
 
   useEffect(() => {
-    fetchAndSetTodosForCurrentUser();
+    fetchRemoteTodosForUser(loggedInUser).then(resp => {
+      if (resp)
+        setTodos(checkSnoozeTimes(resp));
+    });
   }, [loggedInUser]);
 
   // useEffect(() => {
