@@ -2,10 +2,12 @@ import React, { useContext } from 'react';
 import './App.css';
 import './styles/dark.css';
 import './styles/light.css';
+import './styles/mobile.css';
 import MainPanel from './components/mainPanel.js';
 import UsernamePrompt from './components/userPrompt.js';
 import { generateHabit } from './utils/habitUtils.js';
 import { Context } from './Context';
+import { TodoContext } from './components/todo/todoContext.js';
 
 export function detectDevice() {
   const agent = window.navigator.userAgent.toLowerCase()
@@ -33,6 +35,8 @@ const App = () => {
     setGraphGridColor, setUpdateRemote, loggedInUser, setLoggedInUser, setAskForPassword,
     setUsernameInput, setPasswordInput, setNewUser
   } = useContext(Context);
+
+  const { setTodos } = useContext(TodoContext);
 
   // set body class
   document.body.classList.remove('lightMode');
@@ -65,6 +69,7 @@ const App = () => {
     setPasswordInput('');
     setNewUser(false);
     setHabits([]);
+    setTodos([]);
     setAskForPassword(false);
   }
 

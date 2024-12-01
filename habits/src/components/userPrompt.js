@@ -27,7 +27,7 @@ const CreateUserPrompt = ({usernameAttempt, inputRef, usernameInput, handleUsern
       <div style={{opacity:0.9, textAlign: 'center', fontFamily:'monospace'}}>
         user {usernameAttempt} does not exist. create?
       </div>
-      <div style={{ padding:'1rem 0', opacity: 0.9, fontFamily:'monospace'}}>
+      <div style={{ padding:'1rem 0', fontFamily:'monospace'}}>
         <div style={{display: 'inline-flex'}}>
           <input id="usernameInput" style={{textAlign:'center', padding: '0 0px'}}  
           value={usernameInput} type="username" placeholder="username"
@@ -61,7 +61,7 @@ const EnterPasswordPrompt = ({usernameAttempt, inputRef, usernameInput, handleUs
       <div style={{opacity:0.9, textAlign: 'center', fontFamily:'monospace'}}>
         user {usernameAttempt} requires a password. enter it below.
       </div>
-      <div style={{ padding:'1rem 0px 0rem', opacity: 0.9, fontFamily:'monospace'}}>
+      <div style={{ padding:'1rem 0px 0rem', fontFamily:'monospace'}}>
         <div style={{display: 'inline-flex'}}>
           <input id="usernameInput" style={{textAlign:'center', padding: '0 0px'}}  
           value={usernameInput} type="username" placeholder="username"

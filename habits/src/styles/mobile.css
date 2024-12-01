@@ -1,0 +1,18 @@
+.mobile {
+  --home-img-width: 35px;
+  --sidebar-padding-left: 10px;
+  --graph-step-size: 0.5;
+  --grid-width-template-columns-habits: 14em repeat(3, 1fr) auto;
+  --grid-width-template-columns-todos: 20px minmax(100px, auto) 0px 0px 15px 0px;
+  --date-selector-width: 1.3em;
+  --date-selector-border-color: #00000000;
+  --date-selector-justify-items: unset;
+  
+  input[type="date"]::-webkit-datetime-edit {
+    color: transparent; /* Hides the format hint */
+  }
+  
+  input[type="date"]:focus::-webkit-datetime-edit {
+    color: initial; /* Restores visibility when the input is focused */
+  }
+}
