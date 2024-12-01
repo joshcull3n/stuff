@@ -240,11 +240,11 @@ const TodoInput = () => {
 
 const PanelTitle = ({title, count, count2}) => {
   if (count2)
-    return ( <div className='panelTitle'>{title}<span style={{fontSize: 'x-small', marginLeft: '5px'}}>{count} ({count2})</span></div> )
+    return ( <div className='panelTitle'><span>{title}</span><span>{count} ({count2})</span></div> )
   if (count || count === 0)
-    return ( <div className='panelTitle'>{title}<span style={{fontSize: 'x-small', marginLeft: '5px'}}>{count}</span></div> )
+    return ( <div className='panelTitle'><span>{title}</span><span>{count}</span></div> )
   else
-    return ( <div className='panelTitle'>{title}</div> )
+    return ( <div className='panelTitle'><span>{title}</span></div> )
 } 
 
 // main components

@@ -544,10 +544,13 @@ input[type="checkbox"]:checked:hover {
 }
 
 .panelTitle {
-  padding: 3px 10px 3px;
-  display: flex;
-  align-items: center;
+  padding: 3px 10px;
   font-size: 0.8em;
+}
+
+.panelTitle > span {
+  vertical-align: -webkit-baseline-middle;
+  margin-right: 5px;
 }
 
 .doneTitle {
