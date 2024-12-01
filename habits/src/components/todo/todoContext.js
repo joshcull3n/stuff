@@ -9,6 +9,8 @@ export const TodoProvider = ({ children }) => {
   const { loggedInUser } = useContext(Context); // Get loggedInUser from Context
 
   const [todos, setTodos] = useState([]);
+  // default sorting is by due date, then by created date
+  const [ordering, setOrdering] = useState('default');
 
   // XXX: debug purposes delete me
   // useEffect(() => {
@@ -58,6 +60,7 @@ export const TodoProvider = ({ children }) => {
   return (
     <TodoContext.Provider value={{
       todos, setTodos,
+      ordering, setOrdering,
       loggedInUser
     }}>
       { children }

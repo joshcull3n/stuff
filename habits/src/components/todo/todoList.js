@@ -45,6 +45,20 @@ function getDueDateString(dueMillis=null) {
   }
 }
 
+function sortTodos(todosToSort, order='default') {
+  return [...todosToSort].toSorted((a, b) => {
+    if (order === 'default') {
+      const duedateA = a.due_date || Infinity;
+      const duedateB = b.due_date || Infinity;
+
+      if (duedateA !== duedateB)
+        return duedateA - duedateB; // lowest due date first
+
+      return a.created_date - b.created_date // or lowest created date first
+    }
+  });
+}
+
 // sub-components
 const BaseButtonElement = ({text, type, onclick}) => {
   const buttonTypes = {
@@ -258,9 +272,10 @@ const PanelTitle = ({title, count, count2}) => {
 
 // main components
 const TodoList = () => {
-  const { todos, setTodos } = useContext(TodoContext);
-  const openTodos = todos.filter((todo) => todo.status === 'incomplete');
-  const snoozedTodos = todos.filter((todo) => todo.status === 'snoozed');
+  const { todos, ordering } = useContext(TodoContext);
+  const sortedTodos = sortTodos(todos, ordering);
+  const openTodos = sortedTodos.filter((todo) => todo.status === 'incomplete');
+  const snoozedTodos = sortedTodos.filter((todo) => todo.status === 'snoozed');
 
   const openCount = openTodos.length;
 
@@ -294,14 +309,15 @@ const TodoList = () => {
 }
 
 const DoneList = () => {
-  const { todos } = useContext(TodoContext);
+  const { todos, ordering } = useContext(TodoContext);
   const doneTodos = todos.filter((todo) => todo.status === 'complete');
+  const sortedDoneTodos = sortTodos(doneTodos, ordering);
 
   return (
     <div className="todoListContainer">
-      <PanelTitle title='done' count={doneTodos.length} />
+      <PanelTitle title='done' count={sortedDoneTodos.length} />
       <div className="todoGrid">
-        { doneTodos.length > 0 ? doneTodos.map((todo, index) => (
+        { sortedDoneTodos.length > 0 ? sortedDoneTodos.map((todo, index) => (
             <TodoRow todo={todo} showSnoozeBtn={false} done={true} key={index} />
           )) : <div className='todoRow' style={{'padding': '0px'}}></div> }
       </div>
@@ -310,14 +326,15 @@ const DoneList = () => {
 }
 
 const ArchiveList = () => {
-  const { todos } = useContext(TodoContext);
+  const { todos, ordering } = useContext(TodoContext);
   const archivedTodos = todos.filter((todo) => todo.status === 'archived');
+  const sortedArchivedTodos = sortTodos(archivedTodos, ordering);
   return (
     <div className="todoListContainer">
-      <PanelTitle title='archived' count={archivedTodos.length} />
+      <PanelTitle title='archived' count={sortedArchivedTodos.length} />
       <div className="todoGrid">
         {
-          archivedTodos.length > 0 ? archivedTodos.map((todo, index) => (
+          sortedArchivedTodos.length > 0 ? sortedArchivedTodos.map((todo, index) => (
             <TodoRow todo={todo} showSnoozeBtn={false} showArchiveBtn={false} key={index} />
           )) : <div className='todoRow' style={{'padding': '0px'}}></div>
         }
