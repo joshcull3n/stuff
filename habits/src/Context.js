@@ -141,7 +141,7 @@ export const ContextProvider = ({ children }) => {
       newUser, setNewUser,
       askForPassword, setAskForPassword,
       loginFailed, setLoginFailed,
-      viewMode, setViewMode, VIEW_MODES }}>
+      viewMode, setViewMode, VIEW_MODES, mobile }}>
       { children }
     </Context.Provider>
   );

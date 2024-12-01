@@ -1,4 +1,5 @@
 import { useContext, useState } from 'react'
+import { Context } from '../../Context.js'
 import { TodoContext } from './todoContext.js'
 import { postNewTodo, deleteTodoReq, updateTodo } from './todoRequests.js';
 
@@ -90,6 +91,8 @@ const BaseButtonElement = ({text, type, onclick}) => {
 }
 
 const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
+  const { mobile } = useContext(Context);
+
   const Title = () => <div className={done && "todoCell doneTitle" || "todoCell"}>{todo.title}</div>
   const DueDate = () => <div className="todoCell todoLabel">{getDueDateString(todo.due_date)}</div>
   const Category = () => <div className="todoCell todoLabel" style={{display:'unset'}}>{todo.category}</div>
@@ -131,16 +134,15 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
     updateTodo(todoToUpdate);
     setTodos(newTodos);
   }
-
-  return(
+  return (
     <div className='todoRow'>
       <CompleteBtn />
       <Title />
-      <DueDate />
-      <Category />
-      { showSnoozeBtn === true && <SnoozeBtn /> || <div></div> }
-      { showArchiveBtn === true && <ArchiveBtn /> || showArchiveBtn === false && <UnarchiveBtn /> || <div></div>}
-      <DeleteBtn />
+      { mobile !== true && <DueDate /> || <div></div> }
+      { mobile !== true && <Category /> || <div></div> }
+      { showSnoozeBtn === true && <SnoozeBtn /> }
+      { mobile !== true && showArchiveBtn === true && <ArchiveBtn /> || showArchiveBtn === false && <UnarchiveBtn /> }
+      { mobile !== true && <DeleteBtn /> }
     </div>
   )
 }

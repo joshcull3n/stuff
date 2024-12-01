@@ -8,13 +8,6 @@
   height: 99%;
 }
 
-.mobile {
-  --home-img-width: 35px;
-  --sidebar-padding-left: 10px;
-  --graph-step-size: 0.5;
-  --grid-width-template-columns: 14em repeat(3, 1fr) auto;
-}
-
 * {
   font-family: "Work Sans";
   color: var(--main-font-color);
@@ -24,7 +17,11 @@ body {
   --home-img-width: 65px;
   --sidebar-padding-left: 25px;
   --graph-step-size: 0.2;
-  --grid-width-template-columns: min-content repeat(21, 1fr) auto;
+  --grid-width-template-columns-habits: min-content repeat(21, 1fr) auto;
+  --grid-width-template-columns-todos: 20px minmax(100px, 310px) 85px 85px 15px 15px;
+  --date-selector-width: 9em;
+  --date-selector-border-color: var(--main-font-color-high-alpha);
+  --date-selector-justify-items: baseline;
   background-color: var(--bg-color);
   font-size: 0.85em;
   line-height: 1.5;
@@ -205,7 +202,7 @@ input[type="checkbox"]:checked:hover {
 
 .habitGrid {
   display: grid;
-  grid-template-columns: var(--grid-width-template-columns);
+  grid-template-columns: var(--grid-width-template-columns-habits);
   gap: 5px;
   align-items: center;
 }
@@ -458,7 +455,7 @@ input[type="checkbox"]:checked:hover {
 
 .todoRow {
   display: grid;
-  grid-template-columns: 20px minmax(100px, 310px) 85px 85px 15px 15px;
+  grid-template-columns: var(--grid-width-template-columns-todos);
   grid-auto-columns: min-content;
   gap: 0.5em;
   align-items: center;
@@ -507,7 +504,7 @@ input[type="checkbox"]:checked:hover {
 }
 
 #todoInput {
-  margin: 0 0 0px 0;
+  margin: 0;
   padding: 5px;
   display: flex;
   justify-content: center;
@@ -577,11 +574,11 @@ input[type="checkbox"]:checked:hover {
 
 .dateSelector {
   background-color: var(--main-bg-color);
-  border-color: var(--main-font-color-high-alpha);
+  border-color: var(--date-selector-border-color);
   border-radius: 3px;
   text-align: center;
   color: var(--main-font-color-med-alpha);
   font-size: small;
-  width: 9em;
-  justify-items: baseline;
+  width: var(--date-selector-width);
+  justify-items: var(--date-selector-justify-items);
 }
