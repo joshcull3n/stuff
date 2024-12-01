@@ -165,11 +165,9 @@ const StatsRow = ({open, snoozed, done, archived}) => {
 }
 
 const TodoInput = () => {
-  const { todos, setTodos,
-    loggedInUser // Get loggedInUser from TodoContext
-  } = useContext(TodoContext);
-
+  const { todos, setTodos, loggedInUser } = useContext(TodoContext);
   const [validSelection, setValidSelection] = useState(false); // used for styling
+
   const [newTodoText, setNewTodoText] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [newDueDate, setNewDueDate] = useState('');
@@ -187,8 +185,8 @@ const TodoInput = () => {
     setNewDueDate(e.target.value);
   }
 
-  const handleTodoInputEnter = async (e) => {
-    if (e.key === 'Enter' && newTodoText.trim()) {
+  async function inputTodo() {
+    if (newTodoText.trim()) {
       const dueDate = new Date(newDueDate).getTime();
       const newTodo = {
         id: todos.length + 1,
@@ -215,6 +213,16 @@ const TodoInput = () => {
     }
   }
 
+  const handleTodoInputEnter = async (e) => {
+    if (e.key === 'Enter') {
+      inputTodo();
+    }
+  }
+
+  const handleTodoInputBtnClick = async (e) => {
+    inputTodo();
+  }
+
   return (
     <div id="todoInput">
         <input style={{"width":"100%", "padding":"0 10px"}} 
@@ -233,6 +241,7 @@ const TodoInput = () => {
         </select> */}
         <input type='date' className='dateSelector' value={newDueDate}
           onChange={handleTodoDueDateSelectionChange} onKeyDown={handleTodoInputEnter} />
+        <div id="inputBtn" onClick={handleTodoInputBtnClick}>+</div>
       </div>
     </div>
   )
@@ -252,8 +261,6 @@ const TodoList = () => {
   const { todos, setTodos } = useContext(TodoContext);
   const openTodos = todos.filter((todo) => todo.status === 'incomplete');
   const snoozedTodos = todos.filter((todo) => todo.status === 'snoozed');
-  const archivedTodos = todos.filter((todo) => todo.status === 'archived');
-  const completedTodos = todos.filter((todo) => todo.status === 'completed');
 
   const openCount = openTodos.length;
 
