@@ -1,6 +1,6 @@
 /*
  * {
- *   habit.id : 4,
+ *   habit._id : ObjectId('...'),
  *   habit.body : '...', 
  *   habit.doneDates : [Date,Date,Date]
  * }
