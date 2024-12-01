@@ -314,7 +314,7 @@ const DoneList = () => {
   const sortedDoneTodos = sortTodos(doneTodos, ordering);
 
   return (
-    <div className="todoListContainer">
+    <div className="todoListContainer fadedContainer">
       <PanelTitle title='done' count={sortedDoneTodos.length} />
       <div className="todoGrid">
         { sortedDoneTodos.length > 0 ? sortedDoneTodos.map((todo, index) => (
