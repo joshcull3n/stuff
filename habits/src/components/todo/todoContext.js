@@ -48,10 +48,12 @@ export const TodoProvider = ({ children }) => {
   // }
 
   useEffect(() => {
-    fetchRemoteTodosForUser(loggedInUser).then(resp => {
-      if (resp)
-        setTodos(checkSnoozeTimes(resp));
-    });
+    if (loggedInUser) {
+      fetchRemoteTodosForUser(loggedInUser).then(resp => {
+        if (resp)
+          setTodos(checkSnoozeTimes(resp));
+      });
+    }
   }, [loggedInUser]);
 
   // useEffect(() => {
