@@ -56,6 +56,8 @@ function sortTodos(todosToSort, order='default') {
 
       return a.created_date - b.created_date // or lowest created date first
     }
+    else
+      return 0
   });
 }
 
@@ -107,13 +109,13 @@ const BaseButtonElement = ({text, type, onclick}) => {
 const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
   const { mobile } = useContext(Context);
 
-  const Title = () => <div className={done && "todoCell doneTitle" || "todoCell"}>{todo.title}</div>
+  const Title = () => <div className={(done && "todoCell doneTitle") || "todoCell"}>{todo.title}</div>
   const DueDate = () => <div className="todoCell todoLabel">{getDueDateString(todo.due_date)}</div>
   const Category = () => <div className="todoCell todoLabel" style={{display:'unset'}}>{todo.category}</div>
   //const Notes = () => <div className="todoCell">{todo.notes}</div>
   //const Age = () => <div className="todoCell">{getAgeString(todo.created)}</div>
 
-  const CompleteBtn = () => <BaseButtonElement text="fin" type={done && "finDone" || "fin"} onclick={() => changeStatus(todo, 'complete', 'incomplete')}/>
+  const CompleteBtn = () => <BaseButtonElement text="fin" type={(done && "finDone") || "fin"} onclick={() => changeStatus(todo, 'complete', 'incomplete')}/>
   const SnoozeBtn = () => <BaseButtonElement text="snz" type="snz" onclick={() => changeStatus(todo, 'snoozed', 'incomplete')}/>
   const ArchiveBtn = () => <BaseButtonElement text="arc" type="arc" onclick={() => changeStatus(todo, 'archived')}/> 
   const UnarchiveBtn = () => <BaseButtonElement text="unarc" type="unarc" onclick={() => changeStatus(todo, 'incomplete')}/> 
@@ -152,11 +154,11 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
     <div className='todoRow'>
       <CompleteBtn />
       <Title />
-      { mobile !== true && <DueDate /> || <div></div> }
-      { mobile !== true && <Category /> || <div></div> }
+      { (mobile !== true && <DueDate />) || <div></div> }
+      { (mobile !== true && <Category />) || <div></div> }
       { showSnoozeBtn === true && <SnoozeBtn /> }
-      { mobile !== true && showArchiveBtn === true && <ArchiveBtn /> || showArchiveBtn === false && <UnarchiveBtn /> }
-      { mobile !== true && <DeleteBtn /> }
+      { (mobile !== true && showArchiveBtn === true && <ArchiveBtn />) || (showArchiveBtn === false && <UnarchiveBtn />) }
+      { (mobile !== true && <DeleteBtn />) }
     </div>
   )
 }
@@ -180,7 +182,7 @@ const StatsRow = ({open, snoozed, done, archived}) => {
 
 const TodoInput = () => {
   const { todos, setTodos, loggedInUser } = useContext(TodoContext);
-  const [validSelection, setValidSelection] = useState(false); // used for styling
+  //const [validSelection, setValidSelection] = useState(false); // used for styling
 
   const [newTodoText, setNewTodoText] = useState('');
   const [newCategory, setNewCategory] = useState('');
@@ -191,7 +193,7 @@ const TodoInput = () => {
   }
 
   const handleTodoCategoryChange = (e) => {
-    setValidSelection(e.target.value !== "");
+    //setValidSelection(e.target.value !== "");
     setNewCategory(e.target.value);
   }
 
@@ -223,7 +225,7 @@ const TodoInput = () => {
       setNewTodoText('');
       setNewCategory('');
       setNewDueDate('');
-      setValidSelection(false)
+      //setValidSelection(false)
     }
   }
 
