@@ -2,10 +2,12 @@ import React, { useContext } from 'react';
 import './App.css';
 import './styles/dark.css';
 import './styles/light.css';
+import './styles/mobile.css';
 import MainPanel from './components/mainPanel.js';
 import UsernamePrompt from './components/userPrompt.js';
 import { generateHabit } from './utils/habitUtils.js';
 import { Context } from './Context';
+import { TodoContext } from './components/todo/todoContext.js';
 
 export function detectDevice() {
   const agent = window.navigator.userAgent.toLowerCase()
@@ -23,7 +25,8 @@ export function detectDevice() {
 const App = () => {
   
   /* - DEBUG OPTIONS - */
-  console.error = () => {}; // disable if you want to see console errors
+  //console.error = () => {}; // disable if you want to see console errors
+  //console.log('rendering');
   /* -- -- -- -- -- -- */
 
   const localStorage = window.localStorage;
@@ -32,6 +35,8 @@ const App = () => {
     setGraphGridColor, setUpdateRemote, loggedInUser, setLoggedInUser, setAskForPassword,
     setUsernameInput, setPasswordInput, setNewUser
   } = useContext(Context);
+
+  const { setTodos } = useContext(TodoContext);
 
   // set body class
   document.body.classList.remove('lightMode');
@@ -64,6 +69,7 @@ const App = () => {
     setPasswordInput('');
     setNewUser(false);
     setHabits([]);
+    setTodos([]);
     setAskForPassword(false);
   }
 
@@ -126,10 +132,16 @@ const App = () => {
   const TopBar = () => {
     return (
       <div className="centered">
-        <h2>habits</h2>
+        <h2>stuff</h2>
       </div>
     );
   };
+
+  const AppIntro = () => (
+    <div className='appIntro'>
+      stuff is for managing your stuff.<br/><br/>it is a simple, noise-free way to organize your life.
+    </div>
+  )
   
   if (loggedInUser) {
     return (
@@ -149,6 +161,7 @@ const App = () => {
       <div className="App">
         <Sidebar />
         <TopBar />
+        <AppIntro />
         <UsernamePrompt />
       </div>
     )
