@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useRef } from 'react'
 import { Context } from '../../Context.js'
 import { TodoContext } from './todoContext.js'
 import { postNewTodo, deleteTodoReq, updateTodo } from './todoRequests.js';
@@ -201,6 +201,8 @@ const TodoInput = () => {
     setNewDueDate(e.target.value);
   }
 
+  const inputRef = useRef(null);
+
   async function inputTodo() {
     if (newTodoText.trim()) {
       const dueDate = new Date(newDueDate).getTime();
@@ -226,12 +228,14 @@ const TodoInput = () => {
       setNewCategory('');
       setNewDueDate('');
       //setValidSelection(false)
+
+      inputRef.current?.focus();
     }
   }
 
   const handleTodoInputEnter = async (e) => {
     if (e.key === 'Enter') {
-      inputTodo();
+      await inputTodo();
     }
   }
 
@@ -244,6 +248,7 @@ const TodoInput = () => {
         <input style={{"width":"100%", "padding":"0 10px"}} 
           placeholder="add a todo..."
           value={newTodoText}
+          ref={inputRef}
           onKeyDown={handleTodoInputEnter}
           onChange={handleTodoInputChange} />
       <div style={{"display":"flex","justifyContent":"center"}}>
