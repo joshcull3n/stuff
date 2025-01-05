@@ -12,7 +12,15 @@ function setElementOpacityById(elemId, opacityValue, fade=true) {
 }
 
 export const AppBar = () => {
-  const { viewMode, setViewMode, VIEW_MODES } = useContext(Context);
+  const { viewMode, setViewMode, VIEW_MODES, loggedInUser } = useContext(Context);
+  
+  if (!loggedInUser) {
+    return (
+      <div className="centered fadeIn">
+        <h2>stuff</h2>
+      </div>
+    )
+  }
 
   const ViewTitle = ({title, selected=false}) => {
     let viewmode = Object.values(VIEW_MODES).find(value => title === value);
@@ -74,7 +82,7 @@ const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, hand
     <div className='mainPanelContainer'>
       <div className="mainPanel" style={{padding:'5px 10px 10px'}}>
         {viewMode === VIEW_MODES.HABITS && (
-            <div id="mainContainer">
+            <div id="mainContainer" className="fadeIn">
               <HabitList mobile={mobile} habits={habits} dateLabels={dateLabels} />
               <HabitInput
                 mobile={mobile}
@@ -85,7 +93,7 @@ const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, hand
             </div>            
         )}
         {viewMode === VIEW_MODES.HABITS && habits.length > 0 && (
-          <div>
+          <div className="fadeIn">
             <Graph />
           </div>
         )}

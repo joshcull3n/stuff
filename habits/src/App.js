@@ -111,14 +111,14 @@ const App = () => {
     )
   }
 
-  const Sidebar = () => {
+  const TopBanner = () => {
     return (
       <div className='topBanner'>
         <div className='topBannerLeft'>
           <a href='/' style={{display:'flex', justifyContent:'center'}}><img id='homeImg' decoding='async' alt='home'/></a>
         </div>
         <div className='topBannerCenter'>
-          <AppBar />
+          <AppBar loggedIn={loggedInUser}/>
         </div>
         <div className='topBannerRight'>
           <div className='sidebarOption'>
@@ -132,16 +132,8 @@ const App = () => {
     )
   }
 
-  const TopBar = () => {
-    return (
-      <div className="centered">
-        <h2>stuff</h2>
-      </div>
-    );
-  };
-
   const AppIntro = () => (
-    <div className='appIntro'>
+    <div className='appIntro fadeIn'>
       stuff is for managing your stuff.<br/><br/>it is a simple, noise-free way to organize your life.
     </div>
   )
@@ -149,7 +141,7 @@ const App = () => {
   if (loggedInUser) {
     return (
       <div className="App">
-        <Sidebar />
+        <TopBanner />
         <MainPanel 
           mobile={detectDevice()}
           handleHabitInputEnter={handleHabitInputEnter}
@@ -162,8 +154,7 @@ const App = () => {
   else {
     return (
       <div className="App">
-        <Sidebar />
-        <TopBar />
+        <TopBanner />
         <AppIntro />
         <UsernamePrompt />
       </div>

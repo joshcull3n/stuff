@@ -113,21 +113,6 @@ input[type="checkbox"]:checked:hover {
   margin: 0px auto 15px auto;
 }
 
-.slowFadeIn {
-  opacity: 0;
-  animation: fadeIn 2s ease-in forwards;
-  animation-delay: 2s;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 .centered {
   display: flex;
   justify-content: center;
@@ -433,6 +418,45 @@ input[type="checkbox"]:checked:hover {
 
 .fadedContainer:hover {
   opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.fadeIn {
+  opacity: 0;
+  animation: fadeIn 0.4s ease-in forwards;
+}
+
+.slowFadeIn {
+  opacity: 0;
+  animation: fadeIn 1s ease-in forwards;
+  animation-delay: 1s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeInHalf {
+  animation: fadeInHalf 0.4s ease-in;
+}
+
+.fadeInHalf:hover {
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+}
+
+@keyframes fadeInHalf {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.4;
+  }
 }
 
 .todoListContainer {

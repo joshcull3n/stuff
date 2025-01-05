@@ -288,10 +288,10 @@ const TodoList = () => {
 
   return (
     <div>
-      <div className="todoListContainer">
+      <div className="todoListContainer fadeIn">
         <TodoInput />
       </div>
-      <div className="todoListContainer">
+      <div className="todoListContainer fadeIn">
       <PanelTitle title='todo' count={openCount} /*count2={openCount != totalCount && totalCount}*//>
         <div className="todoGrid">
           { 
@@ -303,11 +303,11 @@ const TodoList = () => {
         { snoozedTodos.length > 0 && (
           <div className="todoGrid" style={{ padding: '5px 0' }}>
             <div className="fadedContainer"> 
-            <div style={{fontSize:'x-small'}}><PanelTitle title='snoozed until tmr...' count={snoozedTodos.length}/></div>
-              { snoozedTodos.length > 0 ? snoozedTodos.map((todo, index) => (
-                <TodoRow todo={todo} showSnoozeBtn={true} showArchiveBtn={true} key={index} />
-              )) : <></> }
-            </div>
+              <div style={{fontSize:'x-small'}}><PanelTitle title='snoozed' count={snoozedTodos.length}/></div>
+                { snoozedTodos.length > 0 ? snoozedTodos.map((todo, index) => (
+                  <TodoRow todo={todo} showSnoozeBtn={true} showArchiveBtn={true} key={index} />
+                )) : <></> }
+              </div>
           </div>
         )}
       </div>
@@ -321,7 +321,7 @@ const DoneList = () => {
   const sortedDoneTodos = sortTodos(doneTodos, ordering);
 
   return (
-    <div className="todoListContainer fadedContainer">
+    <div className="todoListContainer fadedContainer fadeInHalf">
       <PanelTitle title='done' count={sortedDoneTodos.length} />
       <div className="todoGrid">
         { sortedDoneTodos.length > 0 ? sortedDoneTodos.map((todo, index) => (
@@ -337,7 +337,7 @@ const ArchiveList = () => {
   const archivedTodos = todos.filter((todo) => todo.status === 'archived');
   const sortedArchivedTodos = sortTodos(archivedTodos, ordering);
   return (
-    <div className="todoListContainer">
+    <div className="todoListContainer fadeIn">
       <PanelTitle title='archived' count={sortedArchivedTodos.length} />
       <div className="todoGrid">
         {

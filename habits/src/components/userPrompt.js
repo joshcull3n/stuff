@@ -4,9 +4,9 @@ import { checkUserExists, fetchUserInfo, verifyPassword } from '../utils/habitUt
 
 const InitialEnterUsername = ({usernameInput, inputRef, handleUsernameInputEnter, handleUsernameInputChange}) => {
   return (
-    <div id="habitListContainer" className='slowFadeIn' style={{padding:'0.5rem 0', maxWidth:'200px'}}>
+    <div id="habitListContainer" className='fadeIn' style={{padding:'0.5rem 0', maxWidth:'200px'}}>
       <div style={{textAlign: 'center', fontFamily:'monospace'}}>
-        please enter a username to login or create an account.
+        enter a username to login or create an account.
       </div>
       <div style={{ paddingTop:'0.5rem'}} className='centered'>
         <div>
@@ -82,9 +82,10 @@ const EnterPasswordPrompt = ({usernameAttempt, inputRef, usernameInput, handleUs
 }
 
 const UsernamePrompt = () => {
-    const { usernameInput, newUser, setUsernameInput, passwordInput, setPasswordInput, setNewUser, setLoggedInUser, askForPassword, setAskForPassword, loginFailed, setLoginFailed } = useContext(Context);
+    const { newUser, passwordInput, setPasswordInput, setNewUser, setLoggedInUser, askForPassword, setAskForPassword, loginFailed, setLoginFailed } = useContext(Context);
     const inputRef = useRef(null);
     const [usernameAttempt, setUsernameAttempt] = useState('');
+    const [usernameInput, setUsernameInput] = useState('');
 
     useEffect(() => {
       inputRef.current.focus();
