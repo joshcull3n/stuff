@@ -3,7 +3,7 @@ import './App.css';
 import './styles/dark.css';
 import './styles/light.css';
 import './styles/mobile.css';
-import MainPanel from './components/mainPanel.js';
+import MainPanel, { AppBar } from './components/mainPanel.js';
 import UsernamePrompt from './components/userPrompt.js';
 import { generateHabit } from './utils/habitUtils.js';
 import { Context } from './Context';
@@ -98,17 +98,13 @@ const App = () => {
 
   const LogoutButton = ({handleLogoutClick}) => {
     if (loggedInUser) {
-      return (
-        <div className="sidebarOption">
-          <div className='logout' id='logoutBtn' onClick={handleLogoutClick}>logout</div>
-        </div>
-      )
+      return <div className='logout' id='logoutBtn' onClick={handleLogoutClick}>logout</div>
     }
   }
 
   const LightModeSwitch = ({handleLightMode}) => {
     return (
-      <div className="sidebarOption">
+      <div>
         <input type="checkbox" onChange={handleLightMode} id="lightModeSwitch"/>
         <label htmlFor="lightModeSwitch"></label>
       </div>
@@ -117,11 +113,18 @@ const App = () => {
 
   const Sidebar = () => {
     return (
-      <div className="stickyContainer">
-        <div className="sidebar">
-          <div id="sidebarShadow">
-            <a href="/" style={{display:'flex', justifyContent:'center'}}><img id="homeImg" decoding="async" alt="home"/></a>
+      <div className='topBanner'>
+        <div className='topBannerLeft'>
+          <a href='/' style={{display:'flex', justifyContent:'center'}}><img id='homeImg' decoding='async' alt='home'/></a>
+        </div>
+        <div className='topBannerCenter'>
+          <AppBar />
+        </div>
+        <div className='topBannerRight'>
+          <div className='sidebarOption'>
             <LightModeSwitch handleLightMode={handleLightMode} />
+          </div>
+          <div className='sidebarOption'>
             <LogoutButton handleLogoutClick={handleLogoutClick} />
           </div>
         </div>

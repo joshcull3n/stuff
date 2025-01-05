@@ -11,20 +11,19 @@ function setElementOpacityById(elemId, opacityValue, fade=true) {
   element.style.opacity = opacityValue;
 }
 
-const TopBar = () => {
+export const AppBar = () => {
   const { viewMode, setViewMode, VIEW_MODES } = useContext(Context);
 
   const ViewTitle = ({title, selected=false}) => {
     let viewmode = Object.values(VIEW_MODES).find(value => title === value);
 
     return selected ? (
-      <div className="selectedViewTitle"><h4>{title}</h4></div>
+      <div className="selectedViewTitle">{title}</div>
     ) : (
       <div id={`${title}Title`} className="unselectedViewTitle viewTitle"
         onMouseEnter={(e) => setElementOpacityById(e.currentTarget.id, 1)}
         onMouseLeave={(e) => setElementOpacityById(e.currentTarget.id, 0.5)}
-        onClick={() => setViewMode(viewmode)}>
-        <h4>{title}</h4>
+        onClick={() => setViewMode(viewmode)}>{title}
       </div>
     )
   }
@@ -73,8 +72,7 @@ const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, hand
 
   return (
     <div className='mainPanelContainer'>
-      <div className="mainPanel" style={{padding:'10px'}}>
-        <TopBar currentView={viewMode} />
+      <div className="mainPanel" style={{padding:'5px 10px 10px'}}>
         {viewMode === VIEW_MODES.HABITS && (
             <div id="mainContainer">
               <HabitList mobile={mobile} habits={habits} dateLabels={dateLabels} />
