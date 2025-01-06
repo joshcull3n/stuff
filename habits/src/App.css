@@ -438,6 +438,14 @@ input[type="checkbox"]:checked:hover {
   transition: opacity 0.1s ease-in-out;
 }
 
+.categoryButton:hover {
+  opacity: 0.6;
+  cursor: pointer;
+  -webkit-transition: opacity 0.1s ease-in-out;
+  -moz-transition: opacity 0.1s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
+}
+
 .filterInput {
   margin: 4px 0px 0px 5px;
   -webkit-transition: opacity 0.5s ease-in-out;
