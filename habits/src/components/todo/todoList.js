@@ -45,19 +45,21 @@ function getDueDateString(dueMillis=null) {
   }
 }
 
-function sortTodos(todosToSort, order='default') {
+// due dates take precedent. when no due date, fallback to updated date.
+function sortTodos(todosToSort, order='default', ignore_duedate=false) {
   return [...todosToSort].toSorted((a, b) => {
-    if (order === 'default') {
-      const duedateA = a.due_date || Infinity;
-      const duedateB = b.due_date || Infinity;
+    const duedateA = a.due_date || Infinity;
+    const duedateB = b.due_date || Infinity;
 
-      if (duedateA !== duedateB)
-        return duedateA - duedateB; // lowest due date first
+    if (!ignore_duedate && (duedateA !== duedateB))
+      return duedateA - duedateB; // lowest due date first (soonest)
+    
+    const updatedA = a.updated_date || 0;
+    const updatedB = b.updated_date || 0;
 
-      return a.created_date - b.created_date // or lowest created date first
-    }
-    else
-      return 0
+    if (order === 'desc')
+      return updatedB - updatedA // last updated_date at top
+    return updatedA - updatedB   // (default) first updated_date at top
   });
 }
 
@@ -140,6 +142,7 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
       changeStatus = altStatus;
     const newTodos = todos.map(todo => {
       if (todo._id === todoToUpdate._id) {
+        todo.updated_date = Date.now();
         todo.status = changeStatus
         if (changeStatus === 'incomplete') {
           todo.snooze_date = null;
@@ -309,11 +312,11 @@ const FilterInput = () => {
 }
 
 // filter overall todos by given status and search query, and sort them
-function filterAndSort(todos, filteredTodos, filterString, status, ordering) {
+function filterAndSort(todos, filteredTodos, filterString, status, ordering, ignore_duedate=false) {
   const statusFilteredTodos = todos.filter((todo) => todo.status === status);
   if (!filteredTodos.length && !filterString.length)
-    return sortTodos(statusFilteredTodos, ordering) 
-  return sortTodos(filteredTodos.filter((todo) => todo.status === status), ordering);
+    return sortTodos(statusFilteredTodos, ordering, ignore_duedate) 
+  return sortTodos(filteredTodos.filter((todo) => todo.status === status), ordering, ignore_duedate);
 }
 
 // main components
@@ -364,8 +367,8 @@ const TodoList = () => {
 }
 
 const DoneList = () => {
-  const { todos, ordering, filteredTodos, filterString } = useContext(TodoContext);
-  const doneTodos = filterAndSort(todos, filteredTodos, filterString, 'complete', ordering);
+  const { todos, filteredTodos, filterString } = useContext(TodoContext);
+  const doneTodos = filterAndSort(todos, filteredTodos, filterString, 'complete', 'desc', true);
 
   return (
     <div className="todoListContainer fadedContainer fadeInHalf">
