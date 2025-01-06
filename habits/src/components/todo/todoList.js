@@ -98,6 +98,10 @@ const BaseButtonElement = ({text, type, onclick}) => {
       className: "todoButton",
       imgId: "filterButton",
       alt: "filter"
+    },
+    category: {
+      className: "categoryButton todoCell todoLabel",
+      content: text
     }
   };
   const buttonConfig = buttonTypes[type];
@@ -115,23 +119,27 @@ const BaseButtonElement = ({text, type, onclick}) => {
 
 const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
   const { mobile } = useContext(Context);
+  const { todos, setTodos, 
+    setNewCategory, setFilterString, 
+    filterString, setFilteredTodos, 
+    setCategoryFilterEnabled, setShowFilterInput } = useContext(TodoContext);
 
   const Title = () => <div className={(done && "todoCell doneTitle") || "todoCell"}>{todo.title}</div>
   const DueDate = () => <div className="todoCell todoLabel">{getDueDateString(todo.due_date)}</div>
-  const Category = () => <div className="todoCell todoLabel" style={{display:'unset'}}>{todo.category}</div>
-  //const Notes = () => <div className="todoCell">{todo.notes}</div>
-  //const Age = () => <div className="todoCell">{getAgeString(todo.created)}</div>
 
   const CompleteBtn = () => <BaseButtonElement text="fin" type={(done && "finDone") || "fin"} onclick={() => changeStatus(todo, 'complete', 'incomplete')}/>
   const SnoozeBtn = () => <BaseButtonElement text="snz" type="snz" onclick={() => changeStatus(todo, 'snoozed', 'incomplete')}/>
   const ArchiveBtn = () => <BaseButtonElement text="arc" type="arc" onclick={() => changeStatus(todo, 'archived')}/> 
   const UnarchiveBtn = () => <BaseButtonElement text="unarc" type="unarc" onclick={() => changeStatus(todo, 'incomplete')}/> 
   const DeleteBtn = () => <BaseButtonElement text="del" type="del" onclick={() => deleteTodo(todo)}/>
-
-  const {todos, setTodos} = useContext(TodoContext);
+  const CategoryBtn = () => <BaseButtonElement text={todo.category} type="category" onclick={() => handleCategoryBtnClick(todo.category)}/>
 
   function deleteTodo(todoToDelete) {
-    setTodos(todos.filter(todo => todo._id !== todoToDelete._id));
+    let newTodoArray = todos.filter(todo => todo._id !== todoToDelete._id)
+    setTodos(newTodoArray);
+    setFilteredTodos(
+      newTodoArray.filter(todo => (todo.title.toLowerCase().includes(filterString) || todo.category && todo.category.toLowerCase().includes(filterString)))
+    )
     deleteTodoReq(todoToDelete._id);
   }
 
@@ -158,12 +166,23 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
     updateTodo(todoToUpdate);
     setTodos(newTodos);
   }
+
+  function handleCategoryBtnClick(category) {
+    setCategoryFilterEnabled(true);
+    setShowFilterInput(true);
+    setFilterString(category);
+    setFilteredTodos(
+      todos.filter((todo) => { return (todo.category && todo.category.toLowerCase().includes(category))})
+    );
+    setNewCategory(category);
+  }
+
   return (
     <div className='todoRow'>
       <CompleteBtn />
       <Title />
       { (mobile !== true && <DueDate />) || <div></div> }
-      { (mobile !== true && <Category />) || <div></div> }
+      { (mobile !== true && <CategoryBtn />) || <div></div> }
       { showSnoozeBtn === true && <SnoozeBtn /> }
       { (mobile !== true && showArchiveBtn === true && <ArchiveBtn />) || (showArchiveBtn === false && <UnarchiveBtn />) }
       { (mobile !== true && <DeleteBtn />) }
@@ -189,25 +208,13 @@ const StatsRow = ({open, snoozed, done, archived}) => {
 }
 
 const TodoInput = () => {
-  const { todos, setTodos, loggedInUser } = useContext(TodoContext);
-  //const [validSelection, setValidSelection] = useState(false); // used for styling
-
+  const { todos, setTodos, loggedInUser, newCategory, setNewCategory, filterString, setFilteredTodos, categoryFilterEnabled } = useContext(TodoContext);
   const [newTodoText, setNewTodoText] = useState('');
-  const [newCategory, setNewCategory] = useState('');
   const [newDueDate, setNewDueDate] = useState('');
 
-  const handleTodoInputChange = (e) => {
-    setNewTodoText(e.target.value);
-  }
-
-  const handleTodoCategoryChange = (e) => {
-    //setValidSelection(e.target.value !== "");
-    setNewCategory(e.target.value);
-  }
-
-  const handleTodoDueDateSelectionChange = (e) => {
-    setNewDueDate(e.target.value);
-  }
+  const handleTodoInputChange = (e) => { setNewTodoText(e.target.value); }
+  const handleTodoCategoryChange = (e) => { setNewCategory(e.target.value); }
+  const handleTodoDueDateSelectionChange = (e) => { setNewDueDate(e.target.value) }
 
   const inputRef = useRef(null);
 
@@ -233,9 +240,12 @@ const TodoInput = () => {
       tempArray.push(newTodoResp);
       setTodos(tempArray);
       setNewTodoText('');
-      setNewCategory('');
       setNewDueDate('');
-      //setValidSelection(false)
+      setFilteredTodos(tempArray.filter((todo) => { 
+        return (todo.title.toLowerCase().includes(filterString) || todo.category && todo.category.toLowerCase().includes(filterString))
+      }));
+      if (!categoryFilterEnabled)
+        setNewCategory('');
 
       inputRef.current?.focus();
     }
@@ -248,7 +258,7 @@ const TodoInput = () => {
   }
 
   const handleTodoInputBtnClick = async (e) => {
-    inputTodo();
+    await inputTodo();
   }
 
   return (
@@ -286,19 +296,25 @@ const PanelTitle = ({title, count, count2}) => {
 }
 
 const FilterInput = () => {
-  const { todos, showFilterInput, setFilterString, setFilteredTodos } = useContext(TodoContext);
+  const { todos, showFilterInput, 
+    filterString, setFilterString, 
+    setFilteredTodos, setNewCategory,
+    categoryFilterEnabled, setCategoryFilterEnabled } = useContext(TodoContext);
 
   const handleFilterChange = (e) => {
     setFilterString(e.target.value);
     filterTodoList(e.target.value);
+    if (categoryFilterEnabled) {
+      setNewCategory('');
+      setCategoryFilterEnabled(false);
+    }
   }
 
-  const filterTodoList = (filterString) => {
+  function filterTodoList(filterString) {
     setFilteredTodos(
       todos.filter((todo) => {
         return (todo.title.toLowerCase().includes(filterString) || (todo.category && todo.category.toLowerCase().includes(filterString)))
-      }
-      )
+      })
     );
   };
 
@@ -307,7 +323,8 @@ const FilterInput = () => {
       className={`filterInput ${showFilterInput ? '' : 'hidden'}`}
       type='text'
       placeholder='filter' 
-      onChange={handleFilterChange}></input>
+      onChange={handleFilterChange}
+      value={filterString}></input>
   )
 }
 
@@ -321,17 +338,29 @@ function filterAndSort(todos, filteredTodos, filterString, status, ordering, ign
 
 // main components
 const TodoList = () => {
-  const { todos, ordering, 
+  const { todos, setTodos, ordering, 
     showFilterInput, setShowFilterInput,
-    filteredTodos, filterString
+    filteredTodos, setFilteredTodos,
+    filterString, setFilterString,
+    setNewCategory
   } = useContext(TodoContext);
 
   const openTodos = filterAndSort(todos, filteredTodos, filterString, 'incomplete', ordering);
   const snoozedTodos = filterAndSort(todos, filteredTodos, filterString, 'snoozed', ordering);
   const openCount = openTodos.length;
 
+  function switchShowFilterInput() {
+    setShowFilterInput(!showFilterInput);
+    if (showFilterInput) {
+      setFilterString('');
+      setTodos(todos);
+      setFilteredTodos(todos);
+      setNewCategory('');
+    }
+  }
+
   const FilterButton = () => {
-    return ( <BaseButtonElement text="filter" type="filter" onclick={() => setShowFilterInput(!showFilterInput)}/> )
+    return ( <BaseButtonElement text="filter" type="filter" onclick={() => switchShowFilterInput()}/> )
   }
 
   return (
