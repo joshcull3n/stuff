@@ -10,12 +10,9 @@ export const TodoProvider = ({ children }) => {
   const [todos, setTodos] = useState([]);
   // default sorting is by due date, then by created date
   const [ordering, setOrdering] = useState('default');
-
-  // XXX: debug purposes delete me
-  // useEffect(() => {
-  //   console.log('State change detected');
-  //   console.log({ todos, newTodoText, newCategory, newDueDate });
-  // }, [todos, newTodoText, newCategory, newDueDate]);
+  const [filteredTodos, setFilteredTodos] = useState([]);
+  const [showFilterInput, setShowFilterInput] = useState(null);
+  const [filterString, setFilterString] = useState('');
 
   function checkSnoozeTimes(todos) {
     const today = new Date();
@@ -38,15 +35,6 @@ export const TodoProvider = ({ children }) => {
     return updTodos;
   }
 
-  // function fetchAndSetTodosForCurrentUser() {
-  //   if (loggedInUser) {
-  //     fetchRemoteTodosForUser(loggedInUser).then(resp => {
-  //       if (resp)
-  //         setTodos(checkSnoozeTimes(resp));
-  //     });
-  //   }
-  // }
-
   useEffect(() => {
     if (loggedInUser) {
       fetchRemoteTodosForUser(loggedInUser).then(resp => {
@@ -56,14 +44,12 @@ export const TodoProvider = ({ children }) => {
     }
   }, [loggedInUser]);
 
-  // useEffect(() => {
-  //   console.log('updated todos');
-  //   console.log(todos);
-  // }, [todos]);
-
   return (
     <TodoContext.Provider value={{
       todos, setTodos,
+      filteredTodos, setFilteredTodos,
+      showFilterInput, setShowFilterInput,
+      filterString, setFilterString,
       ordering, setOrdering,
       loggedInUser
     }}>

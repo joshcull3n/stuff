@@ -1,4 +1,4 @@
-import { useContext, useState, useRef } from 'react'
+import { useContext, useState, useRef, useEffect } from 'react'
 import { Context } from '../../Context.js'
 import { TodoContext } from './todoContext.js'
 import { postNewTodo, deleteTodoReq, updateTodo } from './todoRequests.js';
@@ -91,6 +91,11 @@ const BaseButtonElement = ({text, type, onclick}) => {
       className: "todoButton", 
       imgId: "unarchiveButton", 
       alt: "archive" 
+    },
+    filter: {
+      className: "todoButton",
+      imgId: "filterButton",
+      alt: "filter"
     }
   };
   const buttonConfig = buttonTypes[type];
@@ -277,22 +282,54 @@ const PanelTitle = ({title, count, count2}) => {
     return ( <div className='panelTitle'><span>{title}</span></div> )
 }
 
-const FilterButton = ({}) => {
-  return (
-    <div className='filterButton'>
-      <img id='filterButton' alt='filter'/>
-    </div>
+const FilterInput = () => {
+  const { todos, showFilterInput, setFilterString, setFilteredTodos } = useContext(TodoContext);
+
+  const handleFilterChange = (e) => {
+    setFilterString(e.target.value);
+    filterTodoList(e.target.value);
+  }
+
+  const filterTodoList = (filterString) => {
+    setFilteredTodos(
+      todos.filter((todo) => {
+        return (todo.title.toLowerCase().includes(filterString) || (todo.category && todo.category.toLowerCase().includes(filterString)))
+      }
+      )
+    );
+  };
+
+  return ( 
+    <input 
+      className={`filterInput ${showFilterInput ? '' : 'hidden'}`}
+      type='text'
+      placeholder='filter' 
+      onChange={handleFilterChange}></input>
   )
+}
+
+// filter overall todos by given status and search query, and sort them
+function filterAndSort(todos, filteredTodos, filterString, status, ordering) {
+  const statusFilteredTodos = todos.filter((todo) => todo.status === status);
+  if (!filteredTodos.length && !filterString.length)
+    return sortTodos(statusFilteredTodos, ordering) 
+  return sortTodos(filteredTodos.filter((todo) => todo.status === status), ordering);
 }
 
 // main components
 const TodoList = () => {
-  const { todos, ordering } = useContext(TodoContext);
-  const sortedTodos = sortTodos(todos, ordering);
-  const openTodos = sortedTodos.filter((todo) => todo.status === 'incomplete');
-  const snoozedTodos = sortedTodos.filter((todo) => todo.status === 'snoozed');
+  const { todos, ordering, 
+    showFilterInput, setShowFilterInput,
+    filteredTodos, filterString
+  } = useContext(TodoContext);
 
+  const openTodos = filterAndSort(todos, filteredTodos, filterString, 'incomplete', ordering);
+  const snoozedTodos = filterAndSort(todos, filteredTodos, filterString, 'snoozed', ordering);
   const openCount = openTodos.length;
+
+  const FilterButton = () => {
+    return ( <BaseButtonElement text="filter" type="filter" onclick={() => setShowFilterInput(!showFilterInput)}/> )
+  }
 
   return (
     <div>
@@ -302,7 +339,7 @@ const TodoList = () => {
       <div className='todoListContainer fadeIn'>
         <div className='todoListHeader'>
           <PanelTitle title='todo' count={openCount} /*count2={openCount != totalCount && totalCount}*//>
-          <FilterButton />
+          <FilterButton /><FilterInput />
         </div>
         <div className='todoGrid'>
           { 
@@ -327,15 +364,14 @@ const TodoList = () => {
 }
 
 const DoneList = () => {
-  const { todos, ordering } = useContext(TodoContext);
-  const doneTodos = todos.filter((todo) => todo.status === 'complete');
-  const sortedDoneTodos = sortTodos(doneTodos, ordering);
+  const { todos, ordering, filteredTodos, filterString } = useContext(TodoContext);
+  const doneTodos = filterAndSort(todos, filteredTodos, filterString, 'complete', ordering);
 
   return (
     <div className="todoListContainer fadedContainer fadeInHalf">
-      <PanelTitle title='done' count={sortedDoneTodos.length} />
+      <PanelTitle title='done' count={doneTodos.length} />
       <div className="todoGrid">
-        { sortedDoneTodos.length > 0 ? sortedDoneTodos.map((todo, index) => (
+        { doneTodos.length > 0 ? doneTodos.map((todo, index) => (
             <TodoRow todo={todo} showSnoozeBtn={false} done={true} key={index} />
           )) : <div className='todoRow' style={{'padding': '0px'}}></div> }
       </div>
@@ -344,15 +380,15 @@ const DoneList = () => {
 }
 
 const ArchiveList = () => {
-  const { todos, ordering } = useContext(TodoContext);
-  const archivedTodos = todos.filter((todo) => todo.status === 'archived');
-  const sortedArchivedTodos = sortTodos(archivedTodos, ordering);
+  const { todos, ordering, filteredTodos, filterString} = useContext(TodoContext);
+  const archivedTodos = filterAndSort(todos, filteredTodos, filterString, 'archived', ordering);
+  
   return (
     <div className="todoListContainer fadeIn">
-      <PanelTitle title='archived' count={sortedArchivedTodos.length} />
+      <PanelTitle title='archived' count={archivedTodos.length} />
       <div className="todoGrid">
         {
-          sortedArchivedTodos.length > 0 ? sortedArchivedTodos.map((todo, index) => (
+          archivedTodos.length > 0 ? archivedTodos.map((todo, index) => (
             <TodoRow todo={todo} showSnoozeBtn={false} showArchiveBtn={false} key={index} />
           )) : <div className='todoRow' style={{'padding': '0px'}}></div>
         }

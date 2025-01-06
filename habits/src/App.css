@@ -419,7 +419,8 @@ input[type="checkbox"]:checked:hover {
   content: var(--filter-button);
   opacity: 0.4;
   width: 15px;
-  height: 15px
+  height: 15px;
+  margin-top: 3px;
 }
 
 #filterButton:hover {
@@ -435,6 +436,19 @@ input[type="checkbox"]:checked:hover {
   -webkit-transition: opacity 0.1s ease-in-out;
   -moz-transition: opacity 0.1s ease-in-out;
   transition: opacity 0.1s ease-in-out;
+}
+
+.filterInput {
+  margin: 4px 0px 0px 5px;
+  -webkit-transition: opacity 0.5s ease-in-out;
+  -moz-transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
+  opacity: 1;
+}
+
+.filterInput.hidden {
+  display: none;
+  opacity: 0;
 }
 
 .fadedContainer {

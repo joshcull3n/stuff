@@ -25,7 +25,7 @@ export function detectDevice() {
 const App = () => {
   
   /* - DEBUG OPTIONS - */
-  //console.error = () => {}; // disable if you want to see console errors
+  console.error = () => {}; // disable if you want to see console errors
   //console.log('rendering');
   /* -- -- -- -- -- -- */
 
