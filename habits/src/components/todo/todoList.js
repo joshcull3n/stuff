@@ -275,7 +275,15 @@ const PanelTitle = ({title, count, count2}) => {
     return ( <div className='panelTitle'><span>{title}</span><span>{count}</span></div> )
   else
     return ( <div className='panelTitle'><span>{title}</span></div> )
-} 
+}
+
+const FilterButton = ({}) => {
+  return (
+    <div className='filterButton'>
+      <img id='filterButton' alt='filter'/>
+    </div>
+  )
+}
 
 // main components
 const TodoList = () => {
@@ -288,12 +296,15 @@ const TodoList = () => {
 
   return (
     <div>
-      <div className="todoListContainer fadeIn">
+      <div className='todoListContainer fadeIn'>
         <TodoInput />
       </div>
-      <div className="todoListContainer fadeIn">
-      <PanelTitle title='todo' count={openCount} /*count2={openCount != totalCount && totalCount}*//>
-        <div className="todoGrid">
+      <div className='todoListContainer fadeIn'>
+        <div className='todoListHeader'>
+          <PanelTitle title='todo' count={openCount} /*count2={openCount != totalCount && totalCount}*//>
+          <FilterButton />
+        </div>
+        <div className='todoGrid'>
           { 
             openTodos.length > 0 ? openTodos.map((todo, index) => (
               <TodoRow todo={todo} showSnoozeBtn={true} showArchiveBtn={true} key={index} />
@@ -301,8 +312,8 @@ const TodoList = () => {
           }
         </div>
         { snoozedTodos.length > 0 && (
-          <div className="todoGrid" style={{ padding: '5px 0' }}>
-            <div className="fadedContainer"> 
+          <div className='todoGrid' style={{ padding: '5px 0' }}>
+            <div className='fadedContainer'> 
               <div style={{fontSize:'x-small'}}><PanelTitle title='snoozed' count={snoozedTodos.length}/></div>
                 { snoozedTodos.length > 0 ? snoozedTodos.map((todo, index) => (
                   <TodoRow todo={todo} showSnoozeBtn={true} showArchiveBtn={true} key={index} />

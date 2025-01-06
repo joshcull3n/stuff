@@ -4,7 +4,7 @@ import { checkUserExists, fetchUserInfo, verifyPassword } from '../utils/habitUt
 
 const InitialEnterUsername = ({usernameInput, inputRef, handleUsernameInputEnter, handleUsernameInputChange}) => {
   return (
-    <div id="habitListContainer" className='fadeIn' style={{padding:'0.5rem 0', maxWidth:'200px'}}>
+    <div id="habitListContainer" className='slowFadeIn' style={{padding:'0.5rem 0', maxWidth:'200px'}}>
       <div style={{textAlign: 'center', fontFamily:'monospace'}}>
         enter a username to login or create an account.
       </div>

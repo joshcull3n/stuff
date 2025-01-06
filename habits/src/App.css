@@ -411,6 +411,32 @@ input[type="checkbox"]:checked:hover {
   /* padding: 0 0 5px 0; */
 }
 
+.todoListHeader {
+  display: flex;
+}
+
+#filterButton {
+  content: var(--filter-button);
+  opacity: 0.4;
+  width: 15px;
+  height: 15px
+}
+
+#filterButton:hover {
+  opacity: 1;
+}
+
+.filterButton {
+  color: var(--main-font-color-low-alpha);
+  display: flex;
+  padding: 7px 0 0 2px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  -webkit-transition: opacity 0.1s ease-in-out;
+  -moz-transition: opacity 0.1s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
+}
+
 .fadedContainer {
   opacity: 0.4;
   transition: opacity 0.2s ease-in-out;
@@ -429,7 +455,7 @@ input[type="checkbox"]:checked:hover {
 .slowFadeIn {
   opacity: 0;
   animation: fadeIn 1s ease-in forwards;
-  animation-delay: 1s;
+  animation-delay: 0.5s;
 }
 
 @keyframes fadeIn {
@@ -561,7 +587,7 @@ input[type="checkbox"]:checked:hover {
 }
 
 .panelTitle {
-  padding: 3px 10px;
+  padding: 3px 0 3px 10px;
   font-size: 0.8em;
 }
 
