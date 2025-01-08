@@ -4,6 +4,10 @@
   height: 99%;
 }
 
+.lightMode, .darkMode {
+  transition: all 0.3s ease-in-out;
+}
+
 #root, .App, .mainPanelContainer, .mainPanel {
   height: 99%;
 }
@@ -461,7 +465,6 @@ input[type="checkbox"]:checked:hover {
 
 .fadedContainer {
   opacity: 0.4;
-  transition: opacity 0.2s ease-in-out;
 }
 
 .fadedContainer:hover {
