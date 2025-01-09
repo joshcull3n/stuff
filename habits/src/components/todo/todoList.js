@@ -128,7 +128,8 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
     setNewCategory, setFilterString, 
     filterString, setFilteredTodos, 
     setCategoryFilterEnabled, setShowFilterInput,
-    editingTitleIndex, setEditingTitleIndex
+    editingTitleIndex, setEditingTitleIndex,
+    titleFieldWidth, setTitleFieldWidth
   } = useContext(TodoContext);
   const [editingTitleValue, setEditingTitleValue] = useState(todo.title);
 
@@ -141,19 +142,56 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
   const CategoryBtn = () => <BaseButtonElement text={todo.category} type="category" onclick={() => handleCategoryBtnClick(todo.category)}/>
   const EditBtn = () => <BaseButtonElement text="edit" type="edit" onclick={()=> {}}/>
   const Title = () => {
+    const titleFieldRef = useRef(null);
+    const editFieldRef = useRef(null);
+
+    const handleTitleDoubleClick = (todo) => {
+      setEditingTitleIndex(String(todos.indexOf(todo)));
+      setEditingTitleValue(todo.title);
+      setTitleFieldWidth(`${titleFieldRef.current.offsetWidth}px`);
+    }
+  
+    const handleEditingTitleEnter = (e, todo) => {
+      if (e.code === 'Enter') {
+        changeTitle(todo, e.target.value);
+        setEditingTitleIndex('');
+        setEditingTitleValue('');
+        setTitleFieldWidth('');
+      }
+      if (e.code === 'Escape') {
+        setEditingTitleIndex('');
+        setEditingTitleValue('');
+        setTitleFieldWidth('');
+      }
+    }
+  
+    const handleEditingTitleChange = (e) => {
+      setEditingTitleValue(e.target.value);
+    }
+
+    useEffect(() => {
+      if (editFieldRef.current && titleFieldWidth)
+        editFieldRef.current.style.width = titleFieldWidth; // required because the input field is not width bound by the field content
+    }, [titleFieldWidth]);
+
     if (editingTitleIndex === String(todos.indexOf(todo)))
       return (
-        <input className={(done && "todoCell doneTitle") || "todoCell"} 
+        <input 
+          ref={editFieldRef}
+          className={(done && "todoCell doneTitle") || "todoCell"} 
           onDoubleClick={handleTitleDoubleClick} 
           onKeyDown={(e) => handleEditingTitleEnter(e, todo)}
           onChange={handleEditingTitleChange}
           autoFocus 
-          value={editingTitleValue}>
-        </input>
+          value={editingTitleValue}
+        />
       )
     return (
-      <div className={(done && "todoCell doneTitle") || "todoCell"} 
-        onDoubleClick={() => handleTitleDoubleClick(todo)}>
+      <div
+        ref={titleFieldRef}
+        className={(done && "todoCell doneTitle") || "todoCell"} 
+        onDoubleClick={() => handleTitleDoubleClick(todo)}
+      >
           {/* <div>{todo.title}</div>
           <div style={{'maxWidth':'15px'}}><EditBtn /></div> */}
           {todo.title}
@@ -170,26 +208,6 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
     deleteTodoReq(todoToDelete._id);
   }
 
-  const handleTitleDoubleClick = (todo) => {
-    setEditingTitleIndex(String(todos.indexOf(todo)));
-    setEditingTitleValue(todo.title);
-  }
-
-  const handleEditingTitleEnter = (e, todo) => {
-    if (e.code === 'Enter') {
-      changeTitle(todo, e.target.value);
-      setEditingTitleIndex('');
-      setEditingTitleValue('');
-    }
-    if (e.code === 'Escape') {
-      setEditingTitleIndex('');
-      setEditingTitleValue('');
-    }
-  }
-
-  const handleEditingTitleChange = (e) => {
-    setEditingTitleValue(e.target.value);
-  }
 
   // if task status is already status, use altStatus
   function changeStatus(todoToUpdate, status, altStatus) {
