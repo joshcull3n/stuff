@@ -4,6 +4,34 @@
   height: 99%;
 }
 
+/* all css differences between desktop/mobile live here */
+body {
+  --home-img-width: 40px;
+  --sidebar-top: 15px;
+  --graph-step-size: 0.2;
+  --grid-width-template-columns-habits: min-content repeat(21, 1fr) auto;
+  --grid-width-template-columns-todos: 20px minmax(100px, 1fr) 70px 85px 15px 15px;
+  --date-selector-width: 30px;
+  /* --date-selector-border-color: var(--main-font-color-high-alpha); */
+  --date-selector-border-color: #00000000;
+  --date-selector-justify-items: baseline;
+  --mainpanel-min-width: 550px;
+  --category-dropdown-width: 180px;
+  --date-selector-padding: 0px 12px 0px 0px;
+  --date-selector-icon-size: 18px;
+}
+
+.mobile {
+  --home-img-width: 25px;
+  --graph-step-size: 0.5;
+  --grid-width-template-columns-habits: 14em repeat(3, 1fr) auto;
+  --grid-width-template-columns-todos: 20px minmax(100px, auto) 0px 0px 15px 0px;
+  --mainpanel-min-width: unset;
+  --category-dropdown-width: 80px;
+  --date-selector-padding: 0px 7px 0px 0px;
+  --date-selector-icon-size: 16px;
+}
+
 .lightMode, .darkMode {
   transition: all 0.3s ease-in-out;
 }
@@ -23,15 +51,6 @@
 }
 
 body {
-  --home-img-width: 40px;
-  --sidebar-top: 15px;
-  --graph-step-size: 0.2;
-  --grid-width-template-columns-habits: min-content repeat(21, 1fr) auto;
-  --grid-width-template-columns-todos: 20px minmax(100px, 1fr) 0px 85px 15px 15px;
-  --date-selector-width: ;
-  --date-selector-border-color: var(--main-font-color-high-alpha);
-  --date-selector-justify-items: baseline;
-  --mainpanel-min-width: 550px;
   background-color: var(--bg-color);
   font-size: 0.85em;
   line-height: 1.5;
