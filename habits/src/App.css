@@ -14,6 +14,7 @@
 
 .mainPanel {
   max-width: max-content;
+  min-width: 500px;
 }
 
 * {
@@ -444,6 +445,29 @@ input[type="checkbox"]:checked:hover {
   -webkit-transition: opacity 0.1s ease-in-out;
   -moz-transition: opacity 0.1s ease-in-out;
   transition: opacity 0.1s ease-in-out;
+}
+
+#editButton {
+  content: var(--edit-button);
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+  opacity: 0.4;
+}
+
+.editButton {
+  color: var(--main-font-color-low-alpha);
+  display: flex;
+  padding: 7px 0 0 2px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  -webkit-transition: opacity 0.1s ease-in-out;
+  -moz-transition: opacity 0.1s ease-in-out;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.todoRow:hover .editButton {
+  opacity: 1;
 }
 
 .categoryButton:hover {

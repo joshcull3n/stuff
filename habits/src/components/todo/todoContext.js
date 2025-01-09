@@ -15,6 +15,7 @@ export const TodoProvider = ({ children }) => {
   const [filterString, setFilterString] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [categoryFilterEnabled, setCategoryFilterEnabled] = useState(false);
+  const [editingTitleIndex, setEditingTitleIndex] = useState('');
 
   function checkSnoozeTimes(todos) {
     const today = new Date();
@@ -55,6 +56,7 @@ export const TodoProvider = ({ children }) => {
       ordering, setOrdering,
       newCategory, setNewCategory,
       categoryFilterEnabled, setCategoryFilterEnabled,
+      editingTitleIndex, setEditingTitleIndex,
       loggedInUser
     }}>
       { children }

@@ -102,6 +102,11 @@ const BaseButtonElement = ({text, type, onclick}) => {
     category: {
       className: "categoryButton todoCell todoLabel",
       content: text
+    },
+    edit: {
+      className: "todoButton",
+      imgId: "editButton",
+      alt: "edit"
     }
   };
   const buttonConfig = buttonTypes[type];
@@ -122,17 +127,38 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
   const { todos, setTodos, 
     setNewCategory, setFilterString, 
     filterString, setFilteredTodos, 
-    setCategoryFilterEnabled, setShowFilterInput } = useContext(TodoContext);
+    setCategoryFilterEnabled, setShowFilterInput,
+    editingTitleIndex, setEditingTitleIndex
+  } = useContext(TodoContext);
+  const [editingTitleValue, setEditingTitleValue] = useState(todo.title);
 
-  const Title = () => <div className={(done && "todoCell doneTitle") || "todoCell"}>{todo.title}</div>
   const DueDate = () => <div className="todoCell todoLabel">{getDueDateString(todo.due_date)}</div>
-
   const CompleteBtn = () => <BaseButtonElement text="fin" type={(done && "finDone") || "fin"} onclick={() => changeStatus(todo, 'complete', 'incomplete')}/>
   const SnoozeBtn = () => <BaseButtonElement text="snz" type="snz" onclick={() => changeStatus(todo, 'snoozed', 'incomplete')}/>
   const ArchiveBtn = () => <BaseButtonElement text="arc" type="arc" onclick={() => changeStatus(todo, 'archived')}/> 
   const UnarchiveBtn = () => <BaseButtonElement text="unarc" type="unarc" onclick={() => changeStatus(todo, 'incomplete')}/> 
   const DeleteBtn = () => <BaseButtonElement text="del" type="del" onclick={() => deleteTodo(todo)}/>
   const CategoryBtn = () => <BaseButtonElement text={todo.category} type="category" onclick={() => handleCategoryBtnClick(todo.category)}/>
+  const EditBtn = () => <BaseButtonElement text="edit" type="edit" onclick={()=> {}}/>
+  const Title = () => {
+    if (editingTitleIndex === String(todos.indexOf(todo)))
+      return (
+        <input className={(done && "todoCell doneTitle") || "todoCell"} 
+          onDoubleClick={handleTitleDoubleClick} 
+          onKeyDown={(e) => handleEditingTitleEnter(e, todo)}
+          onChange={handleEditingTitleChange}
+          autoFocus 
+          value={editingTitleValue}>
+        </input>
+      )
+    return (
+      <div className={(done && "todoCell doneTitle") || "todoCell"} 
+        onDoubleClick={() => handleTitleDoubleClick(todo)}>
+          <div>{todo.title}</div>
+          <div style={{'maxWidth':'15px'}}><EditBtn /></div>
+        </div>
+    )
+  }
 
   function deleteTodo(todoToDelete) {
     let newTodoArray = todos.filter(todo => todo._id !== todoToDelete._id)
@@ -141,6 +167,27 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
       newTodoArray.filter(todo => (todo.title.toLowerCase().includes(filterString) || todo.category && todo.category.toLowerCase().includes(filterString)))
     )
     deleteTodoReq(todoToDelete._id);
+  }
+
+  const handleTitleDoubleClick = (todo) => {
+    setEditingTitleIndex(String(todos.indexOf(todo)));
+    setEditingTitleValue(todo.title);
+  }
+
+  const handleEditingTitleEnter = (e, todo) => {
+    if (e.code === 'Enter') {
+      changeTitle(todo, e.target.value);
+      setEditingTitleIndex('');
+      setEditingTitleValue('');
+    }
+    if (e.code === 'Escape') {
+      setEditingTitleIndex('');
+      setEditingTitleValue('');
+    }
+  }
+
+  const handleEditingTitleChange = (e) => {
+    setEditingTitleValue(e.target.value);
   }
 
   // if task status is already status, use altStatus
@@ -167,6 +214,20 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
     setTodos(newTodos);
   }
 
+  function changeTitle(todoToUpdate, newTitle) {
+    if (newTitle === todoToUpdate.title)
+      return
+    const newTodos = todos.map(todo => {
+      if (todo._id === todoToUpdate._id) {
+        todo.updated_date = Date.now();
+        todo.title = newTitle;
+      }
+      return todo;
+    })
+    updateTodo(todoToUpdate)
+    setTodos(newTodos);
+  }
+
   function handleCategoryBtnClick(category) {
     setCategoryFilterEnabled(true);
     setShowFilterInput(true);
@@ -181,8 +242,9 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
     <div className='todoRow'>
       <CompleteBtn />
       <Title />
+      {/* { (mobile !== true && <EditBtn />) || <div></div> } */}
       { (mobile !== true && <DueDate />) || <div></div> }
-      { (mobile !== true && <CategoryBtn />) || <div></div> }
+      { (mobile !== true && todo.category && <CategoryBtn />) || <div></div> }
       { showSnoozeBtn === true && <SnoozeBtn /> }
       { (mobile !== true && showArchiveBtn === true && <ArchiveBtn />) || (showArchiveBtn === false && <UnarchiveBtn />) }
       { (mobile !== true && <DeleteBtn />) }
