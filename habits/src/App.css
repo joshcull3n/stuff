@@ -4,7 +4,7 @@
   height: 99%;
 }
 
-/* all css differences between desktop/mobile live here */
+/* all desktop/mobile css differences live here */
 body {
   --home-img-width: 40px;
   --sidebar-top: 15px;
@@ -402,7 +402,6 @@ input[type="checkbox"]:checked:hover {
 }
 
 #inputBtn {
-  margin-left: 10px;
   padding: 2px 7px;
   border: solid 0.5px var(--main-font-color-high-alpha);
   border-radius: 3px;
@@ -675,13 +674,13 @@ input[type="checkbox"]:checked:hover {
 }
 
 .categoryDropdown {
-  margin: 0px 5px;
+  margin: 0 0 0 5px;
   font-size: small;
   appearance: none; 
   background-color: var(--main-bg-color);
   border-color: var(--main-font-color-high-alpha);
   border-radius: 3px;
-  width: 90px;
+  width: var(--category-dropdown-width);
   text-align: center;
   /* color: var(--main-font-color-med-alpha); */
   border-width: 0.5px;
@@ -694,10 +693,34 @@ input[type="checkbox"]:checked:hover {
 .dateSelector {
   background-color: var(--main-bg-color);
   border-color: var(--date-selector-border-color);
-  border-radius: 3px;
-  text-align: center;
   color: var(--main-font-color-med-alpha);
-  font-size: x-small;
-  width: var(--date-selector-width);
+  width: 15px;
+  padding: var(--date-selector-padding);
   justify-items: var(--date-selector-justify-items);
+  background: var(--dateSelector-background);
+  background-size: var(--date-selector-icon-size);
+  opacity: 0.4;
+}
+
+.dateSelector:hover {
+  opacity: 1;
+}
+
+input[type="date"]::-webkit-datetime-edit,
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-clear-button {
+  display: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0; /* Hide the default icon */
+}
+
+input[type="date"]:selected{
+  opacity: 1;
+}
+
+.dueDate {
+  font-size: x-small;
+  align-content: center;
 }

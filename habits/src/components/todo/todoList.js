@@ -132,7 +132,7 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
   } = useContext(TodoContext);
   const [editingTitleValue, setEditingTitleValue] = useState(todo.title);
 
-  const DueDate = () => <div className="todoCell todoLabel">{getDueDateString(todo.due_date)}</div>
+  const DueDate = () => <div className="todoCell todoLabel dueDate">{getDueDateString(todo.due_date)}</div>
   const CompleteBtn = () => <BaseButtonElement text="fin" type={(done && "finDone") || "fin"} onclick={() => changeStatus(todo, 'complete', 'incomplete')}/>
   const SnoozeBtn = () => <BaseButtonElement text="snz" type="snz" onclick={() => changeStatus(todo, 'snoozed', 'incomplete')}/>
   const ArchiveBtn = () => <BaseButtonElement text="arc" type="arc" onclick={() => changeStatus(todo, 'archived')}/> 
@@ -154,8 +154,9 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
     return (
       <div className={(done && "todoCell doneTitle") || "todoCell"} 
         onDoubleClick={() => handleTitleDoubleClick(todo)}>
-          <div>{todo.title}</div>
-          <div style={{'maxWidth':'15px'}}><EditBtn /></div>
+          {/* <div>{todo.title}</div>
+          <div style={{'maxWidth':'15px'}}><EditBtn /></div> */}
+          {todo.title}
         </div>
     )
   }
