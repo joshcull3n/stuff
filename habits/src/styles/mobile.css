@@ -3,6 +3,7 @@
   --graph-step-size: 0.5;
   --grid-width-template-columns-habits: 14em repeat(3, 1fr) auto;
   --grid-width-template-columns-todos: 20px minmax(100px, auto) 0px 0px 15px 0px;
+  --mainpanel-min-width: unset;
   /*--date-selector-width: ;
   --date-selector-border-color: #00000000;
   --date-selector-justify-items: unset; */

@@ -14,7 +14,7 @@
 
 .mainPanel {
   max-width: max-content;
-  min-width: 500px;
+  min-width: var(--mainpanel-min-width);
 }
 
 * {
@@ -31,6 +31,7 @@ body {
   --date-selector-width: ;
   --date-selector-border-color: var(--main-font-color-high-alpha);
   --date-selector-justify-items: baseline;
+  --mainpanel-min-width: 550px;
   background-color: var(--bg-color);
   font-size: 0.85em;
   line-height: 1.5;
