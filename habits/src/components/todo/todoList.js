@@ -146,9 +146,13 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
     const editFieldRef = useRef(null);
 
     const handleTitleDoubleClick = (todo) => {
-      setEditingTitleIndex(String(todos.indexOf(todo)));
-      setEditingTitleValue(todo.title);
-      setTitleFieldWidth(`${titleFieldRef.current.offsetWidth}px`);
+      if (!todo.title)
+        return
+      if (String(todos.indexOf(todo)) !== editingTitleIndex) {
+        setEditingTitleIndex(String(todos.indexOf(todo)));
+        setEditingTitleValue(todo.title);
+        setTitleFieldWidth(`${titleFieldRef.current.offsetWidth}px`);
+      }
     }
   
     const handleEditingTitleEnter = (e, todo) => {
