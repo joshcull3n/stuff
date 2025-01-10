@@ -4,14 +4,14 @@ import { checkUserExists, fetchUserInfo, verifyPassword } from '../utils/habitUt
 
 const InitialEnterUsername = ({usernameInput, inputRef, handleUsernameInputEnter, handleUsernameInputChange}) => {
   return (
-    <div id="habitListContainer" style={{padding:'15px 10px 0px'}}>
-      <div style={{opacity:0.9, textAlign: 'center', fontFamily:'monospace'}}>
-        please enter a username to login or create an account.
+    <div id="habitListContainer" className='slowFadeIn' style={{padding:'0.5rem 0', maxWidth:'200px'}}>
+      <div style={{textAlign: 'center', fontFamily:'monospace'}}>
+        enter a username to login or create an account.
       </div>
-      <div style={{ padding:'1rem 0'}}>
-        <div style={{display: 'inline-flex'}}>
+      <div style={{ paddingTop:'0.5rem'}} className='centered'>
+        <div>
           <input ref={inputRef} id="usernameInput" placeholder="username" 
-          style={{textAlign:'center', padding: '0 0px'}}  
+          style={{textAlign:'center', padding: '0'}}  
           value={usernameInput} autofocus
           onKeyDown={handleUsernameInputEnter} 
           onChange={handleUsernameInputChange}/>
@@ -27,7 +27,7 @@ const CreateUserPrompt = ({usernameAttempt, inputRef, usernameInput, handleUsern
       <div style={{opacity:0.9, textAlign: 'center', fontFamily:'monospace'}}>
         user {usernameAttempt} does not exist. create?
       </div>
-      <div style={{ padding:'1rem 0', opacity: 0.9, fontFamily:'monospace'}}>
+      <div style={{ padding:'1rem 0', fontFamily:'monospace'}}>
         <div style={{display: 'inline-flex'}}>
           <input id="usernameInput" style={{textAlign:'center', padding: '0 0px'}}  
           value={usernameInput} type="username" placeholder="username"
@@ -61,7 +61,7 @@ const EnterPasswordPrompt = ({usernameAttempt, inputRef, usernameInput, handleUs
       <div style={{opacity:0.9, textAlign: 'center', fontFamily:'monospace'}}>
         user {usernameAttempt} requires a password. enter it below.
       </div>
-      <div style={{ padding:'1rem 0px 0rem', opacity: 0.9, fontFamily:'monospace'}}>
+      <div style={{ padding:'1rem 0px 0rem', fontFamily:'monospace'}}>
         <div style={{display: 'inline-flex'}}>
           <input id="usernameInput" style={{textAlign:'center', padding: '0 0px'}}  
           value={usernameInput} type="username" placeholder="username"
@@ -82,9 +82,10 @@ const EnterPasswordPrompt = ({usernameAttempt, inputRef, usernameInput, handleUs
 }
 
 const UsernamePrompt = () => {
-    const { usernameInput, newUser, setUsernameInput, passwordInput, setPasswordInput, setNewUser, setLoggedInUser, askForPassword, setAskForPassword, loginFailed, setLoginFailed } = useContext(Context);
+    const { newUser, passwordInput, setPasswordInput, setNewUser, setLoggedInUser, askForPassword, setAskForPassword, loginFailed, setLoginFailed } = useContext(Context);
     const inputRef = useRef(null);
     const [usernameAttempt, setUsernameAttempt] = useState('');
+    const [usernameInput, setUsernameInput] = useState('');
 
     useEffect(() => {
       inputRef.current.focus();

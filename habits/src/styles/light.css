@@ -1,5 +1,6 @@
 .lightMode {
   --main-font-color: #000000;
+  --main-bg-color: #f79b9b;
   --main-font-color-med-alpha: #505050aa;
   --main-font-color-high-alpha: #5050503b;
   --graph-grid-color: #00000041;
@@ -17,4 +18,10 @@
   --light-mode-switch-pic: url("../images/sun_black.svg") 2px 3px no-repeat;
   --home-img-pic: url("../images/sunglasses.png");
   --sidebar-shadow: #0000001F;
+  --snooze-button: url("../images/snooze_light2.svg");
+  --archive-button: url("../images/archive_light.png");
+  --unarchive-button: url("../images/unarchive_light.png");
+  --filter-button: url("../images/filter_light.png");
+  --edit-button: url("../images/edit_light.png");
+  --dateSelector-background: url('../images/date_light.png') no-repeat center;
 }

@@ -1,7 +1,8 @@
 import { useContext } from 'react'
+import { Context } from '../Context.js'
+
 import Habit from './habit.js'
 import HabitDates from './habitDates.js'
-import { Context } from '../Context.js'
 
 const HabitList = ({ dateLabels, mobile }) => {
   const { habits, setHabits, startDate, setStartDate, 
@@ -18,20 +19,6 @@ const HabitList = ({ dateLabels, mobile }) => {
     }
 
     return dates;
-  }
-
-  function renderDateLabels() {
-    const dateLabelsElem = dateLabels.map((label, index) => (
-          <span className="monospaceText dateLabel" id={label} key={index}>
-            {label}
-          </span> 
-        ));
-    
-    return (
-      <div className="dateLabelsContainer">
-        {dateLabelsElem}
-      </div>
-    )
   }
 
   // paginate dates 1 day into the past
@@ -103,7 +90,7 @@ const HabitList = ({ dateLabels, mobile }) => {
       return ( 
         <div>
           <img alt='date page left' id="calendarLeft" className="datePaginator" 
-            style={{width:'15px', float:'right', paddingTop: '1.5px'}} 
+            style={{width:'15px', float:'right'}} 
             onClick={() => { datePageLeftDay() }}/>
         </div>
       )
@@ -124,7 +111,7 @@ const HabitList = ({ dateLabels, mobile }) => {
       return (
         <div>
           <img alt='date page right' id="calendarRight" className="datePaginator" 
-            style={{width:'15px', float:'left', paddingLeft: '1px', paddingTop: '1.5px'}} 
+            style={{width:'15px', float:'left', paddingLeft: '1px'}} 
             onClick={() => { datePageRightDay() }}/>
         </div>
       )
@@ -135,7 +122,7 @@ const HabitList = ({ dateLabels, mobile }) => {
     return (
     <div className='centered'>
       <div style={{opacity:0.7, textAlign: 'center', fontFamily:'monospace'}}>
-        add a habit below.<br/>(quit smoking, floss everyday, etc.)
+        add something you want to track. (floss daily, exercise, etc.)
       </div>
     </div>
     )
@@ -146,13 +133,13 @@ const HabitList = ({ dateLabels, mobile }) => {
       return (
         <div className="habitGrid">
           <div className="dateLabelsRow">
-            <DatePageButtonLeft mobile={false} />
+            <DatePageButtonLeft mobile={true} />
             {dateLabels.map((label, index) => (
-              <span className="dateLabel" id={label} key={index}>
+              <span className="mobileDateLabel" id={label} key={index}>
                 {label}
               </span>
             ))}
-            <DatePageButtonRight mobile={false} />
+            <DatePageButtonRight mobile={true} />
           </div>
           {habits.map((habit, index) => (
             <div className="habitRow" key={index}>
@@ -167,20 +154,6 @@ const HabitList = ({ dateLabels, mobile }) => {
             </div>
           ))}
         </div>
-        // <div>
-        //   <table>
-        //     <thead><tr><DatePageButtonLeft mobile={true} /><td style={{padding: '0px 2px 0px 3px'}}>{ renderDateLabels() }</td><DatePageButtonRight mobile={true} /></tr></thead>
-        //     <tbody>
-        //       {habits.map((habit, index) => <tr>
-        //           <td style={{maxWidth:'155px', minWidth:'120px', paddingLeft:'2px'}}><Habit habit={habit}/></td>
-        //           <td style={{minWidth:'100px', paddingLeft:'1.3px'}}>
-        //             <HabitDates habit={habit} dateRangeDates={genDates(startDate, endDate)}/>
-        //           </td>
-        //           <DeleteButton className='deleteButton' id={habit.id} habit={habit}/>
-        //         </tr>)}
-        //     </tbody>
-        //   </table>
-        // </div>
       )
     }
     else {

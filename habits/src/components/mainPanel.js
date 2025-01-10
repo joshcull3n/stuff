@@ -1,18 +1,50 @@
 import HabitList from './habitList.js';
+import { TodoList, DoneList, ArchiveList, StatsPanel } from './todo/todoList.js'
 import Graph from './graph.js';
 import { Context } from '../Context.js';
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 
-const TopBar = () => {
+function setElementOpacityById(elemId, opacityValue, fade=true) {
+  let id = '#' + elemId
+  const element = document.querySelector(id);
+  if (fade) { element.style.transition = "opacity 0.2s ease-in-out" }
+  element.style.opacity = opacityValue;
+}
+
+export const AppBar = () => {
+  const { viewMode, setViewMode, VIEW_MODES, loggedInUser } = useContext(Context);
+  
+  if (!loggedInUser) {
+    return (
+      <div className="centered fadeIn">
+        <h2>stuff</h2>
+      </div>
+    )
+  }
+
+  const ViewTitle = ({title, selected=false}) => {
+    let viewmode = Object.values(VIEW_MODES).find(value => title === value);
+
+    return selected ? (
+      <div className="selectedViewTitle">{title}</div>
+    ) : (
+      <div id={`${title}Title`} className="unselectedViewTitle viewTitle"
+        onMouseEnter={(e) => setElementOpacityById(e.currentTarget.id, 1)}
+        onMouseLeave={(e) => setElementOpacityById(e.currentTarget.id, 0.5)}
+        onClick={() => setViewMode(viewmode)}>{title}
+      </div>
+    )
+  }
+
   return (
-    <div className="centered">
-      <h2>habits</h2>
+    <div className="titleGrid">
+      {Object.keys(VIEW_MODES).map((key) => { return <ViewTitle key={key} title={VIEW_MODES[key]} selected={viewMode === VIEW_MODES[key]} /> })}
     </div>
   );
 };
 
 const HabitInput = ({mobile, handleHabitInputChange, handleHabitInputEnter, handleHabitInputBtnClick}) => {
-  const { newHabitText } = useContext(Context);
+  const { habits, newHabitText } = useContext(Context);
     
   return (
     <div className="centered" style={{ paddingTop:'1rem'}}>
@@ -29,9 +61,9 @@ const HabitInput = ({mobile, handleHabitInputChange, handleHabitInputEnter, hand
 };
 
 const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, handleHabitInputBtnClick }) => {
-  const { habits, startDate, endDate } = useContext(Context);
+  const { habits, startDate, endDate, viewMode, VIEW_MODES } = useContext(Context);
 
-  function generateDateLabels() {
+  const dateLabels = useMemo(() => {
     var tempDate = new Date(startDate);
     var labels = [];
 
@@ -44,20 +76,29 @@ const MainPanel = ({ mobile, handleHabitInputChange, handleHabitInputEnter, hand
     }
 
     return labels
-  }
+  }, [startDate, endDate]);
 
   return (
     <div className='mainPanelContainer'>
-      <div className="mainPanel" style={{padding:'10px'}}>
-        <TopBar />
-        <div id="habitListContainer">
-          <HabitList mobile={mobile} habits={habits} dateLabels={generateDateLabels()} />
-          <HabitInput mobile={mobile}
-            handleHabitInputEnter={handleHabitInputEnter} 
-            handleHabitInputChange={handleHabitInputChange} 
-            handleHabitInputBtnClick={handleHabitInputBtnClick} />
-        </div>
-        <Graph />
+      <div className="mainPanel" style={{padding:'5px 10px 10px'}}>
+        {viewMode === VIEW_MODES.HABITS && (
+            <div id="mainContainer" className="fadeIn">
+              <HabitList mobile={mobile} habits={habits} dateLabels={dateLabels} />
+              <HabitInput
+                mobile={mobile}
+                handleHabitInputEnter={handleHabitInputEnter}
+                handleHabitInputChange={handleHabitInputChange}
+                handleHabitInputBtnClick={handleHabitInputBtnClick}
+              />
+            </div>            
+        )}
+        {viewMode === VIEW_MODES.HABITS && habits.length > 0 && (
+          <div className="fadeIn">
+            <Graph />
+          </div>
+        )}
+        {viewMode === VIEW_MODES.TODO && (<div><TodoList /><ArchiveList /><DoneList /></div>)}
+        {viewMode === VIEW_MODES.OVERVIEW && (<></>)}
       </div>
     </div>
   );

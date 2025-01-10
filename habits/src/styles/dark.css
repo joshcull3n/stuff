@@ -16,4 +16,9 @@
   --light-mode-switch-pic: url("../images/sun.svg") 2px 3px no-repeat;
   --home-img-pic: url("../images/icon.gif");
   --sidebar-shadow: #ffffff15;
+  --snooze-button: url("../images/snooze_dark2.svg");
+  --archive-button: url("../images/archive_dark.svg");
+  --unarchive-button: url("../images/unarchive_dark.svg");
+  --filter-button: url("../images/filter_dark.png");
+  --dateSelector-background: url('../images/date_dark.png') no-repeat center;
 }

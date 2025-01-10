@@ -10,14 +10,6 @@ export const ContextProvider = ({ children }) => {
   var yesterday = new Date();
   yesterday.setDate(yesterday.getDate()-2)
 
-  function convertToYYYYMMDD(date) {
-    const tempYear = date.getFullYear();
-    const tempMonth = date.getMonth()+1;
-    const tempDay = date.getDate();
-
-    return tempYear + '/' + tempMonth + '/' + tempDay;
-  }
-
   const localStorage = window.localStorage;
   const lightModeStorage = localStorage.getItem('habits_lightMode');
 
@@ -28,6 +20,15 @@ export const ContextProvider = ({ children }) => {
   const [newUser, setNewUser] = useState(false);
   const [askForPassword, setAskForPassword] = useState(false);
   const [loginFailed, setLoginFailed] = useState(false);
+
+  const VIEW_MODES = {
+    // OVERVIEW: 'overview',
+    TODO: 'todo',
+    HABITS: 'tracker',
+  };
+
+  // current view
+  const [viewMode, setViewMode] = useState(VIEW_MODES.TODO)
 
   // appearance
   const [lightMode, setLightMode] = useState(Boolean(lightModeStorage));
@@ -139,7 +140,8 @@ export const ContextProvider = ({ children }) => {
       passwordInput, setPasswordInput,
       newUser, setNewUser,
       askForPassword, setAskForPassword,
-      loginFailed, setLoginFailed }}>
+      loginFailed, setLoginFailed,
+      viewMode, setViewMode, VIEW_MODES, mobile }}>
       { children }
     </Context.Provider>
   );

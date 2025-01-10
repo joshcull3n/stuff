@@ -85,7 +85,7 @@ export async function verifyPassword(username, password) {
     body: JSON.stringify(bodyJson)
   }
 
-  return fetch(`${API_URL_BASE}/habits/login`, options).then(resp => {
+  return fetch(`${API_URL_BASE}/login`, options).then(resp => {
     if (resp.ok)
       return true
     else

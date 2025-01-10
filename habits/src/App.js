@@ -2,10 +2,12 @@ import React, { useContext } from 'react';
 import './App.css';
 import './styles/dark.css';
 import './styles/light.css';
-import MainPanel from './components/mainPanel.js';
+import './styles/mobile.css';
+import MainPanel, { AppBar } from './components/mainPanel.js';
 import UsernamePrompt from './components/userPrompt.js';
 import { generateHabit } from './utils/habitUtils.js';
 import { Context } from './Context';
+import { TodoContext } from './components/todo/todoContext.js';
 
 export function detectDevice() {
   const agent = window.navigator.userAgent.toLowerCase()
@@ -24,6 +26,7 @@ const App = () => {
   
   /* - DEBUG OPTIONS - */
   console.error = () => {}; // disable if you want to see console errors
+  //console.log('rendering');
   /* -- -- -- -- -- -- */
 
   const localStorage = window.localStorage;
@@ -32,6 +35,8 @@ const App = () => {
     setGraphGridColor, setUpdateRemote, loggedInUser, setLoggedInUser, setAskForPassword,
     setUsernameInput, setPasswordInput, setNewUser
   } = useContext(Context);
+
+  const { setTodos } = useContext(TodoContext);
 
   // set body class
   document.body.classList.remove('lightMode');
@@ -64,6 +69,7 @@ const App = () => {
     setPasswordInput('');
     setNewUser(false);
     setHabits([]);
+    setTodos([]);
     setAskForPassword(false);
   }
 
@@ -92,30 +98,33 @@ const App = () => {
 
   const LogoutButton = ({handleLogoutClick}) => {
     if (loggedInUser) {
-      return (
-        <div className="sidebarOption">
-          <div className='logout' id='logoutBtn' onClick={handleLogoutClick}>logout</div>
-        </div>
-      )
+      return <div className='logout' id='logoutBtn' onClick={handleLogoutClick}>logout</div>
     }
   }
 
   const LightModeSwitch = ({handleLightMode}) => {
     return (
-      <div className="sidebarOption">
+      <div>
         <input type="checkbox" onChange={handleLightMode} id="lightModeSwitch"/>
         <label htmlFor="lightModeSwitch"></label>
       </div>
     )
   }
 
-  const Sidebar = () => {
+  const TopBanner = () => {
     return (
-      <div className="stickyContainer">
-        <div className="sidebar">
-          <div id="sidebarShadow">
-            <a href="/" style={{display:'flex', justifyContent:'center'}}><img id="homeImg" decoding="async" alt="home"/></a>
+      <div className='topBanner'>
+        <div className='topBannerLeft'>
+          <a href='/' style={{display:'flex', justifyContent:'center'}}><img id='homeImg' decoding='async' alt='home'/></a>
+        </div>
+        <div className='topBannerCenter'>
+          <AppBar loggedIn={loggedInUser}/>
+        </div>
+        <div className='topBannerRight'>
+          <div className='sidebarOption'>
             <LightModeSwitch handleLightMode={handleLightMode} />
+          </div>
+          <div className='sidebarOption'>
             <LogoutButton handleLogoutClick={handleLogoutClick} />
           </div>
         </div>
@@ -123,18 +132,16 @@ const App = () => {
     )
   }
 
-  const TopBar = () => {
-    return (
-      <div className="centered">
-        <h2>habits</h2>
-      </div>
-    );
-  };
+  const AppIntro = () => (
+    <div className='appIntro fadeIn'>
+      stuff is for managing your stuff.<br/><br/>it is a simple, noise-free way to organize your life.
+    </div>
+  )
   
   if (loggedInUser) {
     return (
       <div className="App">
-        <Sidebar />
+        <TopBanner />
         <MainPanel 
           mobile={detectDevice()}
           handleHabitInputEnter={handleHabitInputEnter}
@@ -147,8 +154,8 @@ const App = () => {
   else {
     return (
       <div className="App">
-        <Sidebar />
-        <TopBar />
+        <TopBanner />
+        <AppIntro />
         <UsernamePrompt />
       </div>
     )
