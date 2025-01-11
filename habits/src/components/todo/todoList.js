@@ -428,18 +428,18 @@ const TodoInput = () => {
 
   return (
     <div id="todoInput">
-      <input style={{'width':'100%', 'padding':'0 10px'}} 
+      <input style={{'width':'100%', 'padding':'0 10px', 'margin':'1px 0' }} 
         placeholder='add a todo...'
         value={newTodoText}
         ref={inputRef}
         onKeyDown={handleTodoInputEnter}
         onChange={handleTodoInputChange} 
       />
-      <div style={{'display':'flex','justifyContent':'center', 'paddingBottom':'1px'}}>
+      <div style={{'display':'flex','justifyContent':'center', 'paddingBottom':'1px', 'marginTop':'1px' }}>
         <CategoryDropdown />
-        <input type='date' className='dateSelector' value={newDueDate}
+        {/* <input type='date' className='dateSelector' value={newDueDate}
           onChange={handleTodoDueDateSelectionChange} onKeyDown={handleTodoInputEnter} 
-        />
+        /> */}
         <div id='inputBtn' onClick={handleTodoInputBtnClick}>+</div>
       </div>
     </div>
