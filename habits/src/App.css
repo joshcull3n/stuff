@@ -708,7 +708,6 @@ input[type="checkbox"]:checked:hover {
   border-color: var(--main-font-color-high-alpha);
   border-radius: 3px;
   width: var(--category-dropdown-width);
-  height: -webkit-fill-available;
   max-width: var(--category-dropdown-width);
   cursor: pointer;
   border: solid 0.5px var(--main-font-color-high-alpha);
