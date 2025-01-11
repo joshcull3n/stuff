@@ -408,7 +408,7 @@ const TodoInput = () => {
     }
 
     return (
-      <div style={{alignContent:'center'}}>
+      <div>
         <div className='categoryDropdown' onClick={handleCategoryDropdownClick} style={categoryDropdownStyle}>
           {(categorySelected && <span className='selectedCategory'>{categorySelected}</span>) || <span className='unselectedCategory' onClick={handleCategoryDropdownClick}>list</span>}
           {categorySelected && <span className='clearCategoryBtn' onClick={handleClearCategoryClick}>x</span>}
@@ -428,18 +428,19 @@ const TodoInput = () => {
 
   return (
     <div id="todoInput">
-        <input style={{"width":"100%", "padding":"0 10px"}} 
-          placeholder="add a todo..."
-          value={newTodoText}
-          ref={inputRef}
-          onKeyDown={handleTodoInputEnter}
-          onChange={handleTodoInputChange} />
-      <div style={{"display":"flex","justifyContent":"center"}}>
+      <input style={{'width':'100%', 'padding':'0 10px'}} 
+        placeholder='add a todo...'
+        value={newTodoText}
+        ref={inputRef}
+        onKeyDown={handleTodoInputEnter}
+        onChange={handleTodoInputChange} 
+      />
+      <div style={{'display':'flex','justifyContent':'center', 'paddingBottom':'1px'}}>
         <CategoryDropdown />
         <input type='date' className='dateSelector' value={newDueDate}
           onChange={handleTodoDueDateSelectionChange} onKeyDown={handleTodoInputEnter} 
         />
-        <div id="inputBtn" onClick={handleTodoInputBtnClick}>+</div>
+        <div id='inputBtn' onClick={handleTodoInputBtnClick}>+</div>
       </div>
     </div>
   )
