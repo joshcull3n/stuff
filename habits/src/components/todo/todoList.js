@@ -367,7 +367,7 @@ const TodoInput = () => {
       setNewCategory(e.target.innerHTML);
       setCategoryFilterEnabled(true);
       setFilteredTodos(
-        todos.filter((todo) => { return (todo.category && todo.category.toLowerCase().includes(e.target.innerHTML))})
+        todos.filter((todo) => { return (todo.category && todo.category.toLowerCase().includes(e.target.innerHTML.toLowerCase()))})
       );
     }
 
