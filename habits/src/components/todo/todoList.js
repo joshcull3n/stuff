@@ -185,9 +185,8 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
           className={(done && "todoCell doneTitle") || "todoCell"} 
           onDoubleClick={handleTitleDoubleClick} 
           onKeyDown={(e) => handleEditingTitleEnter(e, todo)}
-          onChange={handleEditingTitleChange}
           autoFocus 
-          value={editingTitleValue}
+          defaultValue={editingTitleValue}
         />
       )
     return (
