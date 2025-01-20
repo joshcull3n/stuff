@@ -151,11 +151,11 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
       if (String(todos.indexOf(todo)) !== editingTitleIndex) {
         setEditingTitleIndex(String(todos.indexOf(todo)));
         setEditingTitleValue(todo.title);
-        setTitleFieldWidth(`${titleFieldRef.current.offsetWidth}px`);
+        setTitleFieldWidth(`${titleFieldRef.current.offsetWidth - 6}px`);
       }
     }
   
-    const handleEditingTitleEnter = (e, todo) => {
+    const handleEditingTitleKeyDown = (e, todo) => {
       if (e.code === 'Enter') {
         changeTitle(todo, e.target.value);
         setEditingTitleIndex('');
@@ -178,13 +178,31 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
         editFieldRef.current.style.width = titleFieldWidth; // required because the input field is not width bound by the field content
     }, [titleFieldWidth]);
 
+    useEffect(() => {
+      const handleClickOutside = (e) => {
+        if (editFieldRef.current && !editFieldRef.current.contains(e.target)) {
+          setEditingTitleIndex('');
+          setEditingTitleValue('');
+          setTitleFieldWidth('');
+        }
+      };
+  
+      if (editingTitleIndex === String(todos.indexOf(todo))) {
+        document.addEventListener('mousedown', handleClickOutside);
+      }
+  
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, [editingTitleIndex])
+
     if (editingTitleIndex === String(todos.indexOf(todo)))
       return (
         <input 
           ref={editFieldRef}
           className={(done && "todoCell doneTitle") || "todoCell"} 
           onDoubleClick={handleTitleDoubleClick} 
-          onKeyDown={(e) => handleEditingTitleEnter(e, todo)}
+          onKeyDown={(e) => handleEditingTitleKeyDown(e, todo)}
           autoFocus 
           defaultValue={editingTitleValue}
         />
@@ -289,13 +307,21 @@ const StatsRow = ({open, snoozed, done, archived}) => {
 }
 
 const TodoInput = () => {
-  const { todos, setTodos, loggedInUser, newCategory, setNewCategory, filterString, setFilteredTodos, categoryFilterEnabled } = useContext(TodoContext);
+  const { 
+    todos, setTodos, 
+    loggedInUser, 
+    newCategory, setNewCategory, 
+    categorySelected, 
+    setFilteredTodos, 
+    categoryFilterEnabled,
+    setShowFilterInput
+  } = useContext(TodoContext);
   const [newTodoText, setNewTodoText] = useState('');
   const [newDueDate, setNewDueDate] = useState('');
   const inputRef = useRef(null);
 
   const handleTodoInputChange = (e) => { setNewTodoText(e.target.value); }
-  const handleTodoDueDateSelectionChange = (e) => { setNewDueDate(e.target.value) }
+  // const handleTodoDueDateSelectionChange = (e) => { setNewDueDate(e.target.value) }
 
   const handleTodoInputEnter = async (e) => {
     if (e.key === 'Enter') {
@@ -330,8 +356,10 @@ const TodoInput = () => {
       setTodos(tempArray);
       setNewTodoText('');
       setNewDueDate('');
-      setFilteredTodos(tempArray.filter((todo) => { 
-        return (todo.title.toLowerCase().includes(filterString) || todo.category && todo.category.toLowerCase().includes(filterString))
+      setShowFilterInput(false);
+      setFilteredTodos(tempArray.filter((todo) => {
+        let categorySelectedStr = categorySelected ? categorySelected.toLowerCase() : null;
+        return (todo.title.toLowerCase().includes(categorySelectedStr) || todo.category && todo.category.toLowerCase().includes(categorySelectedStr))
       }));
       if (!categoryFilterEnabled)
         setNewCategory('');
@@ -361,7 +389,6 @@ const TodoInput = () => {
     }
 
     const handleCategoryOptionClick = (e) => {
-      console.log('clicked category option: ', e.target.innerHTML);
       setCategorySelected(e.target.innerHTML);
       setNewCategory(e.target.innerHTML);
       setCategoryFilterEnabled(true);
@@ -372,7 +399,6 @@ const TodoInput = () => {
 
     const handleNewCategoryOptionClick = (e) => {
       setCreatingCategory(true);
-      console.log(creatingCategory);
     }
 
     const handleClearCategoryClick = (e) => {
@@ -386,7 +412,6 @@ const TodoInput = () => {
         setNewCategory(e.target.value);
         setCategorySelected(e.target.value);
         setCategoryFilterEnabled(true);
-        setFilterString(e.target.value);
       }
     }
 
@@ -455,17 +480,25 @@ const PanelTitle = ({title, count, count2}) => {
 }
 
 const FilterInput = () => {
-  const { todos, showFilterInput, 
+  const { 
+    todos, 
+    showFilterInput, setShowFilterInput,
     filterString, setFilterString, 
-    setFilteredTodos
+    setFilteredTodos,
+    setCategorySelected
   } = useContext(TodoContext);
 
-  useEffect(() => {
-    filterTodoList(filterString);
-  }, [filterString])
+  useEffect(() => { filterTodoList(filterString); }, [filterString])
 
-  const handleFilterChange = (e) => {
+  const handleFilterChange = (e) => { 
+    setCategorySelected('');
     setFilterString(e.target.value);
+  }
+
+  const handleFilterKeyDown = (e) => {
+    if (e.code === 'Escape') {
+      setShowFilterInput(false);
+    }
   }
 
   function filterTodoList(filterString) {
@@ -478,11 +511,14 @@ const FilterInput = () => {
 
   return ( 
     <input 
-      className={`filterInput ${showFilterInput ? '' : 'hidden'}`}
+      className={`filterInput ${showFilterInput ? '' : 'hidden disabled'}`}
       type='text'
       placeholder='filter' 
       onChange={handleFilterChange}
-      value={filterString}></input>
+      value={filterString}
+      onKeyDown={handleFilterKeyDown}
+      id="filterInput"
+      />
   )
 }
 
