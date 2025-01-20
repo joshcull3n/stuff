@@ -23,4 +23,5 @@
   --unarchive-button: url("../images/unarchive_dark.svg");
   --filter-button: url("../images/filter_dark.png");
   --dateSelector-background: url('../images/date_dark.png') no-repeat center;
+  --intro-bg-color: #00000000;
 }

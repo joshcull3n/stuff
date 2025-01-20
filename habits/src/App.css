@@ -131,7 +131,7 @@ input[type="checkbox"]:checked:hover {
 }
 
 .appIntro {
-  background-color: var(--main-bg-color);
+  background-color: var(--intro-bg-color);
   border-radius:3px;
   max-width: 300px;
   text-align: center;

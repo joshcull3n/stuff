@@ -16,7 +16,7 @@ export const AppBar = () => {
   
   if (!loggedInUser) {
     return (
-      <div className="centered fadeIn">
+      <div className="centered">
         <h2>stuff</h2>
       </div>
     )
