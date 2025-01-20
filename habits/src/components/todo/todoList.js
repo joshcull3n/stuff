@@ -129,7 +129,8 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
     filterString, setFilteredTodos, 
     setCategoryFilterEnabled, setShowFilterInput,
     editingTitleIndex, setEditingTitleIndex,
-    titleFieldWidth, setTitleFieldWidth, setCategorySelected
+    titleFieldWidth, setTitleFieldWidth, 
+    categorySelected, setCategorySelected
   } = useContext(TodoContext);
   const [editingTitleValue, setEditingTitleValue] = useState(todo.title);
 
@@ -223,9 +224,10 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
   function deleteTodo(todoToDelete) {
     let newTodoArray = todos.filter(todo => todo._id !== todoToDelete._id)
     setTodos(newTodoArray);
-    setFilteredTodos(
-      newTodoArray.filter(todo => (todo.title.toLowerCase().includes(filterString) || todo.category && todo.category.toLowerCase().includes(filterString)))
-    )
+    setFilteredTodos(newTodoArray.filter((todo) => {
+      let categorySelectedStr = categorySelected ? categorySelected.toLowerCase() : null;
+      return (todo.title.toLowerCase().includes(categorySelectedStr) || todo.category && todo.category.toLowerCase().includes(categorySelectedStr))
+    }));
     deleteTodoReq(todoToDelete._id);
   }
 
@@ -356,7 +358,6 @@ const TodoInput = () => {
       setTodos(tempArray);
       setNewTodoText('');
       setNewDueDate('');
-      setShowFilterInput(false);
       setFilteredTodos(tempArray.filter((todo) => {
         let categorySelectedStr = categorySelected ? categorySelected.toLowerCase() : null;
         return (todo.title.toLowerCase().includes(categorySelectedStr) || todo.category && todo.category.toLowerCase().includes(categorySelectedStr))
