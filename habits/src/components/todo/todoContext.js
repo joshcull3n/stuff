@@ -50,6 +50,15 @@ export const TodoProvider = ({ children }) => {
   }, [loggedInUser]);
 
   useEffect(() => {
+    setFilterString('');
+    setCategoryFilterEnabled(false);
+    setCategorySelected(null);
+    document.getElementById("filterInput").focus();
+  }, [showFilterInput])
+
+  // useEffect(() => {setShowFilterInput(false)}, [categorySelected])
+
+  useEffect(() => {
     if (!categoryFilterEnabled) {
       setFilterString('');
       setTodos(todos);
