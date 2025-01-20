@@ -1,5 +1,6 @@
 .darkMode {
   --main-font-color: #e3bcaf;
+  --main-bg-color: #000000;
   --main-font-color-med-alpha: #e3bcafaa;
   --main-font-color-high-alpha: #e3bcaf77;
   --graph-grid-color: #e3bcaf5c;
@@ -9,6 +10,7 @@
   --calendar-font: monospace;
   --textbox-placeholder-color: #e3bcaf;
   --delete-button: url("../images/delete.png");
+  --delete-button-inverse: url("../images/delete_black.png");
   --calendar-left: url("../images/arrows/doubleLeft.png");
   --calendar-right: url("../images/arrows/doubleRight.png");
   --input-bg-not-checked: url("../images/circle-50.png") 1px 1px no-repeat;
@@ -21,4 +23,5 @@
   --unarchive-button: url("../images/unarchive_dark.svg");
   --filter-button: url("../images/filter_dark.png");
   --dateSelector-background: url('../images/date_dark.png') no-repeat center;
+  --intro-bg-color: #00000000;
 }
