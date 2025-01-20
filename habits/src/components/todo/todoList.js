@@ -122,7 +122,7 @@ const BaseButtonElement = ({text, type, onclick}) => {
   return ( <div className="todoBtn">{text}</div>)
 }
 
-const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
+const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done, showDueDate=true}) => {
   const { mobile } = useContext(Context);
   const { todos, setTodos, 
     setNewCategory, setFilterString, 
@@ -282,7 +282,7 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
       <CompleteBtn />
       <Title />
       {/* { (mobile !== true && <EditBtn />) || <div></div> } */}
-      { (mobile !== true && <DueDate />) || <div></div> }
+      { (mobile !== true && showDueDate && <DueDate />) || <div></div> }
       { (mobile !== true && todo.category && <CategoryBtn />) || <div></div> }
       { showSnoozeBtn === true && <SnoozeBtn /> }
       { (mobile !== true && showArchiveBtn === true && <ArchiveBtn />) || (showArchiveBtn === false && <UnarchiveBtn />) }
@@ -601,7 +601,7 @@ const DoneList = () => {
       <PanelTitle title='done' count={doneTodos.length} />
       <div className="todoGrid">
         { doneTodos.length > 0 ? doneTodos.map((todo, index) => (
-            <TodoRow todo={todo} showSnoozeBtn={false} done={true} key={index} />
+            <TodoRow todo={todo} showSnoozeBtn={false} showDueDate={false} done={true} key={index} />
           )) : <div className='todoRow' style={{'padding': '0px'}}></div> }
       </div>
     </div>
