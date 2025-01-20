@@ -774,7 +774,7 @@ input[type="checkbox"]:checked:hover {
 .clearCategoryBtn {
   position: absolute;
   right: 0px;
-  content: var(--delete-button);
+  content: var(--delete-button-inverse);
   padding: 0 5px;
   opacity: 0.4;
   align-self: center;
