@@ -802,6 +802,11 @@ input[type="checkbox"]:checked:hover {
   max-width: calc(var(--category-dropdown-width) - 30px);
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--main-bg-color);
+}
+
+.categoryDropdown:has(.selectedCategory) {
+  background-color: var(--main-font-color);
 }
 
 .categoryDropdown:hover > .selectedCategory {
