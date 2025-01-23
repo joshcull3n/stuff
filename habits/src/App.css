@@ -158,6 +158,42 @@ input[type="checkbox"]:checked:hover {
   align-items: center;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
+.unclickable {
+  cursor: default;
+}
+
+.collapse {
+  content: var(--chevron-right);
+  width: 12px;
+  vertical-align: middle;
+  padding-right: 2px;
+}
+
+.expanded {
+  content: var(--chevron-down);
+  width: 12px;
+  vertical-align: middle;
+  padding-right: 2px;
+}
+
+.collapseSmall {
+  content: var(--chevron-right);
+  width: 10px;
+  vertical-align: middle;
+  padding-right: 1px;
+}
+
+.expandedSmall {
+  content: var(--chevron-down);
+  width: 10px;
+  vertical-align: middle;
+  padding-right: 1px;
+}
+
 #deleteButton {
   content: var(--delete-button);
 }

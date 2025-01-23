@@ -129,7 +129,8 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
     filterString, setFilteredTodos, 
     setCategoryFilterEnabled, setShowFilterInput,
     editingTitleIndex, setEditingTitleIndex,
-    titleFieldWidth, setTitleFieldWidth
+    titleFieldWidth, setTitleFieldWidth,
+    setSnoozedExpanded
   } = useContext(TodoContext);
   const [editingTitleValue, setEditingTitleValue] = useState(todo.title);
 
@@ -227,6 +228,7 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
           todoToUpdate.snooze_date = null;
         }
         else if (changeStatus === 'snoozed') {
+          setSnoozedExpanded(true);
           todo.snooze_date = Date.now();
           todoToUpdate.snooze_date = todo.snooze_date;
         }
@@ -371,13 +373,42 @@ const TodoInput = () => {
   )
 }
 
-const PanelTitle = ({title, count, count2}) => {
-  if (count2)
-    return ( <div className='panelTitle'><span>{title}</span><span>{count} ({count2})</span></div> )
-  if (count || count === 0)
-    return ( <div className='panelTitle'><span>{title}</span><span>{count}</span></div> )
+const PanelTitle = ({title, count, count2, expanded=false}) => {
+  const { 
+    snoozedExpanded, setSnoozedExpanded, 
+    archivedExpanded, setArchivedExpanded,
+    doneExpanded, setDoneExpanded 
+  } = useContext(TodoContext);
+
+  const HandleCollapseClick = (e, title) => {
+    if (title === 'snoozed')
+      setSnoozedExpanded(!snoozedExpanded);
+    else if (title === 'done')
+      setDoneExpanded(!doneExpanded);
+    else if (title === 'archived')
+      setArchivedExpanded(!archivedExpanded);
+  }
+
+  const RegularTitle = () => <span>{title}</span>
+  const CollapsedTitle = () => <span><img id={`${title}header`} className="collapse"/>{title}</span>
+  const ExpandedTitle = () => <span><img id={`${title}header`} className="expanded"/>{title}</span>
+  const CollapsedTitleSmall = () => <span><img id={`${title}header`} className="collapseSmall"/>{title}</span>
+  const ExpandedTitleSmall = () => <span><img id={`${title}header`} className="expandedSmall"/>{title}</span>
+
+  if (count2) {
+    if (title === 'todo')
+      return <div className='panelTitle unclickable'><RegularTitle /><span>{count} ({count2})</span></div>
+    return ( <div className='panelTitle clickable'>{ expanded ? <ExpandedTitle /> : <CollapsedTitle /> }<span>{count} ({count2})</span></div> )
+  }
+  if (count || count === 0) {
+    if (title === 'todo')
+      return <div className='panelTitle unclickable'><RegularTitle /><span>{count}</span></div>
+    if (title === 'snoozed')
+      return ( <div className='panelTitle clickable' onClick={(e) => HandleCollapseClick(e, title)}>{ expanded ? <ExpandedTitleSmall /> : <CollapsedTitleSmall /> }<span>{count}</span></div> )  
+    return ( <div className='panelTitle clickable' onClick={(e) => HandleCollapseClick(e, title)}>{ expanded ? <ExpandedTitle /> : <CollapsedTitle /> }<span>{count}</span></div> )
+  }
   else
-    return ( <div className='panelTitle'><span>{title}</span></div> )
+    return ( <div className='panelTitle'>{ expanded ? <ExpandedTitle /> : <CollapsedTitle /> }</div> )
 }
 
 const FilterInput = () => {
@@ -427,7 +458,8 @@ const TodoList = () => {
     showFilterInput, setShowFilterInput,
     filteredTodos, setFilteredTodos,
     filterString, setFilterString,
-    setNewCategory
+    setNewCategory,
+    snoozedExpanded
   } = useContext(TodoContext);
 
   const openTodos = filterAndSort(todos, filteredTodos, filterString, 'incomplete', ordering);
@@ -468,8 +500,8 @@ const TodoList = () => {
         { snoozedTodos.length > 0 && (
           <div className='todoGrid' style={{ padding: '5px 0' }}>
             <div className='fadedContainer'> 
-              <div style={{fontSize:'x-small'}}><PanelTitle title='snoozed' count={snoozedTodos.length}/></div>
-                { snoozedTodos.length > 0 ? snoozedTodos.map((todo, index) => (
+              <div style={{fontSize:'x-small'}}><PanelTitle title='snoozed' expanded={snoozedExpanded} count={snoozedTodos.length}/></div>
+                { snoozedExpanded && snoozedTodos.length > 0 ? snoozedTodos.map((todo, index) => (
                   <TodoRow todo={todo} showSnoozeBtn={true} showArchiveBtn={true} key={index} />
                 )) : <></> }
               </div>
@@ -481,14 +513,14 @@ const TodoList = () => {
 }
 
 const DoneList = () => {
-  const { todos, filteredTodos, filterString } = useContext(TodoContext);
+  const { todos, filteredTodos, filterString, doneExpanded } = useContext(TodoContext);
   const doneTodos = filterAndSort(todos, filteredTodos, filterString, 'complete', 'desc', true);
 
   return (
     <div className="todoListContainer fadedContainer fadeInHalf">
-      <PanelTitle title='done' count={doneTodos.length} />
+      <PanelTitle title='done' count={doneTodos.length} expanded={doneExpanded}/>
       <div className="todoGrid">
-        { doneTodos.length > 0 ? doneTodos.map((todo, index) => (
+        { doneExpanded && doneTodos.length > 0 ? doneTodos.map((todo, index) => (
             <TodoRow todo={todo} showSnoozeBtn={false} done={true} key={index} />
           )) : <div className='todoRow' style={{'padding': '0px'}}></div> }
       </div>
@@ -497,15 +529,15 @@ const DoneList = () => {
 }
 
 const ArchiveList = () => {
-  const { todos, ordering, filteredTodos, filterString} = useContext(TodoContext);
+  const { todos, ordering, filteredTodos, filterString, archivedExpanded} = useContext(TodoContext);
   const archivedTodos = filterAndSort(todos, filteredTodos, filterString, 'archived', ordering);
   
   return (
     <div className="todoListContainer fadeIn">
-      <PanelTitle title='archived' count={archivedTodos.length} />
+      <PanelTitle title='archived' count={archivedTodos.length} expanded={archivedExpanded}/>
       <div className="todoGrid">
         {
-          archivedTodos.length > 0 ? archivedTodos.map((todo, index) => (
+          archivedExpanded && archivedTodos.length > 0 ? archivedTodos.map((todo, index) => (
             <TodoRow todo={todo} showSnoozeBtn={false} showArchiveBtn={false} key={index} />
           )) : <div className='todoRow' style={{'padding': '0px'}}></div>
         }

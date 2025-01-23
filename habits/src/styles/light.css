@@ -24,4 +24,6 @@
   --filter-button: url("../images/filter_light.png");
   --edit-button: url("../images/edit_light.png");
   --dateSelector-background: url('../images/date_light.png') no-repeat center;
+  --chevron-right: url("../images/chevron_right_black.png");
+  --chevron-down: url("../images/chevron_down_black.png");
 }

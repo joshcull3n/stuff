@@ -21,4 +21,6 @@
   --unarchive-button: url("../images/unarchive_dark.svg");
   --filter-button: url("../images/filter_dark.png");
   --dateSelector-background: url('../images/date_dark.png') no-repeat center;
+  --chevron-right: url("../images/chevron_right_dark.png");
+  --chevron-down: url("../images/chevron_down_dark.png");
 }

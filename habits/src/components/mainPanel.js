@@ -26,7 +26,7 @@ export const AppBar = () => {
     let viewmode = Object.values(VIEW_MODES).find(value => title === value);
 
     return selected ? (
-      <div className="selectedViewTitle">{title}</div>
+      <div className="selectedViewTitle unclickable">{title}</div>
     ) : (
       <div id={`${title}Title`} className="unselectedViewTitle viewTitle"
         onMouseEnter={(e) => setElementOpacityById(e.currentTarget.id, 1)}
