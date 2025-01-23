@@ -11,6 +11,7 @@
   --textbox-bg: rgba(151, 151, 151, 0.05);
   --textbox-placeholder-color: rgba(0, 0, 0, 0.7);
   --delete-button: url("../images/delete_black.png");
+  --delete-button-inverse: url("../images/delete_pink.png");
   --calendar-left: url("../images/doubleLeft_black.png");
   --calendar-right: url("../images/doubleRight_black.png");
   --input-bg-not-checked: url("../images/black-circle-50.png") 1px 1px no-repeat;
@@ -26,4 +27,5 @@
   --dateSelector-background: url('../images/date_light.png') no-repeat center;
   --chevron-right: url("../images/chevron_right_black.png");
   --chevron-down: url("../images/chevron_down_black.png");
+  --intro-bg-color: #f79b9b;
 }

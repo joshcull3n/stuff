@@ -122,14 +122,15 @@ const BaseButtonElement = ({text, type, onclick}) => {
   return ( <div className="todoBtn">{text}</div>)
 }
 
-const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
+const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done, showDueDate=true}) => {
   const { mobile } = useContext(Context);
   const { todos, setTodos, 
     setNewCategory, setFilterString, 
     filterString, setFilteredTodos, 
     setCategoryFilterEnabled, setShowFilterInput,
     editingTitleIndex, setEditingTitleIndex,
-    titleFieldWidth, setTitleFieldWidth,
+    titleFieldWidth, setTitleFieldWidth, 
+    categorySelected, setCategorySelected,
     setSnoozedExpanded
   } = useContext(TodoContext);
   const [editingTitleValue, setEditingTitleValue] = useState(todo.title);
@@ -152,11 +153,11 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
       if (String(todos.indexOf(todo)) !== editingTitleIndex) {
         setEditingTitleIndex(String(todos.indexOf(todo)));
         setEditingTitleValue(todo.title);
-        setTitleFieldWidth(`${titleFieldRef.current.offsetWidth}px`);
+        setTitleFieldWidth(`${titleFieldRef.current.offsetWidth - 6}px`);
       }
     }
   
-    const handleEditingTitleEnter = (e, todo) => {
+    const handleEditingTitleKeyDown = (e, todo) => {
       if (e.code === 'Enter') {
         changeTitle(todo, e.target.value);
         setEditingTitleIndex('');
@@ -179,16 +180,33 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
         editFieldRef.current.style.width = titleFieldWidth; // required because the input field is not width bound by the field content
     }, [titleFieldWidth]);
 
+    useEffect(() => {
+      const handleClickOutside = (e) => {
+        if (editFieldRef.current && !editFieldRef.current.contains(e.target)) {
+          setEditingTitleIndex('');
+          setEditingTitleValue('');
+          setTitleFieldWidth('');
+        }
+      };
+  
+      if (editingTitleIndex === String(todos.indexOf(todo))) {
+        document.addEventListener('mousedown', handleClickOutside);
+      }
+  
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, [editingTitleIndex])
+
     if (editingTitleIndex === String(todos.indexOf(todo)))
       return (
         <input 
           ref={editFieldRef}
           className={(done && "todoCell doneTitle") || "todoCell"} 
           onDoubleClick={handleTitleDoubleClick} 
-          onKeyDown={(e) => handleEditingTitleEnter(e, todo)}
-          onChange={handleEditingTitleChange}
+          onKeyDown={(e) => handleEditingTitleKeyDown(e, todo)}
           autoFocus 
-          value={editingTitleValue}
+          defaultValue={editingTitleValue}
         />
       )
     return (
@@ -207,9 +225,10 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
   function deleteTodo(todoToDelete) {
     let newTodoArray = todos.filter(todo => todo._id !== todoToDelete._id)
     setTodos(newTodoArray);
-    setFilteredTodos(
-      newTodoArray.filter(todo => (todo.title.toLowerCase().includes(filterString) || todo.category && todo.category.toLowerCase().includes(filterString)))
-    )
+    setFilteredTodos(newTodoArray.filter((todo) => {
+      let categorySelectedStr = categorySelected ? categorySelected.toLowerCase() : null;
+      return (todo.title.toLowerCase().includes(categorySelectedStr) || todo.category && todo.category.toLowerCase().includes(categorySelectedStr))
+    }));
     deleteTodoReq(todoToDelete._id);
   }
 
@@ -255,11 +274,8 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
 
   function handleCategoryBtnClick(category) {
     setCategoryFilterEnabled(true);
-    setShowFilterInput(true);
     setFilterString(category);
-    setFilteredTodos(
-      todos.filter((todo) => { return (todo.category && todo.category.toLowerCase().includes(category))})
-    );
+    setCategorySelected(category);
     setNewCategory(category);
   }
 
@@ -268,7 +284,7 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done}) => {
       <CompleteBtn />
       <Title />
       {/* { (mobile !== true && <EditBtn />) || <div></div> } */}
-      { (mobile !== true && <DueDate />) || <div></div> }
+      { (mobile !== true && showDueDate && <DueDate />) || <div></div> }
       { (mobile !== true && todo.category && <CategoryBtn />) || <div></div> }
       { showSnoozeBtn === true && <SnoozeBtn /> }
       { (mobile !== true && showArchiveBtn === true && <ArchiveBtn />) || (showArchiveBtn === false && <UnarchiveBtn />) }
@@ -295,15 +311,31 @@ const StatsRow = ({open, snoozed, done, archived}) => {
 }
 
 const TodoInput = () => {
-  const { todos, setTodos, loggedInUser, newCategory, setNewCategory, filterString, setFilteredTodos, categoryFilterEnabled } = useContext(TodoContext);
+  const { 
+    todos, setTodos, 
+    loggedInUser, 
+    newCategory, setNewCategory, 
+    categorySelected, 
+    setFilteredTodos, 
+    categoryFilterEnabled,
+    setShowFilterInput
+  } = useContext(TodoContext);
   const [newTodoText, setNewTodoText] = useState('');
   const [newDueDate, setNewDueDate] = useState('');
+  const inputRef = useRef(null);
 
   const handleTodoInputChange = (e) => { setNewTodoText(e.target.value); }
-  const handleTodoCategoryChange = (e) => { setNewCategory(e.target.value); }
-  const handleTodoDueDateSelectionChange = (e) => { setNewDueDate(e.target.value) }
+  // const handleTodoDueDateSelectionChange = (e) => { setNewDueDate(e.target.value) }
 
-  const inputRef = useRef(null);
+  const handleTodoInputEnter = async (e) => {
+    if (e.key === 'Enter') {
+      await inputTodo();
+    }
+  }
+
+  const handleTodoInputBtnClick = async (e) => {
+    await inputTodo();
+  }
 
   async function inputTodo() {
     if (newTodoText.trim()) {
@@ -328,8 +360,9 @@ const TodoInput = () => {
       setTodos(tempArray);
       setNewTodoText('');
       setNewDueDate('');
-      setFilteredTodos(tempArray.filter((todo) => { 
-        return (todo.title.toLowerCase().includes(filterString) || todo.category && todo.category.toLowerCase().includes(filterString))
+      setFilteredTodos(tempArray.filter((todo) => {
+        let categorySelectedStr = categorySelected ? categorySelected.toLowerCase() : null;
+        return (todo.title.toLowerCase().includes(categorySelectedStr) || todo.category && todo.category.toLowerCase().includes(categorySelectedStr))
       }));
       if (!categoryFilterEnabled)
         setNewCategory('');
@@ -338,36 +371,103 @@ const TodoInput = () => {
     }
   }
 
-  const handleTodoInputEnter = async (e) => {
-    if (e.key === 'Enter') {
-      await inputTodo();
-    }
-  }
 
-  const handleTodoInputBtnClick = async (e) => {
-    await inputTodo();
+  const CategoryDropdown = () => {
+    const [showCategoryList, setShowCategoryList] = useState(false);
+    const [creatingCategory, setCreatingCategory] = useState(false);
+    const [creatingCategoryValue, setCreatingCategoryValue] = useState('');
+    const { categorySelected, setCategorySelected,
+      setCategoryFilterEnabled, setNewCategory, setFilterString
+    } = useContext(TodoContext);
+    const { lightMode } = useContext(Context);
+
+    const existingCategories = [];
+    todos.forEach(todo => {
+      if (todo.category && !existingCategories.includes(todo.category))
+        existingCategories.push(todo.category);
+    });
+
+    const handleCategoryDropdownClick = () => {
+      setShowCategoryList(!showCategoryList);
+    }
+
+    const handleCategoryOptionClick = (e) => {
+      setCategorySelected(e.target.innerHTML);
+      setNewCategory(e.target.innerHTML);
+      setCategoryFilterEnabled(true);
+      setFilteredTodos(
+        todos.filter((todo) => { return (todo.category && todo.category.toLowerCase().includes(e.target.innerHTML.toLowerCase()))})
+      );
+    }
+
+    const handleNewCategoryOptionClick = (e) => {
+      setCreatingCategory(true);
+    }
+
+    const handleClearCategoryClick = (e) => {
+      e.stopPropagation();
+      setCategoryFilterEnabled(false);
+      setCategorySelected('');
+    }
+
+    const createCategory = (e) => {
+      if (e.key === 'Enter') {
+        setNewCategory(e.target.value);
+        setCategorySelected(e.target.value);
+        setCategoryFilterEnabled(true);
+      }
+    }
+
+    const handleCreateCategoryChange = (e) => {
+      setCreatingCategoryValue(e.target.value);
+    }
+
+    const categoryDropdownStyle = {
+      borderBottom: (showCategoryList && !lightMode && 'unset'),
+      borderBottomLeftRadius: (showCategoryList && !lightMode && 'unset'),
+      borderBottomRightRadius: (showCategoryList && !lightMode && 'unset'),
+      borderColor: showCategoryList && 'var(--main-font-color)'
+    }
+
+    const categoryDropdownOptionsStyle = {
+      borderTopLeftRadius: (showCategoryList && !lightMode && 'unset'),
+      borderTopRightRadius: (showCategoryList && !lightMode && 'unset'),
+    }
+
+    return (
+      <div>
+        <div className='categoryDropdown' onClick={handleCategoryDropdownClick} style={categoryDropdownStyle}>
+          {(categorySelected && <span className='selectedCategory'>{categorySelected}</span>) || <span className='unselectedCategory' onClick={handleCategoryDropdownClick}>list</span>}
+          {categorySelected && <span className='clearCategoryBtn' onClick={handleClearCategoryClick}>x</span>}
+        </div>
+        {showCategoryList && (
+          <div className='categoryDropdownOptions' style={categoryDropdownOptionsStyle}>
+            {existingCategories.map(cat => <div className='categoryOption' onClick={handleCategoryOptionClick}>{cat}</div>)}
+            {!creatingCategory && <div className='newCategoryOption categoryOption' onClick={handleNewCategoryOptionClick}>+</div> 
+              || <div className='newCategoryInput'><input type='text' placeholder='new list' autoFocus 
+              onChange={handleCreateCategoryChange} onKeyDown={createCategory} value={creatingCategoryValue}/></div>
+            }
+          </div>
+        )}
+      </div>
+    )
   }
 
   return (
     <div id="todoInput">
-        <input style={{"width":"100%", "padding":"0 10px"}} 
-          placeholder="add a todo..."
-          value={newTodoText}
-          ref={inputRef}
-          onKeyDown={handleTodoInputEnter}
-          onChange={handleTodoInputChange} />
-      <div style={{"display":"flex","justifyContent":"center"}}>
-        <input type='text' placeholder='category' className='categoryDropdown' 
-          onChange={handleTodoCategoryChange} onKeyDown={handleTodoInputEnter} value={newCategory}/>
-        {/* <select className={`categoryDropdown ${validSelection ? "valid" : ""}`}
-          onChange={handleTodoCategoryChange} onKeyDown={handleTodoInputEnter} value={newCategory}>
-          <option value="" selected>none</option>
-          <option value="chores">chores</option>
-          <option value="other">other</option>
-        </select> */}
-        <input type='date' className='dateSelector' value={newDueDate}
-          onChange={handleTodoDueDateSelectionChange} onKeyDown={handleTodoInputEnter} />
-        <div id="inputBtn" onClick={handleTodoInputBtnClick}>+</div>
+      <input style={{'width':'100%', 'padding':'0 10px', 'margin':'1px 0' }} 
+        placeholder='add a todo...'
+        value={newTodoText}
+        ref={inputRef}
+        onKeyDown={handleTodoInputEnter}
+        onChange={handleTodoInputChange} 
+      />
+      <div style={{'display':'flex','justifyContent':'center', 'paddingBottom':'1px', 'marginTop':'1px' }}>
+        <CategoryDropdown />
+        {/* <input type='date' className='dateSelector' value={newDueDate}
+          onChange={handleTodoDueDateSelectionChange} onKeyDown={handleTodoInputEnter} 
+        /> */}
+        <div id='inputBtn' onClick={handleTodoInputBtnClick}>+</div>
       </div>
     </div>
   )
@@ -412,17 +512,24 @@ const PanelTitle = ({title, count, count2, expanded=false}) => {
 }
 
 const FilterInput = () => {
-  const { todos, showFilterInput, 
+  const { 
+    todos, 
+    showFilterInput, setShowFilterInput,
     filterString, setFilterString, 
-    setFilteredTodos, setNewCategory,
-    categoryFilterEnabled, setCategoryFilterEnabled } = useContext(TodoContext);
+    setFilteredTodos,
+    setCategorySelected
+  } = useContext(TodoContext);
 
-  const handleFilterChange = (e) => {
+  useEffect(() => { filterTodoList(filterString); }, [filterString])
+
+  const handleFilterChange = (e) => { 
+    setCategorySelected('');
     setFilterString(e.target.value);
-    filterTodoList(e.target.value);
-    if (categoryFilterEnabled) {
-      setNewCategory('');
-      setCategoryFilterEnabled(false);
+  }
+
+  const handleFilterKeyDown = (e) => {
+    if (e.code === 'Escape') {
+      setShowFilterInput(false);
     }
   }
 
@@ -436,11 +543,14 @@ const FilterInput = () => {
 
   return ( 
     <input 
-      className={`filterInput ${showFilterInput ? '' : 'hidden'}`}
+      className={`filterInput ${showFilterInput ? '' : 'hidden disabled'}`}
       type='text'
       placeholder='filter' 
       onChange={handleFilterChange}
-      value={filterString}></input>
+      value={filterString}
+      onKeyDown={handleFilterKeyDown}
+      id="filterInput"
+      />
   )
 }
 
@@ -482,8 +592,10 @@ const TodoList = () => {
 
   return (
     <div>
-      <div className='todoListContainer fadeIn'>
-        <TodoInput />
+      <div className='onTop'>
+        <div className='todoListContainer fadeIn'>
+          <TodoInput />
+        </div>
       </div>
       <div className='todoListContainer fadeIn'>
         <div className='todoListHeader'>
@@ -521,7 +633,7 @@ const DoneList = () => {
       <PanelTitle title='done' count={doneTodos.length} expanded={doneExpanded}/>
       <div className="todoGrid">
         { doneExpanded && doneTodos.length > 0 ? doneTodos.map((todo, index) => (
-            <TodoRow todo={todo} showSnoozeBtn={false} done={true} key={index} />
+            <TodoRow todo={todo} showSnoozeBtn={false} showDueDate={false} done={true} key={index} />
           )) : <div className='todoRow' style={{'padding': '0px'}}></div> }
       </div>
     </div>

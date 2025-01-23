@@ -15,6 +15,7 @@ export const TodoProvider = ({ children }) => {
   const [filterString, setFilterString] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [categoryFilterEnabled, setCategoryFilterEnabled] = useState(false);
+  const [categorySelected, setCategorySelected] = useState('');
   const [editingTitleIndex, setEditingTitleIndex] = useState('');
   const [titleFieldWidth, setTitleFieldWidth] = useState('');
   const [snoozedExpanded, setSnoozedExpanded] = useState(false);
@@ -51,6 +52,24 @@ export const TodoProvider = ({ children }) => {
     }
   }, [loggedInUser]);
 
+  useEffect(() => {
+    setFilterString('');
+    setCategoryFilterEnabled(false);
+    setCategorySelected(null);
+    if (showFilterInput) { document.getElementById("filterInput").focus(); }
+  }, [showFilterInput])
+
+  // useEffect(() => {setShowFilterInput(false)}, [categorySelected])
+
+  useEffect(() => {
+    if (!categoryFilterEnabled) {
+      setFilterString('');
+      setTodos(todos);
+      setFilteredTodos(todos);
+      setNewCategory('');
+    }
+  }, [categoryFilterEnabled])
+
   return (
     <TodoContext.Provider value={{
       todos, setTodos,
@@ -62,10 +81,11 @@ export const TodoProvider = ({ children }) => {
       categoryFilterEnabled, setCategoryFilterEnabled,
       editingTitleIndex, setEditingTitleIndex,
       titleFieldWidth, setTitleFieldWidth,
+      categorySelected, setCategorySelected,
       loggedInUser,
       snoozedExpanded, setSnoozedExpanded,
       archivedExpanded, setArchivedExpanded,
-      doneExpanded, setDoneExpanded
+      doneExpanded, setDoneExpanded,
     }}>
       { children }
     </TodoContext.Provider>

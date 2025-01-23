@@ -133,7 +133,7 @@ const App = () => {
   }
 
   const AppIntro = () => (
-    <div className='appIntro fadeIn'>
+    <div className='appIntro'>
       stuff is for managing your stuff.<br/><br/>it is a simple, noise-free way to organize your life.
     </div>
   )
