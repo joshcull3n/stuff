@@ -720,7 +720,6 @@ input[type="checkbox"]:checked:hover {
 .panelTitle {
   padding: 3px 0 3px 10px;
   font-size: 0.8em;
-  cursor: default;
 }
 
 .panelTitle > span {
