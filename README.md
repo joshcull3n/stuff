@@ -17,4 +17,4 @@ I had no particular productivity ethos in mind while building this other than co
   </tr>
 </table>
 
-Please give it a try [here](joshcullen.co/joshcullen). I appreciate any and all feedback!
+Please give it a try [here](https://joshcullen.co/stuff). I appreciate any and all feedback!
