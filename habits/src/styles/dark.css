@@ -6,6 +6,7 @@
   --graph-line-color: #e3bcaf;
   --graph-bg-color: #e3bcaf01;
   --bg-color: black;
+  --main-bg-color: black;
   --calendar-font: monospace;
   --textbox-placeholder-color: #e3bcaf;
   --delete-button: url("../images/delete.png");
@@ -13,6 +14,8 @@
   --calendar-right: url("../images/arrows/doubleRight.png");
   --input-bg-not-checked: url("../images/circle-50.png") 1px 1px no-repeat;
   --input-bg-checked: url("../images/filled-circle-50.png") 1px 2px no-repeat;
+  --input-bg-checked-inverse: url("../images/black-filled-circle-50.png") 1px 1px no-repeat;
+  --input-bg-unchecked-inverse: url("../images/black-circle-50.png") 1px 1px no-repeat;
   --light-mode-switch-pic: url("../images/sun.svg") 2px 3px no-repeat;
   --home-img-pic: url("../images/icon.gif");
   --sidebar-shadow: #ffffff15;
@@ -21,6 +24,11 @@
   --unarchive-button: url("../images/unarchive_dark.svg");
   --filter-button: url("../images/filter_dark.png");
   --dateSelector-background: url('../images/date_dark.png') no-repeat center;
+  --category-dropdown-color-hover: #000;
+  --category-dropdown-background-color: #000;
+  --category-dropdown-border-color: #e3bcaf;
+  --todo-row-border-radius: 3px;
+  --intro-bg-color: #00000000;
   --chevron-right: url("../images/chevron_right_dark.png");
   --chevron-down: url("../images/chevron_down_dark.png");
 }

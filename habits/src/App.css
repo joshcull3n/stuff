@@ -618,6 +618,24 @@ input[type="checkbox"]:checked:hover {
   height: 20px;
 }
 
+.todoRow:hover {
+  background-color: var(--main-font-color);
+  border-radius: var(--todo-row-border-radius);
+  color: var(--main-bg-color);
+}
+
+.todoRow:hover > * {
+  color: var(--main-bg-color)
+}
+
+.todoRow:hover > input[type="checkbox"]:not(:checked) {
+  background: var(--input-bg-unchecked-inverse);
+}
+
+.todoRow:hover > input[type="checkbox"]:checked {
+  background: var(--input-bg-checked-inverse);
+}
+
 .todoGrid:last-child {
   padding-bottom: 3px;
 }

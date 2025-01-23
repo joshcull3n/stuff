@@ -24,6 +24,11 @@
   --filter-button: url("../images/filter_light.png");
   --edit-button: url("../images/edit_light.png");
   --dateSelector-background: url('../images/date_light.png') no-repeat center;
+  --category-dropdown-color-hover: #e78f8f;
+  --category-dropdown-background-color: #00000000;
+  --category-dropdown-border-color: #00000000;
+  --todo-row-border-radius: 30px;
+  --intro-bg-color: #f79b9b;
   --chevron-right: url("../images/chevron_right_black.png");
   --chevron-down: url("../images/chevron_down_black.png");
 }
