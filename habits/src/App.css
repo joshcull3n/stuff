@@ -41,8 +41,15 @@ body {
 }
 
 .mainPanel {
-  max-width: max-content;
-  min-width: var(--mainpanel-min-width);
+  max-width: 800px;
+  width: 95%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainPanelContainer {
+  z-index: 1000;
 }
 
 * {
@@ -403,17 +410,6 @@ input[type="checkbox"]:checked:hover {
   transition: transform 5s ease-in-out;
 }
 
-.mainPanel {
-  margin: auto;
-  width: 90%;
-  display: flex;
-  flex-direction: column;
-}
-
-.mainPanelContainer {
-  z-index: 1000;
-}
-
 .monospaceText {
   font-family: var(--calendar-font);
 }
@@ -599,8 +595,6 @@ input[type="checkbox"]:checked:hover {
 }
 
 .todoListContainer {
-  max-width: 800px;
-  min-width: min-content;
   margin: 0px auto 10px auto;
 }
 
