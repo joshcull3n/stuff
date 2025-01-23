@@ -2,6 +2,8 @@ A simple, platform-agnostic web application built using React, Express.js, and M
 
 I had no particular productivity ethos in mind while building this other than considering what I personally want in a productivity tool. It's purposefully unfussy and helps me keep my stuff together.
 
+Please give it a try [here](https://joshcullen.co/stuff). I appreciate any and all feedback!
+
 <table style="margin: 0 auto;">
   <tr>
     <td align="center">
@@ -16,5 +18,3 @@ I had no particular productivity ethos in mind while building this other than co
     </td>
   </tr>
 </table>
-
-Please give it a try [here](https://joshcullen.co/stuff). I appreciate any and all feedback!
