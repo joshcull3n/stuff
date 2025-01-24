@@ -10,7 +10,7 @@ body {
   --sidebar-top: 15px;
   --graph-step-size: 0.2;
   --grid-width-template-columns-habits: min-content repeat(21, 1fr) auto;
-  --grid-width-template-columns-todos: 20px minmax(100px, 1fr) 70px 85px 15px 15px;
+  --grid-width-template-columns-todos: 20px minmax(100px, 1fr) 0px 85px 15px 15px;
   --date-selector-width: 30px;
   /* --date-selector-border-color: var(--main-font-color-high-alpha); */
   --date-selector-border-color: #00000000;
@@ -633,7 +633,7 @@ input[type="checkbox"]:checked:hover {
 }
 
 .noTasks {
-  padding: 0px;
+  font-size: x-small;
 }
 
 .newCategoryInput {

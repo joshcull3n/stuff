@@ -477,7 +477,8 @@ const PanelTitle = ({title, count, count2, expanded=false}) => {
   const { 
     snoozedExpanded, setSnoozedExpanded, 
     archivedExpanded, setArchivedExpanded,
-    doneExpanded, setDoneExpanded 
+    doneExpanded, setDoneExpanded,
+    todos
   } = useContext(TodoContext);
 
   const HandleCollapseClick = (e, title) => {
@@ -495,6 +496,8 @@ const PanelTitle = ({title, count, count2, expanded=false}) => {
   const CollapsedTitleSmall = () => <span><img id={`${title}header`} className="collapseSmall"/>{title}</span>
   const ExpandedTitleSmall = () => <span><img id={`${title}header`} className="expandedSmall"/>{title}</span>
 
+  const openTodoCount = todos.filter(todo => todo.status === 'incomplete').length;
+
   if (count2) {
     if (title === 'todo')
       return <div className='panelTitle unclickable'><RegularTitle /><span>{count} ({count2})</span></div>
@@ -502,7 +505,7 @@ const PanelTitle = ({title, count, count2, expanded=false}) => {
   }
   if (count || count === 0) {
     if (title === 'todo')
-      return <div className='panelTitle unclickable'><RegularTitle /><span>{count}</span></div>
+      return <div className='panelTitle unclickable'><RegularTitle /><span>{count}</span>{openTodoCount <= 0 && <span className='noTasks'>• nothing to do...</span>}</div>
     if (title === 'snoozed')
       return ( <div className='panelTitle clickable' onClick={(e) => HandleCollapseClick(e, title)}>{ expanded ? <ExpandedTitleSmall /> : <CollapsedTitleSmall /> }<span>{count}</span></div> )  
     return ( <div className='panelTitle clickable' onClick={(e) => HandleCollapseClick(e, title)}>{ expanded ? <ExpandedTitle /> : <CollapsedTitle /> }<span>{count}</span></div> )
@@ -600,13 +603,13 @@ const TodoList = () => {
       <div className='todoListContainer fadeIn'>
         <div className='todoListHeader'>
           <PanelTitle title='todo' count={openCount} /*count2={openCount != totalCount && totalCount}*//>
-          <FilterButton /><FilterInput />
+          {openTodos.length > 0 && <><FilterButton /><FilterInput /></>}
         </div>
         <div className='todoGrid'>
           { 
             openTodos.length > 0 ? openTodos.map((todo, index) => (
               <TodoRow todo={todo} showSnoozeBtn={true} showArchiveBtn={true} key={index} />
-            )) : <div className='todoRow noTasks'></div>
+            )) : <></>
           }
         </div>
         { snoozedTodos.length > 0 && (
