@@ -18,6 +18,9 @@ export const TodoProvider = ({ children }) => {
   const [categorySelected, setCategorySelected] = useState('');
   const [editingTitleIndex, setEditingTitleIndex] = useState('');
   const [titleFieldWidth, setTitleFieldWidth] = useState('');
+  const [snoozedExpanded, setSnoozedExpanded] = useState(false);
+  const [archivedExpanded, setArchivedExpanded] = useState(false);
+  const [doneExpanded, setDoneExpanded] = useState(false);
 
   function checkSnoozeTimes(todos) {
     const today = new Date();
@@ -79,7 +82,10 @@ export const TodoProvider = ({ children }) => {
       editingTitleIndex, setEditingTitleIndex,
       titleFieldWidth, setTitleFieldWidth,
       categorySelected, setCategorySelected,
-      loggedInUser
+      loggedInUser,
+      snoozedExpanded, setSnoozedExpanded,
+      archivedExpanded, setArchivedExpanded,
+      doneExpanded, setDoneExpanded,
     }}>
       { children }
     </TodoContext.Provider>

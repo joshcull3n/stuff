@@ -41,8 +41,15 @@ body {
 }
 
 .mainPanel {
-  max-width: max-content;
-  min-width: var(--mainpanel-min-width);
+  max-width: 800px;
+  width: 95%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainPanelContainer {
+  z-index: 1000;
 }
 
 * {
@@ -155,6 +162,42 @@ input[type="checkbox"]:checked:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.unclickable {
+  cursor: default;
+}
+
+.collapse {
+  content: var(--chevron-right);
+  width: 12px;
+  vertical-align: middle;
+  padding-right: 2px;
+}
+
+.expanded {
+  content: var(--chevron-down);
+  width: 12px;
+  vertical-align: middle;
+  padding-right: 2px;
+}
+
+.collapseSmall {
+  content: var(--chevron-right);
+  width: 10px;
+  vertical-align: middle;
+  padding-right: 1px;
+}
+
+.expandedSmall {
+  content: var(--chevron-down);
+  width: 10px;
+  vertical-align: middle;
+  padding-right: 1px;
 }
 
 #deleteButton {
@@ -367,17 +410,6 @@ input[type="checkbox"]:checked:hover {
   transition: transform 5s ease-in-out;
 }
 
-.mainPanel {
-  margin: auto;
-  width: 90%;
-  display: flex;
-  flex-direction: column;
-}
-
-.mainPanelContainer {
-  z-index: 1000;
-}
-
 .monospaceText {
   font-family: var(--calendar-font);
 }
@@ -563,8 +595,6 @@ input[type="checkbox"]:checked:hover {
 }
 
 .todoListContainer {
-  max-width: 800px;
-  min-width: min-content;
   margin: 0px auto 10px auto;
 }
 
@@ -684,7 +714,6 @@ input[type="checkbox"]:checked:hover {
 .panelTitle {
   padding: 3px 0 3px 10px;
   font-size: 0.8em;
-  cursor: default;
 }
 
 .panelTitle > span {

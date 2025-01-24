@@ -7,6 +7,7 @@
   --graph-line-color: #e3bcaf;
   --graph-bg-color: #e3bcaf01;
   --bg-color: black;
+  --main-bg-color: black;
   --calendar-font: monospace;
   --textbox-placeholder-color: #e3bcaf;
   --delete-button: url("../images/delete.png");
@@ -23,5 +24,10 @@
   --unarchive-button: url("../images/unarchive_dark.svg");
   --filter-button: url("../images/filter_dark.png");
   --dateSelector-background: url('../images/date_dark.png') no-repeat center;
+  --category-dropdown-color-hover: #000;
+  --category-dropdown-background-color: #000;
+  --category-dropdown-border-color: #e3bcaf;
+  --chevron-right: url("../images/chevron_right_dark.png");
+  --chevron-down: url("../images/chevron_down_dark.png");
   --intro-bg-color: #00000000;
 }
