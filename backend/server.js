@@ -74,11 +74,11 @@ app.use(express.json());
 
 // ROUTE ENDPOINTS
 // base 'u up?' checks
-app.get(`/habits/`, async (res) => {
+app.get(`/habits/`, async (req, res) => {
   try {
     res.status(200).json('I\'m up wyd');
   } catch (error) {
-    res.status(500);
+    res.status(500).json({ message: error.message });
   }
 })
 
