@@ -170,10 +170,6 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done, showDueDate=true}) 
         setTitleFieldWidth('');
       }
     }
-  
-    const handleEditingTitleChange = (e) => {
-      setEditingTitleValue(e.target.value);
-    }
 
     useEffect(() => {
       if (editFieldRef.current && titleFieldWidth)
@@ -374,7 +370,6 @@ const TodoInput = () => {
     }
   }
 
-
   const CategoryDropdown = () => {
     const [showCategoryList, setShowCategoryList] = useState(false);
     const [creatingCategory, setCreatingCategory] = useState(false);
@@ -383,6 +378,7 @@ const TodoInput = () => {
       setCategoryFilterEnabled, setNewCategory, setFilterString
     } = useContext(TodoContext);
     const { lightMode } = useContext(Context);
+    const catDropdownRef = useRef(null);
 
     const existingCategories = [];
     todos.forEach(todo => {
@@ -393,6 +389,19 @@ const TodoInput = () => {
     const handleCategoryDropdownClick = () => {
       setShowCategoryList(!showCategoryList);
     }
+
+    useEffect(() => {
+      const handleClickOutside = (e) => {
+        if (catDropdownRef.current && !catDropdownRef.current.contains(e.target)) {
+          setShowCategoryList(false);
+        }
+      };
+      
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, [showCategoryList])
 
     const handleCategoryOptionClick = (e) => {
       setShowFilterInput(false);
@@ -439,7 +448,7 @@ const TodoInput = () => {
     }
 
     return (
-      <div>
+      <div ref={catDropdownRef}>
         <div className='categoryDropdown' onClick={handleCategoryDropdownClick} style={categoryDropdownStyle}>
           {(categorySelected && <span className='selectedCategory'>{categorySelected}</span>) || <span className='unselectedCategory' onClick={handleCategoryDropdownClick}>list</span>}
           {categorySelected && <span className='clearCategoryBtn' onClick={handleClearCategoryClick}>x</span>}
