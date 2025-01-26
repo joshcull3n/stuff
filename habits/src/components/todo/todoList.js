@@ -274,9 +274,12 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done, showDueDate=true}) 
 
   function handleCategoryBtnClick(category) {
     setCategoryFilterEnabled(true);
-    setFilterString(category);
     setCategorySelected(category);
     setNewCategory(category);
+    setShowFilterInput(false);
+    setFilteredTodos(
+      todos.filter((todo) => { return (todo.category && todo.category.toLowerCase().includes(category.toLowerCase()))})
+    );
   }
 
   return (
