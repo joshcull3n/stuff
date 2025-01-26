@@ -54,12 +54,8 @@ export const TodoProvider = ({ children }) => {
 
   useEffect(() => {
     setFilterString('');
-    setCategoryFilterEnabled(false);
-    setCategorySelected(null);
     if (showFilterInput) { document.getElementById("filterInput").focus(); }
   }, [showFilterInput])
-
-  // useEffect(() => {setShowFilterInput(false)}, [categorySelected])
 
   useEffect(() => {
     if (!categoryFilterEnabled) {

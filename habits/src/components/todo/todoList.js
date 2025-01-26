@@ -392,6 +392,7 @@ const TodoInput = () => {
     }
 
     const handleCategoryOptionClick = (e) => {
+      setShowFilterInput(false);
       setCategorySelected(e.target.innerHTML);
       setNewCategory(e.target.innerHTML);
       setCategoryFilterEnabled(true);
@@ -520,10 +521,10 @@ const FilterInput = () => {
     showFilterInput, setShowFilterInput,
     filterString, setFilterString, 
     setFilteredTodos,
-    setCategorySelected
+    categorySelected, setCategorySelected
   } = useContext(TodoContext);
 
-  useEffect(() => { filterTodoList(filterString); }, [filterString])
+  useEffect(() => { if (!categorySelected) { filterTodoList(filterString); }}, [filterString])
 
   const handleFilterChange = (e) => { 
     setCategorySelected('');
