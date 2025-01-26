@@ -603,7 +603,7 @@ const TodoList = () => {
       <div className='todoListContainer fadeIn'>
         <div className='todoListHeader'>
           <PanelTitle title='todo' count={openCount} /*count2={openCount != totalCount && totalCount}*//>
-          {openTodos.length > 0 && <><FilterButton /><FilterInput /></>}
+          {(openTodos.length > 0 || filterString) && <><FilterButton /><FilterInput /></>}
         </div>
         <div className='todoGrid'>
           { 
