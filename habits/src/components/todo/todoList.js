@@ -466,21 +466,59 @@ const TodoInput = () => {
     )
   }
 
+  const TodoOptions = () => {
+    const [showOptions, setShowOptions] = useState(false);
+
+    const handleTodoOptionsBtnClick = (e) => {
+      setShowOptions(!showOptions);
+    }
+
+    const OptionsMenuOptions = () => {
+      return (
+        <div>
+          <div>option 1</div>
+          <div>option 2</div>
+          <div>option 3</div>
+        </div>
+      )
+    }
+
+    const OptionsMenu = () => {
+      return (
+        <div>
+          {showOptions ? <OptionsMenuOptions /> : <></>}
+          <div onClick={handleTodoOptionsBtnClick}>{showOptions ? <img class='chevronUp'/> : <img class='expanded' />}</div>
+        </div>
+      )
+    }
+
+    return (
+      <div id='todoOptions'>
+        { newTodoText ? <OptionsMenu /> : <></> }
+      </div>
+    )
+  }
+
   return (
-    <div id="todoInput">
-      <input style={{'width':'100%', 'padding':'0 10px', 'margin':'1px 0' }} 
-        placeholder='add a todo...'
-        value={newTodoText}
-        ref={inputRef}
-        onKeyDown={handleTodoInputEnter}
-        onChange={handleTodoInputChange} 
-      />
-      <div style={{'display':'flex','justifyContent':'center', 'paddingBottom':'1px', 'marginTop':'1px' }}>
-        <CategoryDropdown />
-        {/* <input type='date' className='dateSelector' value={newDueDate}
-          onChange={handleTodoDueDateSelectionChange} onKeyDown={handleTodoInputEnter} 
-        /> */}
-        <div id='inputBtn' onClick={handleTodoInputBtnClick}>+</div>
+    <div style={{'padding': '4px'}}>
+      <div id='todoInput'>
+        <input style={{'width':'100%', 'padding':'0 10px', 'margin':'1px 0' }} 
+          placeholder='add a todo...'
+          value={newTodoText}
+          ref={inputRef}
+          onKeyDown={handleTodoInputEnter}
+          onChange={handleTodoInputChange} 
+        />
+        <div style={{'display':'flex','justifyContent':'center', 'paddingBottom':'1px', 'marginTop':'1px' }}>
+          <CategoryDropdown />
+          {/* <input type='date' className='dateSelector' value={newDueDate}
+            onChange={handleTodoDueDateSelectionChange} onKeyDown={handleTodoInputEnter} 
+          /> */}
+          <div id='inputBtn' onClick={handleTodoInputBtnClick}>+</div>
+        </div>
+      </div>
+      <div id='todoOptions'>
+        <TodoOptions />
       </div>
     </div>
   )
