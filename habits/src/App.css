@@ -681,7 +681,6 @@ input[type="checkbox"]:checked:hover {
   padding : 1px 0 0 0;
   text-align : center;
   font-size : x-small;
-  cursor: pointer;
 }
 
 #todoInput > input:hover {

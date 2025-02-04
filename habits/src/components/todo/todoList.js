@@ -468,18 +468,42 @@ const TodoInput = () => {
 
   const TodoOptions = () => {
     const [showOptions, setShowOptions] = useState(false);
+    const [showDueDateMenu, setShowDueDateMenu] = useState(false);
+    const [showRepeatMenu, setShowRepeatMenu] = useState(false);
+    const [showDeferMenu, setShowDeferMenu] = useState(false);
 
-    const handleTodoOptionsBtnClick = (e) => {
-      setShowOptions(!showOptions);
-    }
+    const handleTodoOptionsBtnClick = (e) => setShowOptions(!showOptions);
+    const handleRepeatMenuClick = (e) => setShowRepeatMenu(!showRepeatMenu);
+    const handleDeferMenuClick = (e) => setShowDeferMenu(!showDeferMenu);
+    const handleDueDateMenuClick = (e) => setShowDueDateMenu(!showDueDateMenu);
 
     const OptionsMenuOptions = () => {
       return (
-        <div>
-          <div>option 1</div>
-          <div>option 2</div>
-          <div>option 3</div>
+        <div style={{'display':'grid', 'gridTemplateColumns':'repeat(4, 1fr)', 'margin':'0 50px'}}>
+          <div className='todoOptionItem'><div onClick={handleDueDateMenuClick} className='clickable'>due date</div>{showDueDateMenu && <DueDateMenu/>}</div>
+          <div className='todoOptionItem'><div onClick={handleRepeatMenuClick} className='clickable'>repeat</div>{showRepeatMenu && <RepeatMenu/>}</div>
+          <div className='todoOptionItem'><div onClick={handleDeferMenuClick} className='clickable'>defer</div>{showDeferMenu && <DeferMenu/>}</div>
+          <div className='todoOptionItem'>skippable</div>
+          {/* <div className='todoOptionItem'>details</div> */}
         </div>
+      )
+    }
+
+    const DueDateMenu = () => {
+      return (
+        <div className='todoOptionItem'>mm . dd . yyyy</div>
+      )
+    }
+
+    const RepeatMenu = () => {
+      return (
+        <div className='todoOptionItem'>every 7 days{/*<div>skip weekends</div>*/}</div>
+      )
+    }
+
+    const DeferMenu = () => {
+      return (
+        <div className='todoOptionItem'>for 7 days</div>
       )
     }
 
@@ -487,7 +511,7 @@ const TodoInput = () => {
       return (
         <div>
           {showOptions ? <OptionsMenuOptions /> : <></>}
-          <div onClick={handleTodoOptionsBtnClick}>{showOptions ? <img class='chevronUp'/> : <img class='expanded' />}</div>
+          <div onClick={handleTodoOptionsBtnClick}>{showOptions ? <img class='chevronUp clickable'/> : <img class='expanded clickable' />}</div>
         </div>
       )
     }
