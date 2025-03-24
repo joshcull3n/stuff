@@ -10,7 +10,7 @@ body {
   --sidebar-top: 15px;
   --graph-step-size: 0.2;
   --grid-width-template-columns-habits: min-content repeat(21, 1fr) auto;
-  --grid-width-template-columns-todos: 20px minmax(100px, 1fr) 0px 85px 15px 15px;
+  --grid-width-template-columns-todos: 20px minmax(100px, 1fr) 0px min-content 85px min-content min-content;
   --date-selector-width: 30px;
   /* --date-selector-border-color: var(--main-font-color-high-alpha); */
   --date-selector-border-color: #00000000;

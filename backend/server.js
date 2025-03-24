@@ -386,6 +386,7 @@ app.patch('/todos/', async (req, res) => {
     const newDueDate = req.body.dueDate;
     const newOrder = req.body.order;
     const newSnoozeDate = req.body.snooze_date;
+    const completedDate = req.body.completed_date;
 
     const updateData = {
       title: newTitle,
@@ -395,6 +396,7 @@ app.patch('/todos/', async (req, res) => {
       due_date: newDueDate,
       order: newOrder,
       updated_date: date,
+      completed_date: completedDate,
       snooze_date: newSnoozeDate
     }
     const cleanUpdateData = Object.fromEntries(

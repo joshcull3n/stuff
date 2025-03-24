@@ -45,6 +45,29 @@ function getDueDateString(dueMillis=null) {
   }
 }
 
+function getDoneDateString(doneMillis=null) {
+  if (doneMillis === null)
+    return ''
+    // return 'someday'
+  const now = new Date();
+  const doneDate = new Date(doneMillis);
+  const daysAgo = (now - doneDate) / 8.64e+7;
+  if (daysAgo < 1)
+    return 'completed today'
+  else if (daysAgo < 2)
+    return 'completed yday'
+  else if (daysAgo < 7)
+    return `${Math.floor(daysAgo)} days ago`
+  else {
+    const year = String(doneDate.getFullYear()).slice(-2);
+    const month = String(doneDate.getMonth() + 1).padStart(2, '0');
+    const day = String(doneDate.getDate()).padStart(2, '0');
+    let date = doneDate.toLocaleDateString('en-US',{year: '2-digit', month: 'short', day: 'numeric'})
+    // return `${year} ${month} ${day}`
+    return date.toLowerCase()
+  }
+}
+
 // due dates take precedent. when no due date, fallback to updated date.
 function sortTodos(todosToSort, order='default', ignore_duedate=false) {
   return [...todosToSort].toSorted((a, b) => {
@@ -122,7 +145,7 @@ const BaseButtonElement = ({text, type, onclick}) => {
   return ( <div className="todoBtn">{text}</div>)
 }
 
-const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done, showDueDate=true}) => {
+const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done, showDueDate=true, showDoneDate=false}) => {
   const { mobile } = useContext(Context);
   const { todos, setTodos, 
     setNewCategory, setFilterString, 
@@ -136,6 +159,7 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done, showDueDate=true}) 
   const [editingTitleValue, setEditingTitleValue] = useState(todo.title);
 
   const DueDate = () => <div className="todoCell todoLabel dueDate">{getDueDateString(todo.due_date)}</div>
+  const DoneDate = () => <div className="todoCell todoLabel dueDate">{getDoneDateString(todo.completed_date)}</div>
   const CompleteBtn = () => <BaseButtonElement text="fin" type={(done && "finDone") || "fin"} onclick={() => changeStatus(todo, 'complete', 'incomplete')}/>
   const SnoozeBtn = () => <BaseButtonElement text="snz" type="snz" onclick={() => changeStatus(todo, 'snoozed', 'incomplete')}/>
   const ArchiveBtn = () => <BaseButtonElement text="arc" type="arc" onclick={() => changeStatus(todo, 'archived')}/> 
@@ -228,7 +252,6 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done, showDueDate=true}) 
     deleteTodoReq(todoToDelete._id);
   }
 
-
   // if task status is already status, use altStatus
   function changeStatus(todoToUpdate, status, altStatus) {
     let changeStatus = status;
@@ -240,13 +263,15 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done, showDueDate=true}) 
         todo.status = changeStatus
         if (changeStatus === 'incomplete') {
           todo.snooze_date = null;
-          todoToUpdate.snooze_date = null;
+          todo.completed_date = null;
         }
+        else if (changeStatus === 'complete')
+          todo.completed_date = Date.now();
         else if (changeStatus === 'snoozed') {
           setSnoozedExpanded(true);
           todo.snooze_date = Date.now();
-          todoToUpdate.snooze_date = todo.snooze_date;
         }
+        Object.assign(todoToUpdate, todo);
       };
       return todo;
     });
@@ -284,6 +309,7 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done, showDueDate=true}) 
       <Title />
       {/* { (mobile !== true && <EditBtn />) || <div></div> } */}
       { (mobile !== true && showDueDate && <DueDate />) || <div></div> }
+      { (mobile !== true && showDoneDate && <DoneDate />) || <div></div>}
       { (mobile !== true && todo.category && <CategoryBtn />) || <div></div> }
       { showSnoozeBtn === true && <SnoozeBtn /> }
       { (mobile !== true && showArchiveBtn === true && <ArchiveBtn />) || (showArchiveBtn === false && <UnarchiveBtn />) }
@@ -643,14 +669,24 @@ const TodoList = () => {
 const DoneList = () => {
   const { todos, filteredTodos, filterString, doneExpanded } = useContext(TodoContext);
   const doneTodos = filterAndSort(todos, filteredTodos, filterString, 'complete', 'desc', true);
+  let now = new Date();
+  const todayDoneTodos = []
+  doneTodos.forEach((todo, index) => {
+    let done = new Date(todo.completed_date); 
+    if (done.toDateString() == now.toDateString())
+      todayDoneTodos.push(todo);
+  })
 
   return (
     <div className="todoListContainer fadedContainer fadeInHalf">
       <PanelTitle title='done' count={doneTodos.length} expanded={doneExpanded}/>
       <div className="todoGrid">
         { doneExpanded && doneTodos.length > 0 ? doneTodos.map((todo, index) => (
-            <TodoRow todo={todo} showSnoozeBtn={false} showDueDate={false} done={true} key={index} />
-          )) : <div className='todoRow' style={{'padding': '0px'}}></div> }
+            <TodoRow todo={todo} showSnoozeBtn={false} showDueDate={false} showDoneDate={true} done={true} key={index} />
+          )) : 
+          <div>{todayDoneTodos.map((todo, index) => (
+            <TodoRow todo={todo} showSnoozeBtn={false} showDueDate={false} showDoneDate={true} done={true} key={index} />
+          ))}</div> }
       </div>
     </div>
   )
