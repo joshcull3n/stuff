@@ -634,6 +634,9 @@ input[type="checkbox"]:checked:hover {
 
 .noTasks {
   font-size: x-small;
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
 }
 
 .newCategoryInput {
@@ -712,7 +715,7 @@ input[type="checkbox"]:checked:hover {
 }
 
 .panelTitle {
-  padding: 3px 0 3px 10px;
+  padding: 5px 0 3px 10px;
   font-size: 0.8em;
 }
 

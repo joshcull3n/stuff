@@ -544,7 +544,7 @@ const PanelTitle = ({title, count, count2, expanded=false}) => {
   }
   if (count || count === 0) {
     if (title === 'todo')
-      return <div className='panelTitle unclickable'><RegularTitle /><span>{count}</span>{openTodoCount <= 0 && <span className='noTasks'>• nothing to do...</span>}</div>
+      return <div className='panelTitle unclickable'><RegularTitle /><span>{count}</span></div>
     if (title === 'snoozed')
       return ( <div className='panelTitle clickable' onClick={(e) => HandleCollapseClick(e, title)}>{ expanded ? <ExpandedTitleSmall /> : <CollapsedTitleSmall /> }<span>{count}</span></div> )  
     return ( <div className='panelTitle clickable' onClick={(e) => HandleCollapseClick(e, title)}>{ expanded ? <ExpandedTitle /> : <CollapsedTitle /> }<span>{count}</span></div> )
@@ -642,7 +642,7 @@ const TodoList = () => {
       <div className='todoListContainer fadeIn'>
         <div className='todoListHeader'>
           <PanelTitle title='todo' count={openCount} /*count2={openCount != totalCount && totalCount}*//>
-          {(openTodos.length > 0 || filterString) && <><FilterButton /><FilterInput /></>}
+          {(openTodos.length >= 0 || filterString) && <><FilterButton /><FilterInput />{openTodos.length <= 0 && !showFilterInput && <span className='noTasks'>• nothing to do...</span>}</>}
         </div>
         <div className='todoGrid'>
           { 
