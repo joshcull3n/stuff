@@ -681,7 +681,7 @@ const DoneList = () => {
     <div className="todoListContainer fadedContainer fadeInHalf">
       <PanelTitle title='done' count={doneTodos.length} expanded={doneExpanded}/>
       <div className="todoGrid">
-        { doneExpanded && doneTodos.length > 0 ? doneTodos.map((todo, index) => (
+        { (doneExpanded || filterString) && doneTodos.length > 0 ? doneTodos.map((todo, index) => (
             <TodoRow todo={todo} showSnoozeBtn={false} showDueDate={false} showDoneDate={true} done={true} key={index} />
           )) : 
           <div>{todayDoneTodos.map((todo, index) => (
@@ -701,7 +701,7 @@ const ArchiveList = () => {
       <PanelTitle title='archived' count={archivedTodos.length} expanded={archivedExpanded}/>
       <div className="todoGrid">
         {
-          archivedExpanded && archivedTodos.length > 0 ? archivedTodos.map((todo, index) => (
+          (archivedExpanded || filterString) && archivedTodos.length > 0 ? archivedTodos.map((todo, index) => (
             <TodoRow todo={todo} showSnoozeBtn={false} showArchiveBtn={false} key={index} />
           )) : <div className='todoRow' style={{'padding': '0px'}}></div>
         }
