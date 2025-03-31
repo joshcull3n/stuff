@@ -492,21 +492,83 @@ const TodoInput = () => {
     )
   }
 
+  const TodoOptions = () => {
+    const [showOptions, setShowOptions] = useState(false);
+    const [showDueDateMenu, setShowDueDateMenu] = useState(false);
+    const [showRepeatMenu, setShowRepeatMenu] = useState(false);
+    const [showDeferMenu, setShowDeferMenu] = useState(false);
+
+    const handleTodoOptionsBtnClick = (e) => setShowOptions(!showOptions);
+    const handleRepeatMenuClick = (e) => setShowRepeatMenu(!showRepeatMenu);
+    const handleDeferMenuClick = (e) => setShowDeferMenu(!showDeferMenu);
+    const handleDueDateMenuClick = (e) => setShowDueDateMenu(!showDueDateMenu);
+
+    const OptionsMenuOptions = () => {
+      return (
+        <div style={{'display':'grid', 'gridTemplateColumns':'repeat(4, 1fr)', 'margin':'0 50px'}}>
+          <div className='todoOptionItem'><div onClick={handleDueDateMenuClick} className='clickable'>due date</div>{showDueDateMenu && <DueDateMenu/>}</div>
+          <div className='todoOptionItem'><div onClick={handleRepeatMenuClick} className='clickable'>repeat</div>{showRepeatMenu && <RepeatMenu/>}</div>
+          <div className='todoOptionItem'><div onClick={handleDeferMenuClick} className='clickable'>defer</div>{showDeferMenu && <DeferMenu/>}</div>
+          <div className='todoOptionItem'>skippable</div>
+          {/* <div className='todoOptionItem'>details</div> */}
+        </div>
+      )
+    }
+
+    const DueDateMenu = () => {
+      return (
+        <div className='todoOptionItem'>mm . dd . yyyy</div>
+      )
+    }
+
+    const RepeatMenu = () => {
+      return (
+        <div className='todoOptionItem'>every 7 days{/*<div>skip weekends</div>*/}</div>
+      )
+    }
+
+    const DeferMenu = () => {
+      return (
+        <div className='todoOptionItem'>for 7 days</div>
+      )
+    }
+
+    const OptionsMenu = () => {
+      return (
+        <div>
+          {showOptions ? <OptionsMenuOptions /> : <></>}
+          <div onClick={handleTodoOptionsBtnClick}>{showOptions ? <img class='chevronUp clickable'/> : <img class='expanded clickable' />}</div>
+        </div>
+      )
+    }
+
+    return (
+      <div id='todoOptions'>
+        { newTodoText ? <OptionsMenu /> : <></> }
+      </div>
+    )
+  }
+
   return (
-    <div id="todoInput">
-      <input style={{'width':'100%', 'padding':'0 10px', 'margin':'1px 0' }} 
-        placeholder='add a todo...'
-        value={newTodoText}
-        ref={inputRef}
-        onKeyDown={handleTodoInputEnter}
-        onChange={handleTodoInputChange} 
-      />
-      <div style={{'display':'flex','justifyContent':'center', 'paddingBottom':'1px', 'marginTop':'1px' }}>
-        <CategoryDropdown />
-        {/* <input type='date' className='dateSelector' value={newDueDate}
-          onChange={handleTodoDueDateSelectionChange} onKeyDown={handleTodoInputEnter} 
-        /> */}
-        <div id='inputBtn' onClick={handleTodoInputBtnClick}>+</div>
+    <div style={{'padding': '4px'}}>
+      <div id='todoInput'>
+        <input style={{'width':'100%', 'padding':'0 10px', 'margin':'1px 0' }} 
+          placeholder='add a todo...'
+          value={newTodoText}
+          ref={inputRef}
+          onKeyDown={handleTodoInputEnter}
+          onChange={handleTodoInputChange} 
+        />
+        <div style={{'display':'flex','justifyContent':'center', 'paddingBottom':'1px', 'marginTop':'1px' }}>
+          <CategoryDropdown />
+          {/* <input type='date' className='dateSelector' value={newDueDate}
+            onChange={handleTodoDueDateSelectionChange} onKeyDown={handleTodoInputEnter} 
+          /> */}
+          <div id='inputBtn' onClick={handleTodoInputBtnClick}>+</div>
+        </div>
+      </div>
+      <div id='todoOptions'>
+        <TodoOptions />
       </div>
     </div>
   )

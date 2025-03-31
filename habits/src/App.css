@@ -186,6 +186,13 @@ input[type="checkbox"]:checked:hover {
   padding-right: 2px;
 }
 
+.chevronUp {
+  content: var(--chevron-up);
+  width: 12px;
+  vertical-align: middle;
+  padding-right: 2px;
+}
+
 .collapseSmall {
   content: var(--chevron-right);
   width: 10px;
@@ -668,9 +675,15 @@ input[type="checkbox"]:checked:hover {
 }
 
 #todoInput {
-  padding: 4px 5px;
+  /* padding: 4px 4px 0 4px; */
   display: flex;
   justify-content: center;
+}
+
+#todoOptions {
+  padding : 1px 0 0 0;
+  text-align : center;
+  font-size : x-small;
 }
 
 #todoInput > input:hover {
