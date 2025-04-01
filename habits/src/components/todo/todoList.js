@@ -310,7 +310,7 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done, showDueDate=true, s
       {/* { (mobile !== true && <EditBtn />) || <div></div> } */}
       { (mobile !== true && showDueDate && <DueDate />) || <div></div> }
       { (mobile !== true && showDoneDate && <DoneDate />) || <div></div>}
-      { (mobile !== true && todo.category && <CategoryBtn />) || <div></div> }
+      { (mobile !== true && todo.category && <span><CategoryBtn /></span>) || <div></div> }
       { showSnoozeBtn === true && <SnoozeBtn /> }
       { (mobile !== true && showArchiveBtn === true && <ArchiveBtn />) || (showArchiveBtn === false && <UnarchiveBtn />) }
       { (mobile !== true && <DeleteBtn />) }

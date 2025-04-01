@@ -521,6 +521,10 @@ input[type="checkbox"]:checked:hover {
   opacity: 1;
 }
 
+.categoryButton {
+  font-size: 0.75em;
+}
+
 .categoryButton:hover {
   opacity: 0.6;
   cursor: pointer;
@@ -637,6 +641,7 @@ input[type="checkbox"]:checked:hover {
   display: flex;
   align-items: center;
   margin-left: 5px;
+  padding: 2px 0 0 0;
 }
 
 .newCategoryInput {
@@ -715,7 +720,7 @@ input[type="checkbox"]:checked:hover {
 }
 
 .panelTitle {
-  padding: 5px 0 3px 10px;
+  padding: 3px 0 3px 10px;
   font-size: 0.8em;
 }
 
