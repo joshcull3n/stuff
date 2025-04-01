@@ -25,7 +25,7 @@ body {
   --home-img-width: 25px;
   --graph-step-size: 0.5;
   --grid-width-template-columns-habits: 14em repeat(3, 1fr) auto;
-  --grid-width-template-columns-todos: 20px minmax(100px, auto) 0px 0px 15px 0px;
+  --grid-width-template-columns-todos: 20px minmax(100px, auto) 0px 0px 0px 15px;
   --mainpanel-min-width: unset;
   --category-dropdown-width: 80px;
   --date-selector-padding: 0px 7px 0px 0px;
