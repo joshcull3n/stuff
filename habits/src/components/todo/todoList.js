@@ -159,7 +159,7 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done, showDueDate=true, s
   const [editingTitleValue, setEditingTitleValue] = useState(todo.title);
 
   const DueDate = () => <div className="todoCell todoLabel dueDate">{getDueDateString(todo.due_date)}</div>
-  const DoneDate = () => <div className="todoCell todoLabel dueDate">{getDoneDateString(todo.completed_date)}</div>
+  const DoneDate = () => <div className="todoCell todoLabel doneDate">{getDoneDateString(todo.completed_date)}</div>
   const CompleteBtn = () => <BaseButtonElement text="fin" type={(done && "finDone") || "fin"} onclick={() => changeStatus(todo, 'complete', 'incomplete')}/>
   const SnoozeBtn = () => <BaseButtonElement text="snz" type="snz" onclick={() => changeStatus(todo, 'snoozed', 'incomplete')}/>
   const ArchiveBtn = () => <BaseButtonElement text="arc" type="arc" onclick={() => changeStatus(todo, 'archived')}/> 
