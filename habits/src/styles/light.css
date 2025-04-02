@@ -19,7 +19,8 @@
   --light-mode-switch-pic: url("../images/sun_black.svg") 2px 3px no-repeat;
   --home-img-pic: url("../images/sunglasses.png");
   --sidebar-shadow: #0000001F;
-  --snooze-button: url("../images/snooze_light2.svg");
+  --pin-button: url("../images/top_light.svg");
+  --unpin-button: url("../images/top_selected_light.svg");
   --archive-button: url("../images/archive_light.png");
   --unarchive-button: url("../images/unarchive_light.png");
   --filter-button: url("../images/filter_light.png");
