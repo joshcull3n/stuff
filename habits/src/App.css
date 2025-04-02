@@ -686,13 +686,19 @@ input[type="checkbox"]:checked:hover {
   font-size: small;
 }
 
-#snzButton {
-  content: var(--snooze-button);
+#pinButton {
+  content: var(--pin-button);
+  width: 15px;
+}
+
+#unpinButton {
+  content: var(--unpin-button);
+  width: 15px;
 }
 
 #archiveButton {
   content: var(--archive-button);
-  width: 20px;
+  width: 18px;
 }
 
 #unarchiveButton {

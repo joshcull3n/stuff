@@ -53,6 +53,8 @@ Habit.init().then(() => {
 const todoSchema = new mongoose.Schema({
   title: { type: String, required: true },
   status: { type: String, enum: ["incomplete", "complete", "archived", "snoozed"] },
+  // NOTE: status=snoozed actually means PINNED. I didn't want to change the backend.
+  // see: https://github.com/joshcull3n/stuff/pull/16
   description: String,
   category: String,
   due_date: Number,
@@ -60,7 +62,7 @@ const todoSchema = new mongoose.Schema({
   username: { type: String, required: true },
   created_date: { type: Number, required: true },
   updated_date: { type: Number, required: true },
-  snooze_date: Number,
+  snooze_date: Number, // NOTE: snooze_date is actually the date the item was PINNED
   order: Number
 });
 

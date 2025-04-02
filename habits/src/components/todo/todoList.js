@@ -102,10 +102,15 @@ const BaseButtonElement = ({text, type, onclick}) => {
       imgId: "deleteButton", 
       alt: "x"
     },
-    snz: { 
+    pin: { 
       className: "todoButton", 
-      imgId: "snzButton", 
-      alt: "snz" 
+      imgId: "pinButton", 
+      alt: "pin" 
+    },
+    unpin: {
+      className: "todoButton", 
+      imgId: "unpinButton", 
+      alt: "unpin" 
     },
     arc: { 
       className: "todoButton", 
@@ -145,7 +150,7 @@ const BaseButtonElement = ({text, type, onclick}) => {
   return ( <div className="todoBtn">{text}</div>)
 }
 
-const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done, showDueDate=true, showDoneDate=false}) => {
+const TodoRow = ({todo, showPinBtn, showArchiveBtn, done, showDueDate=true, showDoneDate=false, isPinned=false}) => {
   const { mobile } = useContext(Context);
   const { todos, setTodos, 
     setNewCategory, setFilterString, 
@@ -154,19 +159,19 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done, showDueDate=true, s
     editingTitleIndex, setEditingTitleIndex,
     titleFieldWidth, setTitleFieldWidth, 
     categorySelected, setCategorySelected,
-    setSnoozedExpanded
+    setLaterExpanded
   } = useContext(TodoContext);
   const [editingTitleValue, setEditingTitleValue] = useState(todo.title);
 
   const DueDate = () => <div className="todoCell todoLabel dueDate">{getDueDateString(todo.due_date)}</div>
   const DoneDate = () => <div className="todoCell todoLabel doneDate">{getDoneDateString(todo.completed_date)}</div>
   const CompleteBtn = () => <BaseButtonElement text="fin" type={(done && "finDone") || "fin"} onclick={() => changeStatus(todo, 'complete', 'incomplete')}/>
-  const SnoozeBtn = () => <BaseButtonElement text="snz" type="snz" onclick={() => changeStatus(todo, 'snoozed', 'incomplete')}/>
+  const PinBtn = () => <BaseButtonElement text="pin" type="pin" onclick={() => changeStatus(todo, 'snoozed', 'incomplete')}/>
+  const UnpinBtn = () => <BaseButtonElement text="unpin" type="unpin" onclick={() => changeStatus(todo, 'snoozed', 'incomplete')}/>
   const ArchiveBtn = () => <BaseButtonElement text="arc" type="arc" onclick={() => changeStatus(todo, 'archived')}/> 
   const UnarchiveBtn = () => <BaseButtonElement text="unarc" type="unarc" onclick={() => changeStatus(todo, 'incomplete')}/> 
   const DeleteBtn = () => <BaseButtonElement text="del" type="del" onclick={() => deleteTodo(todo)}/>
   const CategoryBtn = () => <BaseButtonElement text={todo.category} type="category" onclick={() => handleCategoryBtnClick(todo.category)}/>
-  const EditBtn = () => <BaseButtonElement text="edit" type="edit" onclick={()=> {}}/>
   const Title = () => {
     const titleFieldRef = useRef(null);
     const editFieldRef = useRef(null);
@@ -268,7 +273,7 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done, showDueDate=true, s
         else if (changeStatus === 'complete')
           todo.completed_date = Date.now();
         else if (changeStatus === 'snoozed') {
-          setSnoozedExpanded(true);
+          setLaterExpanded(true);
           todo.snooze_date = Date.now();
         }
         Object.assign(todoToUpdate, todo);
@@ -311,7 +316,7 @@ const TodoRow = ({todo, showSnoozeBtn, showArchiveBtn, done, showDueDate=true, s
       { (mobile !== true && showDueDate && <DueDate />) || <div></div> }
       { (mobile !== true && showDoneDate && <DoneDate />) || <div></div>}
       { (mobile !== true && todo.category && <span><CategoryBtn /></span>) || <div></div> }
-      { showSnoozeBtn === true && <SnoozeBtn /> }
+      { showPinBtn === true && ( isPinned && <UnpinBtn /> || <PinBtn /> )}
       { (mobile !== true && showArchiveBtn === true && <ArchiveBtn />) || (showArchiveBtn === false && <UnarchiveBtn />) }
       { (mobile !== true && <DeleteBtn />) }
     </div>
@@ -512,17 +517,17 @@ const TodoInput = () => {
   )
 }
 
-const PanelTitle = ({title, count, count2, expanded=false}) => {
+const PanelTitle = ({title, count, expanded=false}) => {
   const { 
-    snoozedExpanded, setSnoozedExpanded, 
+    laterExpanded, setLaterExpanded, 
     archivedExpanded, setArchivedExpanded,
     doneExpanded, setDoneExpanded,
     todos
   } = useContext(TodoContext);
 
   const HandleCollapseClick = (e, title) => {
-    if (title === 'snoozed')
-      setSnoozedExpanded(!snoozedExpanded);
+    if (title === 'do later')
+      setLaterExpanded(!laterExpanded);
     else if (title === 'done')
       setDoneExpanded(!doneExpanded);
     else if (title === 'archived')
@@ -535,17 +540,10 @@ const PanelTitle = ({title, count, count2, expanded=false}) => {
   const CollapsedTitleSmall = () => <span><img id={`${title}header`} className="collapseSmall"/>{title}</span>
   const ExpandedTitleSmall = () => <span><img id={`${title}header`} className="expandedSmall"/>{title}</span>
 
-  const openTodoCount = todos.filter(todo => todo.status === 'incomplete').length;
-
-  if (count2) {
-    if (title === 'todo')
-      return <div className='panelTitle unclickable'><RegularTitle /><span>{count} ({count2})</span></div>
-    return ( <div className='panelTitle clickable'>{ expanded ? <ExpandedTitle /> : <CollapsedTitle /> }<span>{count} ({count2})</span></div> )
-  }
   if (count || count === 0) {
-    if (title === 'todo')
+    if (title === 'todo' || title === 'do today')
       return <div className='panelTitle unclickable'><RegularTitle /><span>{count}</span></div>
-    if (title === 'snoozed')
+    else if (title === 'later')
       return ( <div className='panelTitle clickable' onClick={(e) => HandleCollapseClick(e, title)}>{ expanded ? <ExpandedTitleSmall /> : <CollapsedTitleSmall /> }<span>{count}</span></div> )  
     return ( <div className='panelTitle clickable' onClick={(e) => HandleCollapseClick(e, title)}>{ expanded ? <ExpandedTitle /> : <CollapsedTitle /> }<span>{count}</span></div> )
   }
@@ -610,12 +608,11 @@ const TodoList = () => {
     showFilterInput, setShowFilterInput,
     filteredTodos, setFilteredTodos,
     filterString, setFilterString,
-    setNewCategory,
-    snoozedExpanded
+    setNewCategory, laterExpanded
   } = useContext(TodoContext);
 
   const openTodos = filterAndSort(todos, filteredTodos, filterString, 'incomplete', ordering);
-  const snoozedTodos = filterAndSort(todos, filteredTodos, filterString, 'snoozed', ordering);
+  const pinnedTodos = filterAndSort(todos, filteredTodos, filterString, 'snoozed', ordering);
   const openCount = openTodos.length;
 
   function switchShowFilterInput() {
@@ -641,26 +638,25 @@ const TodoList = () => {
       </div>
       <div className='todoListContainer fadeIn'>
         <div className='todoListHeader'>
-          <PanelTitle title='todo' count={openCount} /*count2={openCount != totalCount && totalCount}*//>
+          <PanelTitle title='todo' count={openCount + pinnedTodos.length} />
           {(openTodos.length >= 0 || filterString) && <><FilterButton /><FilterInput />{openTodos.length <= 0 && !showFilterInput && <span className='noTasks'>• nothing to do...</span>}</>}
         </div>
-        <div className='todoGrid'>
-          { 
-            openTodos.length > 0 ? openTodos.map((todo, index) => (
-              <TodoRow todo={todo} showSnoozeBtn={true} showArchiveBtn={true} key={index} />
-            )) : <></>
-          }
-        </div>
-        { snoozedTodos.length > 0 && (
+        { pinnedTodos.length > 0 && (
           <div className='todoGrid' style={{ padding: '5px 0' }}>
-            <div className='fadedContainer'> 
-              <div style={{fontSize:'x-small'}}><PanelTitle title='snoozed' expanded={snoozedExpanded} count={snoozedTodos.length}/></div>
-                { snoozedExpanded && snoozedTodos.length > 0 ? snoozedTodos.map((todo, index) => (
-                  <TodoRow todo={todo} showSnoozeBtn={true} showArchiveBtn={true} key={index} />
+            <div className=''> 
+              <div style={{fontSize:'x-small'}}><PanelTitle title='do today' count={pinnedTodos.length}/></div>
+                { true && pinnedTodos.length > 0 ? pinnedTodos.map((todo, index) => (
+                  <TodoRow todo={todo} showPinBtn={true} showArchiveBtn={true} key={index} isPinned={true}/>
                 )) : <></> }
               </div>
           </div>
         )}
+        <div className='todoGrid'>
+            { openTodos.length > 0 && pinnedTodos.length > 0 && <div style={{fontSize:'x-small'}}><PanelTitle title='do later' count={openTodos.length} expanded={laterExpanded}/></div> }
+            { laterExpanded || filterString || pinnedTodos.length <= 0 ? openTodos.map((todo, index) => (
+                <TodoRow todo={todo} showPinBtn={true} showArchiveBtn={true} key={index} />
+              )) : <></> }
+        </div>
       </div>
     </div>
   )
@@ -682,10 +678,10 @@ const DoneList = () => {
       <PanelTitle title='done' count={doneTodos.length} expanded={doneExpanded}/>
       <div className="todoGrid">
         { (doneExpanded || filterString) && doneTodos.length > 0 ? doneTodos.map((todo, index) => (
-            <TodoRow todo={todo} showSnoozeBtn={false} showDueDate={false} showDoneDate={true} done={true} key={index} />
+            <TodoRow todo={todo} showPinBtn={false} showDueDate={false} showDoneDate={true} done={true} key={index} />
           )) : 
           <div>{todayDoneTodos.map((todo, index) => (
-            <TodoRow todo={todo} showSnoozeBtn={false} showDueDate={false} showDoneDate={true} done={true} key={index} />
+            <TodoRow todo={todo} showPinBtn={false} showDueDate={false} showDoneDate={true} done={true} key={index} />
           ))}</div> }
       </div>
     </div>
@@ -702,7 +698,7 @@ const ArchiveList = () => {
       <div className="todoGrid">
         {
           (archivedExpanded || filterString) && archivedTodos.length > 0 ? archivedTodos.map((todo, index) => (
-            <TodoRow todo={todo} showSnoozeBtn={false} showArchiveBtn={false} key={index} />
+            <TodoRow todo={todo} showPinBtn={false} showArchiveBtn={false} key={index} />
           )) : <div className='todoRow' style={{'padding': '0px'}}></div>
         }
       </div>
