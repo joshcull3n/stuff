@@ -265,17 +265,16 @@ const TodoRow = ({todo, showPinBtn, showArchiveBtn, done, showDueDate=true, show
     const newTodos = todos.map(todo => {
       if (todo._id === todoToUpdate._id) {
         todo.updated_date = Date.now();
-        todo.status = changeStatus
-        if (changeStatus === 'incomplete') {
-          todo.snooze_date = null;
+        todo.snooze_date = null;
+        if (changeStatus === 'incomplete')
           todo.completed_date = null;
-        }
         else if (changeStatus === 'complete')
           todo.completed_date = Date.now();
         else if (changeStatus === 'snoozed') {
           setLaterExpanded(true);
           todo.snooze_date = Date.now();
         }
+        todo.status = changeStatus
         Object.assign(todoToUpdate, todo);
       };
       return todo;
