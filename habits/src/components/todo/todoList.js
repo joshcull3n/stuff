@@ -48,22 +48,20 @@ function getDueDateString(dueMillis=null) {
 function getDoneDateString(doneMillis=null) {
   if (doneMillis === null)
     return ''
-    // return 'someday'
   const now = new Date();
   const doneDate = new Date(doneMillis);
-  const daysAgo = (now - doneDate) / 8.64e+7;
-  if (daysAgo < 1)
+  const oneDay = 1000 * 60 * 60 * 24;
+  const daysAgo = Math.floor((now.setHours(0,0,0,0) - doneDate.setHours(0,0,0,0)) / oneDay);
+  if (daysAgo === 0)
     return 'completed today'
-  else if (daysAgo < 2)
+  else if (daysAgo === 1)
     return 'completed yday'
   else if (daysAgo < 7)
-    return `${Math.floor(daysAgo)} days ago`
+    return `${daysAgo} days ago`
   else {
-    const year = String(doneDate.getFullYear()).slice(-2);
-    const month = String(doneDate.getMonth() + 1).padStart(2, '0');
-    const day = String(doneDate.getDate()).padStart(2, '0');
-    let date = doneDate.toLocaleDateString('en-US',{year: '2-digit', month: 'short', day: 'numeric'})
-    // return `${year} ${month} ${day}`
+    let date = doneDate.toLocaleDateString( 'en-US', 
+      { year: '2-digit', month: 'short', day: 'numeric' }
+    )
     return date.toLowerCase()
   }
 }
@@ -667,7 +665,7 @@ const DoneList = () => {
   let now = new Date();
   const todayDoneTodos = []
   doneTodos.forEach((todo, index) => {
-    let done = new Date(todo.completed_date); 
+    let done = new Date(todo.completed_date);
     if (done.toDateString() == now.toDateString())
       todayDoneTodos.push(todo);
   })
