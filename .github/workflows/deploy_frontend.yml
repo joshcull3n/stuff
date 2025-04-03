@@ -20,8 +20,15 @@ jobs:
           node-version: '22.5.1'
       - name: install deps
         run: npm ci
+      - name: configure gh-pages auth
+        run: |
+          git config --global user.name "github-actions-bot"
+          git config --global user.email "support+actions@github.com"
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
       - name: deploy
         run: npm run deploy
         env:
           CI: false
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
