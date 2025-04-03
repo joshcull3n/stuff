@@ -18,11 +18,11 @@ export const TodoProvider = ({ children }) => {
   const [categorySelected, setCategorySelected] = useState('');
   const [editingTitleIndex, setEditingTitleIndex] = useState('');
   const [titleFieldWidth, setTitleFieldWidth] = useState('');
-  const [snoozedExpanded, setSnoozedExpanded] = useState(false);
+  const [laterExpanded, setLaterExpanded] = useState(false);
   const [archivedExpanded, setArchivedExpanded] = useState(false);
   const [doneExpanded, setDoneExpanded] = useState(false);
 
-  function checkSnoozeTimes(todos) {
+  function checkPinTimes(todos) {
     const today = new Date();
     const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     
@@ -47,7 +47,7 @@ export const TodoProvider = ({ children }) => {
     if (loggedInUser) {
       fetchRemoteTodosForUser(loggedInUser).then(resp => {
         if (resp)
-          setTodos(checkSnoozeTimes(resp));
+          setTodos(checkPinTimes(resp));
       });
     }
   }, [loggedInUser]);
@@ -79,7 +79,7 @@ export const TodoProvider = ({ children }) => {
       titleFieldWidth, setTitleFieldWidth,
       categorySelected, setCategorySelected,
       loggedInUser,
-      snoozedExpanded, setSnoozedExpanded,
+      laterExpanded, setLaterExpanded,
       archivedExpanded, setArchivedExpanded,
       doneExpanded, setDoneExpanded,
     }}>
