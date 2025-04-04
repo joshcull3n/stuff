@@ -84,6 +84,21 @@ function sortTodos(todosToSort, order='default', ignore_duedate=false) {
   });
 }
 
+function getFilteredTodos(array, categorySelected, filterString) {
+  return array.filter((todo) => {
+    let categorySelectedStr = categorySelected ? categorySelected.toLowerCase() : null;
+    if (categorySelectedStr) {
+      return (todo.title.toLowerCase().includes(categorySelectedStr) || todo.category && todo.category.toLowerCase().includes(categorySelectedStr))
+    }
+    else if (filterString) {
+      return (todo.title.toLowerCase().includes(filterString) || todo.category && todo.category.toLowerCase().includes(filterString))
+    }
+    else {
+      return null
+    }
+  })
+}
+
 // sub-components
 const BaseButtonElement = ({text, type, onclick}) => {
   const buttonTypes = {
@@ -248,10 +263,7 @@ const TodoRow = ({todo, showPinBtn, showArchiveBtn, done, showDueDate=true, show
   function deleteTodo(todoToDelete) {
     let newTodoArray = todos.filter(todo => todo._id !== todoToDelete._id)
     setTodos(newTodoArray);
-    setFilteredTodos(newTodoArray.filter((todo) => {
-      let categorySelectedStr = categorySelected ? categorySelected.toLowerCase() : null;
-      return (todo.title.toLowerCase().includes(categorySelectedStr) || todo.category && todo.category.toLowerCase().includes(categorySelectedStr))
-    }));
+    setFilteredTodos(getFilteredTodos(newTodoArray, categorySelected, filterString));
     deleteTodoReq(todoToDelete._id);
   }
 
@@ -343,7 +355,8 @@ const TodoInput = () => {
     loggedInUser, 
     newCategory, setNewCategory, 
     categorySelected, 
-    setFilteredTodos, 
+    setFilteredTodos,
+    filterString,
     categoryFilterEnabled,
     setShowFilterInput
   } = useContext(TodoContext);
@@ -387,10 +400,7 @@ const TodoInput = () => {
       setTodos(tempArray);
       setNewTodoText('');
       setNewDueDate('');
-      setFilteredTodos(tempArray.filter((todo) => {
-        let categorySelectedStr = categorySelected ? categorySelected.toLowerCase() : null;
-        return (todo.title.toLowerCase().includes(categorySelectedStr) || todo.category && todo.category.toLowerCase().includes(categorySelectedStr))
-      }));
+      setFilteredTodos(getFilteredTodos(tempArray, categorySelected, filterString));
       if (!categoryFilterEnabled)
         setNewCategory('');
 
