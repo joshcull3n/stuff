@@ -636,7 +636,7 @@ const TodoList = () => {
       <div className='todoListContainer fadeIn'>
         <div className='todoListHeader'>
           <PanelTitle title='todo' count={openCount + pinnedTodos.length} />
-          {(openTodos.length >= 0 || filterString) && <><FilterButton /><FilterInput />{openTodos.length <= 0 && !showFilterInput && <span className='noTasks'>• nothing to do...</span>}</>}
+          {(openTodos.length >= 0 || filterString) && <><FilterButton /><FilterInput />{openTodos.length <= 0 && pinnedTodos.length <= 0 && !showFilterInput && <span className='noTasks'>• nothing to do...</span>}</>}
         </div>
         { pinnedTodos.length > 0 && (
           <div className='todoGrid' style={{ padding: '5px 0' }}>
