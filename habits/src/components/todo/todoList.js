@@ -641,7 +641,7 @@ const TodoList = () => {
   return (
     <div>
       <div className='onTop'>
-        <div className='todoListContainer fadeIn'>
+        <div id='inputContainer' className='todoListContainer fadeIn'>
           <TodoInput />
         </div>
       </div>
