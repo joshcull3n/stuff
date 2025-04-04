@@ -62,6 +62,10 @@ export const TodoProvider = ({ children }) => {
       setLaterExpanded(true)
       setArchivedExpanded(true)
       setDoneExpanded(true)
+    } else {
+      setLaterExpanded(false)
+      setArchivedExpanded(false)
+      setDoneExpanded(false)
     }
   }, [filterString])
 
@@ -71,6 +75,16 @@ export const TodoProvider = ({ children }) => {
       setTodos(todos);
       setFilteredTodos(todos);
       setNewCategory('');
+      setArchivedExpanded(false);
+    }
+    else {
+      let openTodos = filteredTodos.filter((todo) => todo.status === 'incomplete' )
+      let archivedTodos = filteredTodos.filter((todo) => todo.status === 'archived' )
+
+      if (!openTodos.length && archivedTodos.length)
+        setArchivedExpanded(true)
+      else
+        setArchivedExpanded(false)
     }
   }, [categoryFilterEnabled])
 
