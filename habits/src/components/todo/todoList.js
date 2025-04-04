@@ -88,7 +88,7 @@ function getFilteredTodos(array, categorySelected, filterString) {
   return array.filter((todo) => {
     let categorySelectedStr = categorySelected ? categorySelected.toLowerCase() : null;
     if (categorySelectedStr) {
-      return (todo.title.toLowerCase().includes(categorySelectedStr) || todo.category && todo.category.toLowerCase().includes(categorySelectedStr))
+      return (todo.category && todo.category.toLowerCase().includes(categorySelectedStr))
     }
     else if (filterString) {
       return (todo.title.toLowerCase().includes(filterString) || todo.category && todo.category.toLowerCase().includes(filterString))
