@@ -58,6 +58,14 @@ export const TodoProvider = ({ children }) => {
   }, [showFilterInput])
 
   useEffect(() => {
+    if (filterString) {
+      setLaterExpanded(true)
+      setArchivedExpanded(true)
+      setDoneExpanded(true)
+    }
+  }, [filterString])
+
+  useEffect(() => {
     if (!categoryFilterEnabled) {
       setFilterString('');
       setTodos(todos);

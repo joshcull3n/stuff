@@ -358,7 +358,8 @@ const TodoInput = () => {
     setFilteredTodos,
     filterString,
     categoryFilterEnabled,
-    setShowFilterInput
+    setShowFilterInput,
+    setLaterExpanded
   } = useContext(TodoContext);
   const [newTodoText, setNewTodoText] = useState('');
   const [newDueDate, setNewDueDate] = useState('');
@@ -401,6 +402,7 @@ const TodoInput = () => {
       setNewTodoText('');
       setNewDueDate('');
       setFilteredTodos(getFilteredTodos(tempArray, categorySelected, filterString));
+      setLaterExpanded(true)
       if (!categoryFilterEnabled)
         setNewCategory('');
 
@@ -660,7 +662,7 @@ const TodoList = () => {
         )}
         <div className='todoGrid'>
             { openTodos.length > 0 && pinnedTodos.length > 0 && <div style={{fontSize:'x-small'}}><PanelTitle title='do later' count={openTodos.length} expanded={laterExpanded}/></div> }
-            { laterExpanded || filterString || pinnedTodos.length <= 0 ? openTodos.map((todo, index) => (
+            { laterExpanded || pinnedTodos.length <= 0 ? openTodos.map((todo, index) => (
                 <TodoRow todo={todo} showPinBtn={true} showArchiveBtn={true} key={index} />
               )) : <></> }
         </div>
@@ -684,7 +686,7 @@ const DoneList = () => {
     <div className="todoListContainer fadedContainer fadeInHalf">
       <PanelTitle title='done' count={doneTodos.length} expanded={doneExpanded}/>
       <div className="todoGrid">
-        { (doneExpanded || filterString) && doneTodos.length > 0 ? doneTodos.map((todo, index) => (
+        { doneExpanded && doneTodos.length > 0 ? doneTodos.map((todo, index) => (
             <TodoRow todo={todo} showPinBtn={false} showDueDate={false} showDoneDate={true} done={true} key={index} />
           )) : 
           <div>{todayDoneTodos.map((todo, index) => (
@@ -704,7 +706,7 @@ const ArchiveList = () => {
       <PanelTitle title='archived' count={archivedTodos.length} expanded={archivedExpanded}/>
       <div className="todoGrid">
         {
-          (archivedExpanded || filterString) && archivedTodos.length > 0 ? archivedTodos.map((todo, index) => (
+          archivedExpanded && archivedTodos.length > 0 ? archivedTodos.map((todo, index) => (
             <TodoRow todo={todo} showPinBtn={false} showArchiveBtn={false} key={index} />
           )) : <div className='todoRow' style={{'padding': '0px'}}></div>
         }
