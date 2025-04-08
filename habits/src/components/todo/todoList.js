@@ -551,7 +551,7 @@ const PanelTitle = ({title, count, expanded=false}) => {
 
   if (count || count === 0) {
     if (title === 'todo' || title === 'do today')
-      return <div className='panelTitle unclickable'><RegularTitle /><span>{count}</span></div>
+      return <div className='panelTitle unclickable' style={{'padding': '3.5px 0 0 10px' }}><RegularTitle /><span>{count}</span></div>
     else if (title === 'later')
       return ( <div className='panelTitle clickable' onClick={(e) => HandleCollapseClick(e, title)}>{ expanded ? <ExpandedTitleSmall /> : <CollapsedTitleSmall /> }<span>{count}</span></div> )  
     return ( <div className='panelTitle clickable' onClick={(e) => HandleCollapseClick(e, title)}>{ expanded ? <ExpandedTitle /> : <CollapsedTitle /> }<span>{count}</span></div> )
@@ -641,7 +641,7 @@ const TodoList = () => {
   return (
     <div>
       <div className='onTop'>
-        <div className='todoListContainer fadeIn'>
+        <div id='inputContainer' className='todoListContainer fadeIn'>
           <TodoInput />
         </div>
       </div>
