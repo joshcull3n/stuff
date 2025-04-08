@@ -581,12 +581,13 @@ input[type="checkbox"]:checked:hover {
 }
 
 .fadeInHalf {
-  animation: fadeInHalf 0.4s ease-in;
+  -webkit-transition: opacity 0.2s ease-in-out;
+  -moz-transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out;
 }
 
 .fadeInHalf:hover {
   opacity: 1;
-  transition: opacity 0.2s ease-in-out;
 }
 
 @keyframes fadeInHalf {
