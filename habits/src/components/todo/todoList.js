@@ -325,7 +325,7 @@ const TodoRow = ({todo, showPinBtn, showArchiveBtn, done, showDueDate=true, show
       { (mobile !== true && showDueDate && <DueDate />) || <div></div> }
       { (mobile !== true && showDoneDate && <DoneDate />) || <div></div>}
       { (mobile !== true && todo.category && <span><CategoryBtn /></span>) || <div></div> }
-      { showPinBtn === true && ( isPinned && <UnpinBtn /> || <PinBtn /> )}
+      { showPinBtn === true && ( isPinned && <UnpinBtn /> || <PinBtn /> ) || <div></div>}
       { (mobile !== true && showArchiveBtn === true && <ArchiveBtn />) || (showArchiveBtn === false && <UnarchiveBtn />) }
       { (mobile !== true && <DeleteBtn />) }
     </div>
