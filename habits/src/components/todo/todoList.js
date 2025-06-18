@@ -550,7 +550,7 @@ const PanelTitle = ({title, count, expanded=false}) => {
   const ExpandedTitleSmall = () => <span><img id={`${title}header`} className="expandedSmall"/>{title}</span>
 
   if (count || count === 0) {
-    if (title === 'todo' || title === 'do today')
+    if (title === 'todo' || title === 'do soon')
       return <div className='panelTitle unclickable' style={{'padding': '3.5px 0 0 10px' }}><RegularTitle /><span>{count}</span></div>
     else if (title === 'later')
       return ( <div className='panelTitle clickable' onClick={(e) => HandleCollapseClick(e, title)}>{ expanded ? <ExpandedTitleSmall /> : <CollapsedTitleSmall /> }<span>{count}</span></div> )  
@@ -653,7 +653,7 @@ const TodoList = () => {
         { pinnedTodos.length > 0 && (
           <div className='todoGrid' style={{ padding: '5px 0' }}>
             <div className=''> 
-              <div style={{fontSize:'x-small'}}><PanelTitle title='do today' count={pinnedTodos.length}/></div>
+              <div style={{fontSize:'x-small'}}><PanelTitle title='do soon' count={pinnedTodos.length}/></div>
                 { true && pinnedTodos.length > 0 ? pinnedTodos.map((todo, index) => (
                   <TodoRow todo={todo} showPinBtn={true} showArchiveBtn={true} key={index} isPinned={true}/>
                 )) : <></> }

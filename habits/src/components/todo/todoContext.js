@@ -22,32 +22,32 @@ export const TodoProvider = ({ children }) => {
   const [archivedExpanded, setArchivedExpanded] = useState(false);
   const [doneExpanded, setDoneExpanded] = useState(false);
 
-  function checkPinTimes(todos) {
-    const today = new Date();
-    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  // function checkPinTimes(todos) {
+  //   const today = new Date();
+  //   const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     
-    const updTodos = todos.map((todo) => {
-      if (todo.snooze_date) {
-        if (new Date(todo.snooze_date) < startOfToday) {
-          const updatedTodo = {
-            ...todo,
-            snooze_date: null,
-            status: 'incomplete'
-          }
-          updateTodo(updatedTodo)
-          return updatedTodo;
-        }
-      }
-      return todo;
-    })
-    return updTodos;
-  }
+  //   const updTodos = todos.map((todo) => {
+  //     if (todo.snooze_date) {
+  //       if (new Date(todo.snooze_date) < startOfToday) {
+  //         const updatedTodo = {
+  //           ...todo,
+  //           snooze_date: null,
+  //           status: 'incomplete'
+  //         }
+  //         updateTodo(updatedTodo)
+  //         return updatedTodo;
+  //       }
+  //     }
+  //     return todo;
+  //   })
+  //   return updTodos;
+  // }
 
   useEffect(() => {
     if (loggedInUser) {
       fetchRemoteTodosForUser(loggedInUser).then(resp => {
         if (resp)
-          setTodos(checkPinTimes(resp));
+          setTodos(resp);
       });
     }
   }, [loggedInUser]);
