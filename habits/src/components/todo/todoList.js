@@ -359,18 +359,31 @@ const TodoInput = () => {
     filterString,
     categoryFilterEnabled,
     setShowFilterInput,
-    setLaterExpanded
+    setLaterExpanded,
+    setArchivedExpanded
   } = useContext(TodoContext);
   const [newTodoText, setNewTodoText] = useState('');
   const [newDueDate, setNewDueDate] = useState('');
   const inputRef = useRef(null);
+
+  const INPUT_STATUS = Object.freeze({
+    later: 'incomplete',
+    soon: 'snoozed', // this is confusingly named snoozed bc I was lazy and didn't want to change the backend
+    archived: 'archived'
+  })
 
   const handleTodoInputChange = (e) => { setNewTodoText(e.target.value); }
   // const handleTodoDueDateSelectionChange = (e) => { setNewDueDate(e.target.value) }
 
   const handleTodoInputEnter = async (e) => {
     if (e.key === 'Enter') {
-      await inputTodo();
+      let status = INPUT_STATUS.soon
+      if (e.metaKey && !e.shiftKey)
+        status = INPUT_STATUS.later
+      if (e.shiftKey && !e.metaKey)
+        status = INPUT_STATUS.archived
+
+      await inputTodo(status);
     }
   }
 
@@ -378,13 +391,13 @@ const TodoInput = () => {
     await inputTodo();
   }
 
-  async function inputTodo() {
+  async function inputTodo(status=INPUT_STATUS.soon) {
     if (newTodoText.trim()) {
       const dueDate = new Date(newDueDate).getTime();
       const newTodo = {
         id: todos.length + 1,
         title: newTodoText,
-        status: 'incomplete',
+        status: status,
         description: null,
         due: dueDate || null,
         category: newCategory || null,
@@ -402,7 +415,10 @@ const TodoInput = () => {
       setNewTodoText('');
       setNewDueDate('');
       setFilteredTodos(getFilteredTodos(tempArray, categorySelected, filterString));
-      setLaterExpanded(true)
+      if (status === INPUT_STATUS.later)
+        setLaterExpanded(true)
+      if (status === INPUT_STATUS.archived)
+        setArchivedExpanded(true)
       if (!categoryFilterEnabled)
         setNewCategory('');
 
