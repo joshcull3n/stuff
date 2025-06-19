@@ -709,7 +709,7 @@ const TodoList = () => {
         </div>
       </div>
       {confirmBox.todoId && (
-      <div className='moreOptionsModal' style={{ top: confirmBox.top, left: confirmBox.left }} >
+      <div className='moreOptionsModal fadeIn' style={{ top: confirmBox.top, left: confirmBox.left }} >
         <div style={{ display: 'flex', gap: '0.2rem' }}>
           delete?
           <div onClick={() => confirmDelete(confirmBox.todoId)}>y</div>
