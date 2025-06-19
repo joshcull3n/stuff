@@ -613,6 +613,14 @@ input[type="checkbox"]:checked:hover {
   border-radius: 2px;
 }
 
+.moreOptionsModal {
+  position: absolute;
+  border-radius: 2px;
+  padding: 5px;
+  background: var(--main-bg-color);
+  z-index: 1000;
+}
+
 #inputContainer {
   background-color: #ffffff00;
 }

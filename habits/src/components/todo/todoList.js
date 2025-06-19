@@ -163,7 +163,8 @@ const BaseButtonElement = ({text, type, onclick}) => {
   return ( <div className="todoBtn">{text}</div>)
 }
 
-const TodoRow = ({todo, showPinBtn, showArchiveBtn, done, showDueDate=true, showDoneDate=false, isPinned=false}) => {
+const TodoRow = ({todo, showPinBtn, showArchiveBtn, done, showDueDate=true, showDoneDate=false, isPinned=false, onRequestDelete}) => {
+  const rowRef = useRef(null);
   const { mobile } = useContext(Context);
   const { todos, setTodos, 
     setNewCategory, setFilterString, 
@@ -183,7 +184,7 @@ const TodoRow = ({todo, showPinBtn, showArchiveBtn, done, showDueDate=true, show
   const UnpinBtn = () => <BaseButtonElement text="unpin" type="unpin" onclick={() => changeStatus(todo, 'snoozed', 'incomplete')}/>
   const ArchiveBtn = () => <BaseButtonElement text="arc" type="arc" onclick={() => changeStatus(todo, 'archived')}/> 
   const UnarchiveBtn = () => <BaseButtonElement text="unarc" type="unarc" onclick={() => changeStatus(todo, 'incomplete')}/> 
-  const DeleteBtn = () => <BaseButtonElement text="del" type="del" onclick={() => deleteTodo(todo)}/>
+  const DeleteBtn = () => <BaseButtonElement text="del" type="del" onclick={() => onRequestDelete(todo._id, rowRef.current)}/>
   const CategoryBtn = () => <BaseButtonElement text={todo.category} type="category" onclick={() => handleCategoryBtnClick(todo.category)}/>
   const Title = () => {
     const titleFieldRef = useRef(null);
@@ -318,7 +319,7 @@ const TodoRow = ({todo, showPinBtn, showArchiveBtn, done, showDueDate=true, show
   }
 
   return (
-    <div className='todoRow'>
+    <div className='todoRow' ref={rowRef}>
       <CompleteBtn />
       <Title />
       {/* { (mobile !== true && <EditBtn />) || <div></div> } */}
@@ -629,11 +630,35 @@ function filterAndSort(todos, filteredTodos, filterString, status, ordering, ign
 
 // main components
 const TodoList = () => {
+  const [confirmBox, setConfirmBox] = useState({ todoId: null, top: 0, left: 0 })
+
+  function onRequestDelete(todoId, domNode) {
+    if (!domNode) return;
+    const rect = domNode.getBoundingClientRect();
+    setConfirmBox({
+      todoId,
+      top: rect.top + window.scrollY,
+      left: rect.right + 10 + window.scrollX,
+    });
+  }
+
+  function confirmDelete(todoId) {
+    const newTodos = todos.filter(t => t._id !== todoId);
+    setTodos(newTodos);
+    setFilteredTodos(getFilteredTodos(newTodos, categorySelected, filterString));
+    deleteTodoReq(todoId);
+    setConfirmBox({ todoId: null, top: 0, left: 0 });
+  }
+
+  function cancelDelete() {
+    setConfirmBox({ todoId: null, top: 0, left: 0 });
+  }
+
   const { todos, setTodos, ordering, 
     showFilterInput, setShowFilterInput,
     filteredTodos, setFilteredTodos,
     filterString, setFilterString,
-    setNewCategory, laterExpanded
+    setNewCategory, laterExpanded, categorySelected
   } = useContext(TodoContext);
 
   const openTodos = filterAndSort(todos, filteredTodos, filterString, 'incomplete', ordering);
@@ -671,7 +696,7 @@ const TodoList = () => {
             <div className=''> 
               <div style={{fontSize:'x-small'}}><PanelTitle title='do soon' count={pinnedTodos.length}/></div>
                 { true && pinnedTodos.length > 0 ? pinnedTodos.map((todo, index) => (
-                  <TodoRow todo={todo} showPinBtn={true} showArchiveBtn={true} key={index} isPinned={true}/>
+                  <TodoRow todo={todo} showPinBtn={true} showArchiveBtn={true} key={index} isPinned={true} onRequestDelete={onRequestDelete} />
                 )) : <></> }
               </div>
           </div>
@@ -679,10 +704,19 @@ const TodoList = () => {
         <div className='todoGrid'>
             { openTodos.length > 0 && pinnedTodos.length > 0 && <div style={{fontSize:'x-small'}}><PanelTitle title='do later' count={openTodos.length} expanded={laterExpanded}/></div> }
             { laterExpanded || pinnedTodos.length <= 0 ? openTodos.map((todo, index) => (
-                <TodoRow todo={todo} showPinBtn={true} showArchiveBtn={true} key={index} />
+                <TodoRow todo={todo} showPinBtn={true} showArchiveBtn={true} key={index} onRequestDelete={onRequestDelete} />
               )) : <></> }
         </div>
       </div>
+      {confirmBox.todoId && (
+      <div className='moreOptionsModal' style={{ top: confirmBox.top, left: confirmBox.left }} >
+        <div style={{ display: 'flex', gap: '0.2rem' }}>
+          delete?
+          <div onClick={() => confirmDelete(confirmBox.todoId)}>y</div>
+          <div onClick={cancelDelete}>n</div>
+        </div>
+      </div>
+    )}
     </div>
   )
 }
